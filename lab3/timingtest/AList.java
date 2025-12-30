@@ -25,22 +25,35 @@ public class AList<Item> {
     }
 
     /** Resizes the underlying array to the target capacity. */
+
     private void resize(int capacity) {
         Item[] a = (Item[]) new Object[capacity];
         System.arraycopy(items, 0, a, 0, size);
         items = a;
     }
 
-    /** Inserts X into the back of the list. */
+
     public void addLast(Item x) {
         if (size == items.length) {
-            resize(size + 1);
+            resize(size *2);
         }
 
         items[size] = x;
         size = size + 1;
     }
+    /*
 
+    /*
+    public void addLast(Item x) {
+        if (size == items.length) {
+        //    System.out.println("Overflow");
+            resize(size + 1);
+        }
+        //System.out.println("Overflow");
+        items[size] = x;
+        size = size + 1;
+    }
+    */
     /** Returns the item from the back of the list. */
     public Item getLast() {
         return items[size - 1];
