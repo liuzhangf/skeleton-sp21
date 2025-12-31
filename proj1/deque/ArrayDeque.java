@@ -71,6 +71,11 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         T x = item[head];
         head  = (head + 1) % item.length;
         size--;
+
+        if (size <= item.length / 2){
+            resize(item.length / 2);
+        }
+
         return x;
     }
 
@@ -81,6 +86,9 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         tail = (tail - 1 + item.length) % item.length;
         T x = item[tail];
         size--;
+        if (size <= item.length / 2){
+            resize(item.length / 2);
+        }
         return x;
     }
 
@@ -95,7 +103,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return new ArrayListIterator();
     }
 
-    public class ArrayListIterator implements Iterator<T>{
+    private class ArrayListIterator implements Iterator<T>{
         int cnt = 0;
         public boolean hasNext(){
             return cnt < size;
