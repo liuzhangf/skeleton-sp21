@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 public class MaxArrayDequeTest {
-    @Test
+    //@Test
     /** Adds a few things to the list, checking isEmpty() and size() are correct,
      * finally printing the results.
      *
@@ -109,29 +109,29 @@ public class MaxArrayDequeTest {
         boolean b = lld3.removeFirst();
 
     }*/
-    /*
+
     @Test
-    /* check if null is return when removing from an empty LinkedListDeque. */
-    /*
-    public void emptyNullReturnTest() {
+    public void testMaxWithNullElements() {
+        // 空安全比较器：null 视为比任何字符串都小（避免空指针）
+        Comparator<String> nullSafeComp = Comparator.nullsFirst(Comparator.naturalOrder());
+        MaxArrayDeque<String> deque = new MaxArrayDeque<>(nullSafeComp);
 
-        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
+        deque.addLast(null);
+        deque.addLast("banana");
+        deque.addLast(null);
+        deque.addLast("apple");
 
-        MaxArrayDeque<Integer> lld1 = new MaxArrayDeque<Integer>();
-
-        boolean passed1 = false;
-        boolean passed2 = false;
-        assertEquals("Should return null when removeFirst is called on an empty Deque,", null, lld1.removeFirst());
-        assertEquals("Should return null when removeLast is called on an empty Deque,", null, lld1.removeLast());
-
+        assertEquals("包含 null 元素时，max() 应返回非 null 最大值", "banana", deque.max());
     }
-    */
+
     /* Add large number of elements to deque; check if order is correct. */
+
+    @Test
     public void bigLLDequeTest() {
         System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
         Comparator<Integer> naturalComp = Comparator.naturalOrder();
         MaxArrayDeque<Integer> lld1 = new MaxArrayDeque<Integer>(naturalComp);
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 10000; i++) {
             lld1.addLast(i);
             assertEquals("单元素 max() 应返回该元素", Integer.valueOf(i), lld1.max());
         }

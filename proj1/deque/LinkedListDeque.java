@@ -2,7 +2,8 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> {
+
+public class LinkedListDeque<T> implements Deque<T> {
 
     public class Node {
         T data;
@@ -40,10 +41,6 @@ public class LinkedListDeque<T> {
 
     public int size(){
         return size;
-    }
-
-    public boolean isEmpty(){
-        return size == 0;
     }
 
     public void printDeque(){

@@ -2,12 +2,14 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> {
+
+public class ArrayDeque<T> implements Deque<T> {
 
     private T[] item;
     private int head;
     private int tail;
     private int size;
+
 
     public ArrayDeque() {
         item = (T[]) new Object[8];
@@ -33,7 +35,7 @@ public class ArrayDeque<T> {
     */
 
     public void addFirst(T x){
-        if(Math.abs(head - tail) == 0 && size == item.length){
+        if(Math.abs(head - tail) == 0 && size == item.length) {
             resize(item.length * 2);
         }
         item[(head - 1 + item.length)  % item.length] = x;
@@ -48,10 +50,6 @@ public class ArrayDeque<T> {
         item[tail] = x;
         tail = (tail + 1) % item.length;
         size++;
-    }
-
-    public boolean isEmpty(){
-        return size == 0;
     }
 
     public int size(){
