@@ -3,7 +3,7 @@ package deque;
 import java.util.Iterator;
 
 
-public class ArrayDeque<T> implements Deque<T> {
+public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     private T[] item;
     private int head;
@@ -96,16 +96,14 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     public class ArrayListIterator implements Iterator<T>{
-        int cnt = head;
+        int cnt = 0;
         public boolean hasNext(){
-            return cnt != tail;
+            return cnt < size;
         }
 
         public T next() {
             if (hasNext()) {
-                T x = item[cnt];
-                cnt = (cnt + 1) % item.length;
-                return x;
+                return get(cnt++);
             }
             return null;
         }
