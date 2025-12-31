@@ -1,0 +1,139 @@
+package deque;
+
+import java.util.Iterator;
+
+public class ArrayDeque<T> {
+
+    private T[] item;
+    private int head;
+    private int tail;
+    private int size;
+
+    public ArrayDeque() {
+        item = (T[]) new Object[8];
+        head = 0;
+        tail = 0;
+    }
+
+    private void resize(int capacity) {
+        T[] a = (T[]) new Object[capacity];
+        int mod = item.length;
+        int newhead = 0;
+        for(int i = 0; i < size; i = (i + 1)) {
+            a[(newhead++) % capacity] = item[(head + i) % mod];
+        }
+        item = a;
+        head = 0;
+        tail = newhead;
+    }
+
+    /*
+      head 指向的是当前队列的第一个元素
+      tail 都是分别指向要填入的位置
+    */
+
+    public void addFirst(T x){
+        if(Math.abs(head - tail) == 0 && size == item.length){
+            resize(item.length * 2);
+        }
+        item[(head - 1 + item.length)  % item.length] = x;
+        head =  (head - 1 + item.length)  % item.length;
+        size++;
+    }
+
+    public void addLast(T x){
+        if(tail == head && size == item.length){
+            resize(item.length * 2);
+        }
+        item[tail] = x;
+        tail = (tail + 1) % item.length;
+        size++;
+    }
+
+    public boolean isEmpty(){
+        return Math.abs(head - tail) == 0;
+    }
+
+    public int size(){
+        return size;
+    }
+
+    public void printDeque(){
+        resize(item.length);
+        for(int i = head; i < tail; i = (i + 1) % item.length){
+            System.out.print(item[i] + " ");
+        }
+        System.out.println();
+    }
+
+    public T removeFirst(){
+        if(isEmpty()){
+            return null;
+        }
+        T x = item[head];
+        head  = (head + 1) % item.length;
+        size--;
+        return x;
+    }
+
+    public T removeLast(){
+        if(isEmpty()){
+            return null;
+        }
+        tail = (tail - 1 + item.length) % item.length;
+        T x = item[tail];
+        size--;
+        return x;
+    }
+
+    public T get(int index){
+        if(index < 0 || index >= size){
+            return null;
+        }
+        return item[(head + index) % item.length];
+    }
+
+    public Iterator<T> iterator(){
+        return new ArrayListIterator();
+    }
+
+    public class ArrayListIterator implements Iterator<T>{
+        int cnt = head;
+        public boolean hasNext(){
+            return cnt != tail;
+        }
+
+        public T next() {
+            if (hasNext()) {
+                T x = item[cnt];
+                cnt = (cnt + 1) % item.length;
+                return x;
+            }
+            return null;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Deque)) {
+            return false;
+        }
+        if (size() != ((Deque<?>) o).size()) {
+            return false;
+        }
+        for (int i = 0; i < size(); i++) { // Time Complexity high
+            T left = (T) ((Deque<?>) o).get(i);
+            T right = get(i);
+            if (left == null && right == null) {
+                continue;
+            }
+            if (left == null || right == null) {
+                return false;
+            }
+            if (!(left.equals(right))) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
