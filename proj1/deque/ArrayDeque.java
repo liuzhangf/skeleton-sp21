@@ -51,7 +51,7 @@ public class ArrayDeque<T> {
     }
 
     public boolean isEmpty(){
-        return Math.abs(head - tail) == 0;
+        return size == 0;
     }
 
     public int size(){
