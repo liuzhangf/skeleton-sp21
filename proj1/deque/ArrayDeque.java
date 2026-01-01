@@ -56,10 +56,10 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return size;
     }
 
-    public void printDeque(){
-        resize(item.length);
-        for(int i = head; i < tail; i = (i + 1) % item.length){
-            System.out.print(item[i] + " ");
+    public void printDeque() {
+        for (int i = 0; i < size; i++) {
+            int idx = (head + i) % item.length;
+            System.out.print(item[idx] + " ");
         }
         System.out.println();
     }
@@ -72,7 +72,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         head  = (head + 1) % item.length;
         size--;
 
-        if (size <= item.length / 2 && size >= 8){
+        if (size <= item.length / 2 && size >= 16){
             resize(item.length / 2);
         }
 
