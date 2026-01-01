@@ -35,7 +35,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     */
 
     public void addFirst(T x){
-        if(size == item.length) {
+        if(size >= item.length) {
             resize(item.length * 2);
         }
         item[(head - 1 + item.length)  % item.length] = x;
@@ -72,7 +72,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         head  = (head + 1) % item.length;
         size--;
 
-        if (size <= item.length / 2 && size >= 16){
+        if (size < item.length / 2 && size >= 16){
             resize(item.length / 2);
         }
 
@@ -86,7 +86,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         tail = (tail - 1 + item.length) % item.length;
         T x = item[tail];
         size--;
-        if (size <= item.length / 2 && size >= 8){
+        if (size < item.length / 2 && size >= 8){
             resize(item.length / 2);
         }
         return x;
