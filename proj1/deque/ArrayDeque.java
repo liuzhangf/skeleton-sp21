@@ -35,7 +35,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     */
 
     public void addFirst(T x){
-        if(Math.abs(head - tail) == 0 && size == item.length) {
+        if(size == item.length) {
             resize(item.length * 2);
         }
         item[(head - 1 + item.length)  % item.length] = x;
@@ -44,7 +44,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     public void addLast(T x){
-        if(tail == head && size == item.length){
+        if(size == item.length){
             resize(item.length * 2);
         }
         item[tail] = x;
