@@ -103,7 +103,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return new ArrayListIterator();
     }
 
-    private class ArrayListIterator implements Iterator<T>{
+    public class ArrayListIterator implements Iterator<T>{
         int cnt = 0;
         public boolean hasNext(){
             return cnt < size;
