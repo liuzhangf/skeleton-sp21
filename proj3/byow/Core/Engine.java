@@ -1,9 +1,9 @@
 package byow.Core;
-import java.awt.*;
+//import java.awt.*;
 
 import java.nio.file.Paths;
 import java.nio.file.Path;
-import byow.TileEngine.TERenderer;
+//import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 //import edu.princeton.cs.introcs.StdDraw;
