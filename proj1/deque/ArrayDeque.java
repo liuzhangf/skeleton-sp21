@@ -10,7 +10,6 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private int tail;
     private int size;
 
-
     public ArrayDeque() {
         item = (T[]) new Object[8];
         head = 0;
@@ -100,10 +99,10 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     public Iterator<T> iterator(){
-        return new ArrayListIterator();
+        return new ArrayListIterator<>();
     }
 
-    private class ArrayListIterator implements Iterator<T>{
+    private class ArrayListIterator<T> implements Iterator<T>{
         int cnt = 0;
         public boolean hasNext(){
             return cnt < size;
@@ -111,7 +110,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
         public T next() {
             if (hasNext()) {
-                return get(cnt++);
+                return (T) get(cnt++);
             }
             return null;
         }

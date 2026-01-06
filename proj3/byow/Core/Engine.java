@@ -45,8 +45,26 @@ public class Engine {
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
-
-        TETile[][] finalWorldFrame = null;
+        long seed = parseSeedFromInput(input);
+        GenerateWorld worldGenerator = new GenerateWorld(seed);
+        TETile[][] finalWorldFrame = worldGenerator.generateTiles();
         return finalWorldFrame;
+    }
+
+    private long parseSeedFromInput(String input) {
+        if (input == null || input.isEmpty()) {
+            return 0;
+        }
+        int nIndex = input.indexOf('n');
+        int sIndex = input.indexOf('s');
+        if (nIndex == -1 || sIndex == -1 || sIndex <= nIndex + 1) {
+            return 0;
+        }
+        String seedStr = input.substring(nIndex + 1, sIndex);
+        try {
+            return Long.parseLong(seedStr);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }
