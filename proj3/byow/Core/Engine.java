@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-import edu.princeton.cs.introcs.StdDraw;
+//import edu.princeton.cs.introcs.StdDraw;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +24,6 @@ public class Engine {
     public int UNLOCKDOORX;
     public int UNLOCKDOORY;
     private ArrayList<GenerateWorld.Room> roomList;
-
 
     public void interactWithKeyboard() {
     //    playing();
@@ -150,6 +149,7 @@ public class Engine {
         }
     }
     */
+
     private void drawWall(TETile[][] tiles) {
         for (int i = 0; i < WIDTH; i += 1) {
             for (int j = 0; j < HEIGHT; j += 1) {
@@ -342,6 +342,7 @@ public class Engine {
         }
     }
 
+    /*
     private void mouseTip() {
         double mouseX = StdDraw.mouseX();
         double mouseY = StdDraw.mouseY();
@@ -349,7 +350,8 @@ public class Engine {
         int numy = (int) mouseY;
         description(numx, numy );
     }
-
+    */
+    /*
     private void description(int numx, int numy ){
         String str = "";
         if (numx >= 0 && numx < WIDTH && numy >= 0 && numy < HEIGHT ) {
@@ -379,7 +381,8 @@ public class Engine {
             StdDraw.show();
         }
     }
-
+    */
+    /*
     private void drawMainMenu(){
         StdDraw.clear(StdDraw.BLACK);
         Font font0 = new Font("Monaco", Font.BOLD, 80);
@@ -394,7 +397,7 @@ public class Engine {
         StdDraw.text(WIDTH * 0.5, HEIGHT * 0.45 , "QUIT GAME (Q)");
         StdDraw.show();
     }
-
+    */
     private int randomInt(int min, int max) {
         if (min > max) {
             int temp = min;
@@ -404,8 +407,9 @@ public class Engine {
         return min + RANDOM.nextInt(max - min + 1);
     }
 
+    /*
     private void drawFame(int moveResult, TETile[][] tiles){
-/*
+
         ter.renderFrame(tiles);
         StdDraw.setPenColor(StdDraw.YELLOW);
         StdDraw.setFont(new Font("Monaco", Font.BOLD, 30));
@@ -429,17 +433,19 @@ public class Engine {
         StdDraw.show();
         //StdDraw.rectangle(WIDTH/2.0, HEIGHT + TEXT_BOX_HEIGHT/2.0 - 4, WIDTH/2.0 - 2, TEXT_BOX_HEIGHT/2.0 - 4);
         StdDraw.pause(10);
-        */
+
     }
+    */
 
     private int RenderThePicture(int flag, TETile[][] tiles){
-
+    /*
         if(flag == 7){
             if (captureMovementInput() == -1){
                 saveGame(tiles);//System.exit(0);
             }
         }
-        else if (flag == 1){
+    */
+        if (flag == 1){
             if(tiles[posx][posy + 1] == Tileset.WALL){
                 return 0;
             }
@@ -504,7 +510,7 @@ public class Engine {
         }
         return 2;
     }
-
+    /*
     public int captureMovementInput( ) {
         while (true) {
             mouseTip();
@@ -533,7 +539,8 @@ public class Engine {
             }
         }
     }
-
+    */
+    /*
     private void clearRightTipArea() {
         Color originalColor = StdDraw.getPenColor();
 
@@ -545,7 +552,7 @@ public class Engine {
         StdDraw.filledRectangle(centerX, centerY, halfWidth, halfHeight);
         StdDraw.setPenColor(originalColor);
     }
-
+    */
     public TETile[][] interactWithInputString (String s) {
 
         SeedCommandExtractor.Result parseResult = SeedCommandExtractor.extract(s);
@@ -618,9 +625,13 @@ public class Engine {
         }
     }
 
+    /*
     public static void main(String[] args) {
+        TERenderer ter = new TERenderer();
+        ter.initialize(WIDTH, TOTAL_WINDOW_HEIGHT);
         Engine engine = new Engine();
-        engine.interactWithInputString("n999Sddd:q");
+        TETile[][] tiles = engine.interactWithInputString("n999Sdddd:q");
+        ter.renderFrame(tiles);
     }
-
+    */
 }
