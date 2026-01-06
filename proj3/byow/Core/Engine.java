@@ -204,10 +204,9 @@ public class Engine {
         drawWall(tiles);
       //  tiles[gamestate.PLAYERX][gamestate.PLAYERY] = Tileset.AVATAR;
       //  tiles[gamestate.unlockdoorx][gamestate.unlockdoory] = Tileset.UNLOCKED_DOOR;
-      //  this.posx = gamestate.PLAYERX;
-      //  this.posy = gamestate.PLAYERY;
+        this.posx = gamestate.PLAYERX;
+        this.posy = gamestate.PLAYERY;
         this.RANDOM = gamestate.rand;
-
     }
 
     private void saveGame (TETile[][] world) {
