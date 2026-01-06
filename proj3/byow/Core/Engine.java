@@ -2,8 +2,8 @@ package byow.Core;
 //import java.awt.*;
 
 import java.nio.file.Paths;
-import java.nio.file.Path;
-//import byow.TileEngine.TERenderer;
+//import java.nio.file.Path;
+import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 //import edu.princeton.cs.introcs.StdDraw;
@@ -207,14 +207,16 @@ public class Engine {
         this.RANDOM = gamestate.rand;
     }
 
+    /*
     private static final Path SAVE_FILE_PATH = Paths.get(
             System.getProperty("user.home"),
             "byog_game_save.txt"
     );
 
+    */
     private void saveGame (TETile[][] world) {
         this.tiles = world;
-        File saveFile = SAVE_FILE_PATH.toFile();
+        File saveFile = Paths.get("byow/Core/history.txt").toFile();
         try (
                 FileOutputStream fos = new FileOutputStream(saveFile);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -235,7 +237,7 @@ public class Engine {
 
     private GameState loadGame () {
 
-        File saveFile = SAVE_FILE_PATH.toFile();
+        File saveFile = Paths.get("byow/Core/history.txt").toFile();
         if(!saveFile.exists()) {
             System.out.println("Save file not found");
             return null;
@@ -625,7 +627,7 @@ public class Engine {
         }
     }
 
-    /*
+
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, TOTAL_WINDOW_HEIGHT);
@@ -633,5 +635,5 @@ public class Engine {
         TETile[][] tiles = engine.interactWithInputString("n999Sdddd:q");
         ter.renderFrame(tiles);
     }
-    */
+
 }
