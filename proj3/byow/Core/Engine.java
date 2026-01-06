@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Engine {
-    TERenderer ter = new TERenderer();
+   // TERenderer ter = new TERenderer();
     public static final int WIDTH = 65;
     public static final int HEIGHT = 65;
     public static final int TEXT_BOX_HEIGHT = 10; // 上方文本框高度（像素，可自定义）
@@ -34,10 +34,7 @@ public class Engine {
         GenerateWorld worldGenerator = new GenerateWorld(seed);
         this.UNLOCKDOORX = worldGenerator.UNLOCKDOORX;
         this.UNLOCKDOORY = worldGenerator.UNLOCKDOORY;
-
-        TERenderer ter = new TERenderer();
         RANDOM = new Random(seed);
-
         if (s.charAt(0) == 'n'){
             this.tiles = worldGenerator.generateTiles();
             this.roomList = worldGenerator.roomList;
@@ -408,7 +405,7 @@ public class Engine {
     }
 
     private void drawFame(int moveResult, TETile[][] tiles){
-
+/*
         ter.renderFrame(tiles);
         StdDraw.setPenColor(StdDraw.YELLOW);
         StdDraw.setFont(new Font("Monaco", Font.BOLD, 30));
@@ -432,6 +429,7 @@ public class Engine {
         StdDraw.show();
         //StdDraw.rectangle(WIDTH/2.0, HEIGHT + TEXT_BOX_HEIGHT/2.0 - 4, WIDTH/2.0 - 2, TEXT_BOX_HEIGHT/2.0 - 4);
         StdDraw.pause(10);
+        */
     }
 
     private int RenderThePicture(int flag, TETile[][] tiles){
@@ -618,6 +616,11 @@ public class Engine {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    public static void main(String[] args) {
+        Engine engine = new Engine();
+        engine.interactWithInputString("n999Sddd:q");
     }
 
 }
