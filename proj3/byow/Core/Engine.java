@@ -3,17 +3,13 @@ package byow.Core;
 
 import java.nio.file.Paths;
 //import java.nio.file.Path;
-import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-//import edu.princeton.cs.introcs.StdDraw;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 public class Engine {
-   // TERenderer ter = new TERenderer();
     public static final int WIDTH = 65;
     public static final int HEIGHT = 65;
     public static final int TEXT_BOX_HEIGHT = 10; // 上方文本框高度（像素，可自定义）
@@ -30,6 +26,7 @@ public class Engine {
     }
 
     private TETile[][] playingString(String s, long seed) {
+
         GenerateWorld worldGenerator = new GenerateWorld(seed);
         this.UNLOCKDOORX = worldGenerator.UNLOCKDOORX;
         this.UNLOCKDOORY = worldGenerator.UNLOCKDOORY;
@@ -40,7 +37,7 @@ public class Engine {
             this.UNLOCKDOORY = worldGenerator.UNLOCKDOORY;
             this.UNLOCKDOORX = worldGenerator.UNLOCKDOORX;
             SetStart(tiles);
-            for(int i = 1; i < s.length(); i++) {
+            for (int i = 1; i < s.length(); i++) {
                 if (s.charAt(i) == 's'){
                     int tag = RenderThePicture(2,tiles);
                 }
@@ -63,7 +60,7 @@ public class Engine {
         else if (s.charAt(0) == 'l'){
             GameState gamestate = loadGame();
             rebuild(gamestate);
-            for(int i = 1; i < s.length(); i++) {
+            for (int i = 1; i < s.length(); i++) {
                 if (s.charAt(i) == 's'){
                     int tag = RenderThePicture(2,tiles);
                 }
@@ -177,8 +174,8 @@ public class Engine {
 
     private void rebuild(GameState gamestate){
 
-        for(int i = 0; i < WIDTH; i += 1){
-            for(int j = 0; j < HEIGHT; j += 1){
+        for (int i = 0; i < WIDTH; i += 1){
+            for (int j = 0; j < HEIGHT; j += 1){
                 this.tiles[i][j] = Tileset.NOTHING;
             }
         }
@@ -197,17 +194,20 @@ public class Engine {
                else if (gamestate.vis[i][j] == 0) {
                    this.tiles[i][j] = Tileset.NOTHING;
                }
+               else if (gamestate.vis[i][j] == 4) {
+                   this.tiles[i][j] = Tileset.UNLOCKED_DOOR;
+               }
            }
         }
 
 
         drawWall(tiles);
-        tiles[gamestate.PLAYERX][gamestate.PLAYERY] = Tileset.AVATAR;
-        tiles[gamestate.unlockdoorx][gamestate.unlockdoory] = Tileset.UNLOCKED_DOOR;
-        this.posx = gamestate.PLAYERX;
-        this.posy = gamestate.PLAYERY;
+      //  tiles[gamestate.PLAYERX][gamestate.PLAYERY] = Tileset.AVATAR;
+      //  tiles[gamestate.unlockdoorx][gamestate.unlockdoory] = Tileset.UNLOCKED_DOOR;
+      //  this.posx = gamestate.PLAYERX;
+      //  this.posy = gamestate.PLAYERY;
         this.RANDOM = gamestate.rand;
-        System.out.println( this.RANDOM);
+
     }
 
     private void saveGame (TETile[][] world) {
@@ -218,19 +218,22 @@ public class Engine {
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
         ){
             int vis[][] = new int[65][75];
-            for(int i = 0; i < WIDTH; i += 1){
-                for(int j = 0; j < HEIGHT; j += 1){
-                    if(world[i][j] == Tileset.NOTHING){
+            for (int i = 0; i < WIDTH; i += 1) {
+                for (int j = 0; j < HEIGHT; j += 1) {
+                    if(world[i][j] == Tileset.NOTHING) {
                         vis[i][j] = 0;
                     }
-                    else if(world[i][j] == Tileset.FLOOR){
+                    else if(world[i][j] == Tileset.FLOOR) {
                         vis[i][j] = 1;
                     }
-                    else if(world[i][j] == Tileset.WALL){
+                    else if(world[i][j] == Tileset.WALL) {
                         vis[i][j] = 2;
                     }
-                    else if(world[i][j] == Tileset.AVATAR){
+                    else if(world[i][j] == Tileset.AVATAR) {
                         vis[i][j] = 3;
+                    }
+                    else if(world[i][j] == Tileset.UNLOCKED_DOOR) {
+                        vis[i][j] = 4;
                     }
                 }
             }
@@ -253,7 +256,6 @@ public class Engine {
 
         File saveFile = Paths.get("byow/Core/history.txt").toFile();
         if(!saveFile.exists()) {
-         //   System.out.println("Save file not found");
             return null;
         }
 
@@ -273,11 +275,11 @@ public class Engine {
 
     public void SetStart(TETile[][] world) {
         boolean flag = true;
-        while(flag){
+        while(flag) {
             for(int x = 0; x < WIDTH; x++) {
                 for(int y = 0; y < HEIGHT; y++) {
                     if(world[x][y] == Tileset.FLOOR && flag) {
-                        if(randomInt(0,1000) <= 1){
+                        if(randomInt(0,1000) <= 1) {
                             world[x][y] = Tileset.AVATAR;
                             flag = false;
                             posx = x;
@@ -384,7 +386,7 @@ public class Engine {
     }
     */
 
-    private int RenderThePicture(int flag, TETile[][] tiles){
+    private int RenderThePicture(int flag, TETile[][] tiles) {
     /*
         if(flag == 7){
             if (captureMovementInput() == -1){
@@ -392,12 +394,12 @@ public class Engine {
             }
         }
     */
-        if (flag == 1){
-            if(tiles[posx][posy + 1] == Tileset.WALL){
+        if (flag == 1) {
+            if(tiles[posx][posy + 1] == Tileset.WALL) {
                 return 0;
             }
 
-            else if (tiles[posx][posy + 1] == Tileset.UNLOCKED_DOOR){
+            else if (tiles[posx][posy + 1] == Tileset.UNLOCKED_DOOR) {
                 return 1;
             }
 
@@ -408,12 +410,12 @@ public class Engine {
             }
         }
 
-        else if (flag == 2){
-            if(tiles[posx][posy - 1] == Tileset.WALL){
+        else if (flag == 2) {
+            if(tiles[posx][posy - 1] == Tileset.WALL) {
                 return 0;
             }
 
-            else if (tiles[posx][posy - 1] == Tileset.UNLOCKED_DOOR){
+            else if (tiles[posx][posy - 1] == Tileset.UNLOCKED_DOOR) {
                 return 1;
             }
 
@@ -424,12 +426,12 @@ public class Engine {
             }
         }
 
-        else if (flag == 3){
+        else if (flag == 3) {
 
-            if(tiles[posx - 1][posy] == Tileset.WALL){
+            if(tiles[posx - 1][posy] == Tileset.WALL) {
                 return 0;
             }
-            else if (tiles[posx - 1][posy] == Tileset.UNLOCKED_DOOR){
+            else if (tiles[posx - 1][posy] == Tileset.UNLOCKED_DOOR) {
                 return 1;
             }
 
@@ -441,11 +443,11 @@ public class Engine {
         }
 
         else if(flag == 4) {
-            if(tiles[posx + 1][posy] == Tileset.WALL){
+            if(tiles[posx + 1][posy] == Tileset.WALL) {
                 return 0;
             }
 
-            else if (tiles[posx + 1][posy] == Tileset.UNLOCKED_DOOR){
+            else if (tiles[posx + 1][posy] == Tileset.UNLOCKED_DOOR) {
                 return 1;
             }
 
@@ -572,6 +574,7 @@ public class Engine {
         }
     }
 
+    /*
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, TOTAL_WINDOW_HEIGHT);
@@ -579,4 +582,5 @@ public class Engine {
         TETile[][] tiles = engine.interactWithInputString("n7193300625454684331saaawasdaawdwsd");
         ter.renderFrame(tiles);
     }
+    */
 }
