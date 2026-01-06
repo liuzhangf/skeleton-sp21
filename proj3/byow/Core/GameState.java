@@ -11,7 +11,7 @@ public class GameState implements Serializable {
     public int unlockdoory;
     public int PLAYERX;
     public int PLAYERY;
-    public ArrayList<GenerateWorld.Room> roomList;
+    //public ArrayList<GenerateWorld.Room> roomList;
     public Random rand ;
 
     int vis[][];
@@ -21,7 +21,7 @@ public class GameState implements Serializable {
         this.unlockdoory = unlockdoory;
         this.PLAYERX = posx;
         this.PLAYERY = posy;
-        this.roomList = roomList;
+    //    this.roomList = roomList;
         this.rand = rand;
         this.vis = vis;
     }

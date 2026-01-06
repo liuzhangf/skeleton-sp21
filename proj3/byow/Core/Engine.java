@@ -183,27 +183,24 @@ public class Engine {
             }
         }
 
-        for(int i = 0; i < gamestate.roomList.size(); i++){
-            int posx = gamestate.roomList.get(i).generatex;
-            int posy = gamestate.roomList.get(i).generatey;
-            int width = gamestate.roomList.get(i).generatewidth;
-            int height = gamestate.roomList.get(i).generationheight;
-            for (int x = 0; x < width; x++){
-                for (int y = 0; y < height; y++){
-                    this.tiles[posx + x][posy + y] = Tileset.FLOOR;
-                }
-            }
-        }
-
-        ArrayList<GenerateWorld.Room> rooms = gamestate.roomList;
-        Collections.sort(rooms);
         for (int i = 0; i < WIDTH; i += 1){
            for (int j = 0; j < HEIGHT; j += 1){
                if (gamestate.vis[i][j] == 1) {
                    this.tiles[i][j] = Tileset.FLOOR;
                }
+               else if (gamestate.vis[i][j] == 2) {
+                   this.tiles[i][j] = Tileset.WALL;
+               }
+               else if (gamestate.vis[i][j] == 3) {
+                   this.tiles[i][j] = Tileset.AVATAR;
+               }
+               else if (gamestate.vis[i][j] == 0) {
+                   this.tiles[i][j] = Tileset.NOTHING;
+               }
            }
         }
+
+
         drawWall(tiles);
         tiles[gamestate.PLAYERX][gamestate.PLAYERY] = Tileset.AVATAR;
         tiles[gamestate.unlockdoorx][gamestate.unlockdoory] = Tileset.UNLOCKED_DOOR;
