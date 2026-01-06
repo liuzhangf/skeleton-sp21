@@ -93,7 +93,6 @@ public class GenerateWorld {
 
             else {
                 if (roomList.get(i - 1).generatey >= roomList.get(i).generatey && roomList.get(i - 1).generatey <= roomList.get(i).generatey + roomList.get(i).generationheight - 1){
-                    System.out.println("c");
                     for (int j = roomList.get(i - 1).generatex + roomList.get(i - 1).generatewidth - 1; j < roomList.get(i).generatex; j++){
                         tiles[j][roomList.get(i - 1).generatey] = Tileset.FLOOR;
                     }
@@ -194,6 +193,7 @@ public class GenerateWorld {
             }
         }
     }
+
 
     private void drawWall(TETile[][] tiles) {
         for (int i = 0; i < WIDTH; i += 1) {

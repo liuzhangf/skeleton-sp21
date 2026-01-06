@@ -197,23 +197,22 @@ public class Engine {
 
         ArrayList<GenerateWorld.Room> rooms = gamestate.roomList;
         Collections.sort(rooms);
-        GeneratePath(tiles, rooms);
-
+        for (int i = 0; i < WIDTH; i += 1){
+           for (int j = 0; j < HEIGHT; j += 1){
+               if (gamestate.vis[i][j] == 1) {
+                   this.tiles[i][j] = Tileset.FLOOR;
+               }
+           }
+        }
         drawWall(tiles);
         tiles[gamestate.PLAYERX][gamestate.PLAYERY] = Tileset.AVATAR;
         tiles[gamestate.unlockdoorx][gamestate.unlockdoory] = Tileset.UNLOCKED_DOOR;
         this.posx = gamestate.PLAYERX;
         this.posy = gamestate.PLAYERY;
         this.RANDOM = gamestate.rand;
+        System.out.println( this.RANDOM);
     }
 
-    /*
-    private static final Path SAVE_FILE_PATH = Paths.get(
-            System.getProperty("user.home"),
-            "byog_game_save.txt"
-    );
-
-    */
     private void saveGame (TETile[][] world) {
         this.tiles = world;
         File saveFile = Paths.get("byow/Core/history.txt").toFile();
@@ -221,13 +220,31 @@ public class Engine {
                 FileOutputStream fos = new FileOutputStream(saveFile);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
         ){
+            int vis[][] = new int[65][75];
+            for(int i = 0; i < WIDTH; i += 1){
+                for(int j = 0; j < HEIGHT; j += 1){
+                    if(world[i][j] == Tileset.NOTHING){
+                        vis[i][j] = 0;
+                    }
+                    else if(world[i][j] == Tileset.FLOOR){
+                        vis[i][j] = 1;
+                    }
+                    else if(world[i][j] == Tileset.WALL){
+                        vis[i][j] = 2;
+                    }
+                    else if(world[i][j] == Tileset.AVATAR){
+                        vis[i][j] = 3;
+                    }
+                }
+            }
             GameState state = new GameState(
                     this.UNLOCKDOORX,
                     this.UNLOCKDOORY,
                     this.posx,
                     this.posy,
                     this.roomList,
-                    this.RANDOM
+                    this.RANDOM,
+                    vis
             );
             oos.writeObject(state);
         } catch (Exception e) {
@@ -239,7 +256,7 @@ public class Engine {
 
         File saveFile = Paths.get("byow/Core/history.txt").toFile();
         if(!saveFile.exists()) {
-            System.out.println("Save file not found");
+         //   System.out.println("Save file not found");
             return null;
         }
 
@@ -253,75 +270,6 @@ public class Engine {
             }catch (Exception e) {
                 e.printStackTrace();
                 return null;
-            }
-        }
-    }
-
-    private void GeneratePath(TETile[][] tiles, ArrayList<GenerateWorld.Room> roomList) {
-        for (int i = 1; i < roomList.size(); i++) {
-            if (roomList.get(i - 1).generatex + roomList.get(i - 1).generatewidth - 1 >= roomList.get(i).generatex) {
-
-                if (roomList.get(i - 1).generatey + roomList.get(i - 1).generationheight - 1 < roomList.get(i).generatey){
-
-                    for (int j = roomList.get(i - 1).generatey + roomList.get(i - 1).generationheight - 1; j < roomList.get(i).generatey; j++){
-                        tiles[roomList.get(i).generatex][j] = Tileset.FLOOR;
-                    }
-                }
-                else if (roomList.get(i).generatey + roomList.get(i).generationheight - 1 < roomList.get(i - 1).generatey){
-
-                    for (int j = roomList.get(i).generatey + roomList.get(i).generationheight - 1; j < roomList.get(i - 1).generatey; j++){
-                        tiles[roomList.get(i).generatex][j] = Tileset.FLOOR;
-                    }
-                }
-            }
-
-            else {
-                if (roomList.get(i - 1).generatey >= roomList.get(i).generatey && roomList.get(i - 1).generatey <= roomList.get(i).generatey + roomList.get(i).generationheight - 1){
-                    for (int j = roomList.get(i - 1).generatex + roomList.get(i - 1).generatewidth - 1; j < roomList.get(i).generatex; j++){
-                        tiles[j][roomList.get(i - 1).generatey] = Tileset.FLOOR;
-                    }
-                }
-
-                else if (roomList.get(i).generatey >= roomList.get(i - 1).generatey && roomList.get(i).generatey <= roomList.get(i - 1).generatey + roomList.get(i - 1).generationheight - 1 ){
-                    for (int j = roomList.get(i - 1).generatex + roomList.get(i - 1).generatewidth - 1; j < roomList.get(i).generatey; j++){
-                        tiles[j][roomList.get(i - 1).generatey] = Tileset.FLOOR;
-                    }
-                }
-
-                else {
-                    if (roomList.get(i - 1).generatey + roomList.get(i - 1).generationheight - 1 < roomList.get(i).generatey){
-
-                        int max = Math.max(roomList.get(i - 1).generatex + roomList.get(i - 1).generatewidth, roomList.get(i).generatex - 1);
-                        int min = Math.min(roomList.get(i - 1).generatex + roomList.get(i - 1).generatewidth, roomList.get(i).generatex - 1);
-                        int column = RANDOM.nextInt(max - min + 1 ) + min;
-
-                        for (int j = min; j <= column; j++){
-                            tiles[j][roomList.get(i - 1).generatey + roomList.get(i - 1).generationheight - 1] = Tileset.FLOOR;
-                        }
-                        for (int j = max; j >= column; j--){
-                            tiles[j][roomList.get(i).generatey] = Tileset.FLOOR;
-                        }
-                        for (int j = roomList.get(i - 1).generatey + roomList.get(i - 1).generationheight; j <= roomList.get(i).generatey; j++){
-                            tiles[column][j] = Tileset.FLOOR;
-                        }
-                    }
-
-                    else {
-                        int max = Math.max(roomList.get(i - 1).generatex + roomList.get(i - 1).generatewidth, roomList.get(i).generatex - 1);
-                        int min = Math.min(roomList.get(i - 1).generatex + roomList.get(i - 1).generatewidth, roomList.get(i).generatex - 1);
-                        int column = RANDOM.nextInt(max - min + 1 ) + min;
-
-                        for (int j = min; j <= column; j++){
-                            tiles[j][roomList.get(i - 1).generatey] = Tileset.FLOOR;
-                        }
-                        for (int j = max; j >= column; j--){
-                            tiles[j][roomList.get(i).generatey + roomList.get(i).generationheight] = Tileset.FLOOR;
-                        }
-                        for (int j = roomList.get(i).generatey + roomList.get(i).generationheight; j <= roomList.get(i - 1).generatey; j++){
-                            tiles[column][j] = Tileset.FLOOR;
-                        }
-                    }
-                }
             }
         }
     }
@@ -627,13 +575,11 @@ public class Engine {
         }
     }
 
-
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, TOTAL_WINDOW_HEIGHT);
         Engine engine = new Engine();
-        TETile[][] tiles = engine.interactWithInputString("n999Sdddd:q");
+        TETile[][] tiles = engine.interactWithInputString("n7193300625454684331saaawasdaawdwsd");
         ter.renderFrame(tiles);
     }
-
 }
