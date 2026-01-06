@@ -25,8 +25,9 @@ public class Engine {
     public int UNLOCKDOORY;
     private ArrayList<GenerateWorld.Room> roomList;
 
+
     public void interactWithKeyboard() {
-        playing();
+    //    playing();
     }
 
     private TETile[][] playingString(String s, long seed) {
@@ -87,6 +88,7 @@ public class Engine {
         return tiles;
     }
 
+    /*
     public void playing(){
 
         GenerateWorld worldGenerator = new GenerateWorld(0);
@@ -94,7 +96,7 @@ public class Engine {
         this.UNLOCKDOORY = worldGenerator.UNLOCKDOORY;
 
         TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, TOTAL_WINDOW_HEIGHT);
+        //ter.initialize(WIDTH, TOTAL_WINDOW_HEIGHT);
         RANDOM = new Random(0);
         drawMainMenu();
         boolean keyPressed = false;
@@ -150,7 +152,7 @@ public class Engine {
             }
         }
     }
-
+    */
     private void drawWall(TETile[][] tiles) {
         for (int i = 0; i < WIDTH; i += 1) {
             for (int j = 0; j < HEIGHT; j += 1) {
@@ -617,4 +619,5 @@ public class Engine {
             return 0;
         }
     }
+
 }
