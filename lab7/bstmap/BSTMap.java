@@ -213,7 +213,7 @@ public class BSTMap<K extends Comparable<K>, V > implements Map61B<K, V>{
         }
     }
 
-    public Node getLeftest(Node root) {
+    private Node getLeftest(Node root) {
         if (root.right != null) {
             root = root.right;
         }
