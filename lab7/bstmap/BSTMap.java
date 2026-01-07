@@ -195,6 +195,24 @@ public class BSTMap<K extends Comparable<K>, V > implements Map61B<K, V>{
     }
 
 
+    public void printInOrder(){
+        InOrderHepler(root);
+    }
+
+    private void InOrderHepler(Node root) {
+        if (root == null) {
+            return;
+        }
+        if (root.left != null) {
+            InOrderHepler(root.left);
+        }
+        System.out.print(root.key + " ");
+
+        if (root.right != null) {
+            InOrderHepler(root.right);
+        }
+    }
+
     public Node getLeftest(Node root) {
         if (root.right != null) {
             root = root.right;
