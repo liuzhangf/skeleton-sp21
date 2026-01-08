@@ -10,7 +10,6 @@ public class BSTMap<K extends Comparable<K>, V > implements Map61B<K, V>{
     private Node root;
 
     private class Node{
-
         K key;
         V data;
         Node  left;

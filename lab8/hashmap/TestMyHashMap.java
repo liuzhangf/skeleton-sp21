@@ -106,8 +106,11 @@ public class TestMyHashMap {
             b.put("hi" + i, 1);
             values.add("hi" + i);
         }
-        assertEquals(455, b.size()); //keys are there
+        assertEquals(455, b.size());//keys are there
         Set<String> keySet = b.keySet();
+
+        System.out.println(keySet.size());
+
         assertTrue(values.containsAll(keySet));
         assertTrue(keySet.containsAll(values));
     }
