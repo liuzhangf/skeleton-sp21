@@ -190,10 +190,31 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     }
 
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        V oldValue = null;
+        if (containsKey(key)) {
+            for (Node node : buckets[hash(key, buckets.length)]) {
+                if (node.key.equals(key)) {
+                    oldValue = node.value;
+                    buckets[hash(key, buckets.length)].remove(node);
+                    return oldValue;
+                }
+            }
+        }
+        return null;
     }
 
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (containsKey(key)) {
+            for (Node node : buckets[hash(key, buckets.length)]) {
+                if (node.key.equals(key)) {
+                    if (node.value == value) {
+                        V oldValue = node.value;
+                        buckets[hash(key, buckets.length)].remove(node);
+                        return oldValue;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
