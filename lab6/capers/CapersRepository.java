@@ -67,7 +67,7 @@ public class CapersRepository {
      * Also prints out the dog's information using toString().
      */
 
-    public static Dog makeDog(String name, String breed, int age) throws IOException {
+    public static Dog makeDog(String breed, String name, int age) throws IOException {
         Dog newdog = new Dog(name, breed, age);
         File dogFile = new File(DOG_FOLDER, name );
         if (!dogFile.exists()) {
@@ -75,7 +75,7 @@ public class CapersRepository {
         }
         ObjectOutputStream out =
                 new ObjectOutputStream(new FileOutputStream(dogFile));
-        
+
         System.out.println(newdog.toString());
         out.writeObject(newdog);
         out.close();
