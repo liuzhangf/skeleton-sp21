@@ -1,7 +1,9 @@
 package capers;
 
-import java.io.File;
+import java.awt.*;
+import java.io.*;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 
 import static capers.Utils.*;
 
@@ -37,11 +39,11 @@ public class Main {
      *
      * @param args arguments from the command line
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+
         if (args.length == 0) {
             Utils.exitWithError("Must have at least one argument");
         }
-        System.out.println("args: " + Arrays.toString(args));
 
         CapersRepository.setupPersistence();
         String text;
@@ -49,8 +51,6 @@ public class Main {
         case "story":
             /* This call has been handled for you. The rest will be similar. */
             validateNumArgs("story", args, 2);
-            text = args[1];
-            CapersRepository.writeStory(text);
             break;
         case "dog":
             validateNumArgs("dog", args, 4);
@@ -74,10 +74,25 @@ public class Main {
      * @param args Argument array from command line
      * @param n Number of expected arguments
      */
-    public static void validateNumArgs(String cmd, String[] args, int n) {
+    public static void validateNumArgs(String cmd, String[] args, int n) throws IOException, ClassNotFoundException {
         if (args.length != n) {
             throw new RuntimeException(
                 String.format("Invalid number of arguments for: %s.", cmd));
         }
+        else {
+            if (cmd.equals("story")) {
+                String text = args[1];
+                new CapersRepository().writeStory(args[1]);
+            }
+
+            else if (args[0].equals("dog")) {
+                int age = Integer.parseInt(args[3]);
+                Dog theNewDog = CapersRepository.makeDog(args[2], args[1], age);
+            }
+            else if (args[0].equals("birthday")) {
+                CapersRepository.celebrateBirthday(args[1]);
+            }
+        }
     }
+
 }
