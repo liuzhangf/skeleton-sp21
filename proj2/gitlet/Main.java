@@ -1,9 +1,6 @@
 package gitlet;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.HashMap;
 
 
@@ -16,30 +13,35 @@ public class Main {
      *  <COMMAND> <OPERAND1> <OPERAND2> ... 
      */
 
-    static final File CWD= new File(System.getProperty("user.dir"));
-    static final File Gitlet = new File(CWD, ".gitlet");
-    static final File Objects = new File(CWD, ".objects");
-    static final File Branches = new File(CWD, ".branches");
-    static final File Head = new File(CWD, "HEAD");
-    static final File Stage = new File(CWD, "stage");
+    public static final File CWD= new File(System.getProperty("user.dir"));
+    public static final File Gitlet = new File(CWD, ".gitlet");
+    public static final File Objects = new File(Gitlet, "objects");
+    public static final File Branches = new File(Gitlet, "branches");
+    public static final File Head = new File(Gitlet, "HEAD");
+    public static final File Stage = new File(Gitlet, "stage");
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException{
+    public static void main(String[] args) {
         // TODO: what if args is empty?
-        String firstArg = args[0];
+        try {
+            String firstArg = args[0];
 
-        if (!Stage.exists()){
-            Stage.mkdir();
+            if (!Stage.exists()) {
+                Stage.createNewFile();
+            }
+
+            switch (firstArg) {
+                case "init":
+                    init();
+                    break;
+                case "add":
+                    // TODO: handle the `add [filename]` command
+                    add(args[1]);
+                    break;
+                // TODO: FILL THE REST IN
+            }
         }
-
-        switch(firstArg) {
-            case "init":
-                init();
-                break;
-            case "add":
-                // TODO: handle the `add [filename]` command
-                add(args[1]);
-                break;
-            // TODO: FILL THE REST IN
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -58,12 +60,14 @@ public class Main {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
             System.exit(0);
         }
+
         else {
 
             Gitlet.mkdir();
             Objects.mkdir();
             Branches.mkdir();
             Head.createNewFile();
+            Stage.createNewFile();
 
             Commit cm = new Commit(0, "initial commit", null, null, null, null);
             File Object_commit = new File(Objects, cm.ID);
@@ -75,11 +79,19 @@ public class Main {
 
             File branches = new File(Branches, "master");
             branches.createNewFile();
-            Utils.writeContents( Branches , cm.ID);
+            Utils.writeContents( branches , cm.ID);
+
         }
+
     }
 
-    public static void add (String filename) throws IOException {
+    public static void add (String arg) throws IOException, ClassNotFoundException {
+
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
+        Stage stage = new Stage();
+        stage.stages = (HashMap<String, String>) ois.readObject();
+        ois.close();
+        stage.addStage(arg);
 
     }
 
