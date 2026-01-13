@@ -21,16 +21,23 @@ public class Main {
     static final File Objects = new File(CWD, ".objects");
     static final File Branches = new File(CWD, ".branches");
     static final File Head = new File(CWD, "HEAD");
+    static final File Stage = new File(CWD, "stage");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException{
         // TODO: what if args is empty?
         String firstArg = args[0];
+
+        if (!Stage.exists()){
+            Stage.mkdir();
+        }
+
         switch(firstArg) {
             case "init":
                 init();
                 break;
             case "add":
                 // TODO: handle the `add [filename]` command
+                add(args[1]);
                 break;
             // TODO: FILL THE REST IN
         }
@@ -72,6 +79,8 @@ public class Main {
         }
     }
 
+    public static void add (String filename) throws IOException {
 
+    }
 
 }
