@@ -66,6 +66,7 @@ public class Main {
             Stage.createNewFile();
 
             Commit cm = new Commit(0, "initial commit", null, null, null, null);
+
             File Object_commit = new File(Objects, cm.ID);
             Object_commit.createNewFile();
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Object_commit));
