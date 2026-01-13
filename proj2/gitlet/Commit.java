@@ -42,7 +42,15 @@ public class Commit implements Serializable {
         if (BolbID != null && text != null) {
             matchBolbWithCommit(BolbID, text);
         }
-        this.ID = Utils.sha1(this.message, String.valueOf(timestamp), blobid.toString(), parentID1, parentID2);
+        String s1 = "";
+        String s2 = "";
+        for (int i = 0; i < text.length; i++) {
+            s2 += text[i];
+        }
+        for (int i = 0; i < BolbID.length; i++) {
+            s1 += BolbID[i];
+        }
+        this.ID = Utils.sha1(this.message, s1, s2, parentID1, parentID2);
     }
 
     public void matchBolbWithCommit (String[] BolbID, String[] text) {
