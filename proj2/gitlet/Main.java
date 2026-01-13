@@ -25,10 +25,6 @@ public class Main {
         try {
             String firstArg = args[0];
 
-            if (!Stage.exists()) {
-                Stage.createNewFile();
-            }
-
             switch (firstArg) {
                 case "init":
                     init();
