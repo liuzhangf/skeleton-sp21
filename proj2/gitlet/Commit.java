@@ -38,7 +38,10 @@ public class Commit implements Serializable {
         this.message = message;
         this.parentID1 = parentID1;
         this.parentID2 = parentID2;
-        matchBolbWithCommit(BolbID, text);
+        blobid = new HashMap<>();
+        if (BolbID != null && text != null) {
+            matchBolbWithCommit(BolbID, text);
+        }
         this.ID = Utils.sha1(this.message, timestamp, blobid, parentID1, parentID2);
     }
 
