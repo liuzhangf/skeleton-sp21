@@ -104,12 +104,12 @@ public class Main {
 
     public static void commit (String[] args) throws IOException, ClassNotFoundException {
         if (args.length != 2) {
-            System.out.println("Please enter a commit message.\n");
+            System.out.println("Please enter a commit message.");
         }
         else {
 
             if (Stage.length() == 0) {
-                System.out.println("No changes added to the commit.\n");
+                System.out.println("No changes added to the commit.");
             }
             else {
 
@@ -118,7 +118,7 @@ public class Main {
                 inp.close();
 
                 if (stage.stages == null) {
-                    System.out.println("No changes added to the commit.\n");
+                    System.out.println("No changes added to the commit.");
                 }
 
                 else {
@@ -142,7 +142,7 @@ public class Main {
 
     public static void delete(String[] args) throws IOException, ClassNotFoundException {
         if (args.length != 2) {
-            System.out.println("No reason to remove the file.\n");
+            System.out.println("No reason to remove the file.");
         }
         else {
             new Remove(args[1]);

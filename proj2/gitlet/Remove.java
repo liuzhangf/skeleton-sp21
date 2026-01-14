@@ -47,10 +47,10 @@ public class Remove {
                     oos2.close();
                 }
                 else {
-                    System.out.println("No reason to remove the file.\n");
+                    System.out.println("No reason to remove the file.");
                 }
             }
-            System.out.println("No reason to remove the file.\n");
+            System.out.println("No reason to remove the file.");
         }
     }
 

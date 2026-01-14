@@ -1,6 +1,8 @@
 package gitlet;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Log implements Serializable {
 
@@ -11,11 +13,13 @@ public class Log implements Serializable {
         Commit lastCommit = (Commit) fis.readObject();
         String lastCommitHashCode = lastCommit.ID;
         while(true) {
-            System.out.println("===\n");
+            System.out.println("===");
             System.out.println("commit " + lastCommitHashCode);
-            System.out.println("Date " + lastCommit.timestamp);
+
+            String date = formatTimestamp(lastCommit.timestamp);
+            System.out.println("Date " + date);
             System.out.println(lastCommit.message);
-            System.out.println("\n");
+            System.out.println();
 
             lastCommitHashCode = lastCommit.lastCommitID1;
 
@@ -27,6 +31,12 @@ public class Log implements Serializable {
                 lastCommit = (Commit) fis.readObject();
             }
         }
+    }
+
+    private static String formatTimestamp(long timestamp) {
+        Date date = new Date(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy Z");
+        return sdf.format(date);
     }
 
 }
