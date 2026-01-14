@@ -12,11 +12,15 @@ public class Stage implements Serializable {
 
     HashMap <String, Blobs > stages; // <FILEPATH, HASHCODE>
 
+    LinkedList <String> deleteFiles;
+
     public Stage() throws IOException, ClassNotFoundException {
 
         if(Stage.length() > 0) {
             ObjectInputStream input = new ObjectInputStream(new FileInputStream(Stage));
             this.stages = (HashMap<String, Blobs>) input.readObject();
+            this.deleteFiles = (LinkedList<String>) input.readObject();
+            input.close();
         }
         else {
             stages = new HashMap<>();

@@ -3,6 +3,8 @@ package gitlet;
 import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Random;
+
 import gitlet.Commit;
 
 public class Main {
@@ -33,6 +35,8 @@ public class Main {
                 // TODO: FILL THE REST IN
                 case "commit":
                     commit(args);
+                case  "rm":
+                    delete(args);
             }
         }
         catch (Exception e) {
@@ -134,4 +138,12 @@ public class Main {
         }
     }
 
+    public static void delete(String[] args) throws IOException, ClassNotFoundException {
+        if (args.length != 2) {
+            System.out.println("No reason to remove the file.\n");
+        }
+        else {
+            new Remove(args[1]);
+        }
+    }
 }

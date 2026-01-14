@@ -14,10 +14,8 @@ import static gitlet.Main.Objects;
 public class Commit implements Serializable {
 
     public final String ID;
-    public String parentID1;
-    public String parentID2;
     private final long timestamp;
-    private  Map<String, HashMap<String, Blobs>> HashMapBlobs;
+    public Map<String, HashMap<String, Blobs>> HashMapBlobs;
     private LinkedList<Blobs> blobsList;
     private String message;
     String lastCommitID1 = "";
@@ -42,18 +40,14 @@ public class Commit implements Serializable {
         String s2 = "";
 
         for (int i = 0; i < text.length; i++) {
-        //    System.out.println(text[i]);
             s2 += text[i];
         }
 
         for (int i = 0; i < BolbID.length; i++) {
-        //    System.out.println(BolbID[i]);
             s1 += BolbID[i];
         }
 
         this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2);
-
-    //    System.out.println("ID is " + ID);
 
         if (stage != null && stage.stages.size() > 0) {
             for (Blobs blob : stage.stages.values()) {
@@ -104,7 +98,6 @@ public class Commit implements Serializable {
 
     private void readOldBlobs() throws IOException, ClassNotFoundException {
         if (Head.length() > 0) {
-        //    System.out.println(Head.length());
             lastCommitID1 = Utils.readContentsAsString(Head);
             ObjectInputStream fis = new ObjectInputStream(new FileInputStream(Stage));
             File parentCommitFile = new File(gitlet.Main.Objects,lastCommitID1);
@@ -116,9 +109,7 @@ public class Commit implements Serializable {
 
     private void BuildNewCommitObject() throws IOException, ClassNotFoundException {
         File NewCommitFile = new File(gitlet.Main.Objects, this.ID);
-    //    System.out.println("New FIlE NAME IS :" + NewCommitFile.getName());
         if (!NewCommitFile.exists()) {
-        //    System.out.println("Creating new commit object");
             NewCommitFile.createNewFile();
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(NewCommitFile));
             oos.writeObject(this);
