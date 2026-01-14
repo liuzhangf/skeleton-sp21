@@ -42,10 +42,18 @@ public class Main {
                 case "log":
                     new Log();
                     break;
+                case "find":
+                    if (args.length < 2) {
+                        System.out.println("Found no commit with that message.");
+                    }
+                    else {
+                        new Find("args[1]");
+                    }
+                    break;
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+        //    e.printStackTrace();
         }
     }
 
@@ -79,7 +87,7 @@ public class Main {
             Object_commit.createNewFile();
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Object_commit));
             out.writeObject(cm);
-
+            out.close();
             File branches = new File(Branches, "master");
             branches.createNewFile();
             Utils.writeContents( branches , cm.ID);

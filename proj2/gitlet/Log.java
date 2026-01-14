@@ -24,8 +24,8 @@ public class Log implements Serializable {
             lastCommitHashCode = lastCommit.lastCommitID1;
 
             file = new File(Main.Objects, lastCommitHashCode);
-            if (file.length() == 0) break;
 
+            if (file.length() == 0) break;
             else {
                 fis = new ObjectInputStream(new FileInputStream(file));
                 lastCommit = (Commit) fis.readObject();
@@ -38,7 +38,5 @@ public class Log implements Serializable {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy Z");
         return sdf.format(date);
     }
-
-
 
 }
