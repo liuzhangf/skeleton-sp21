@@ -35,10 +35,13 @@ public class Main {
                 // TODO: FILL THE REST IN
                 case "commit":
                     commit(args);
+                    break;
                 case  "rm":
                     delete(args);
+                    break;
                 case "log":
                     new Log();
+                    break;
             }
         }
         catch (Exception e) {
@@ -132,7 +135,6 @@ public class Main {
                     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
                     Stage stage2 = (Stage) ois.readObject();
                     ois.close();
-               //     System.out.println("commit");
                     new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
 
                 }
@@ -142,9 +144,9 @@ public class Main {
 
     public static void delete(String[] args) throws IOException, ClassNotFoundException {
         if (args.length != 2) {
-            System.out.println("Please enter a commit message.");
+        //    System.out.println("Please enter a commit message.");
             System.out.println("No reason to remove the file.");
-            System.out.println("hahaa");
+        //    System.out.println("hahaa");
         }
         else {
             new Remove(args[1]);
