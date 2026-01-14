@@ -19,8 +19,8 @@ public class Commit implements Serializable {
     private  Map<String, HashMap<String, Blobs>> HashMapBlobs;
     private LinkedList<Blobs> blobsList;
     private String message;
-    String lastCommitID1;
-    String lastCommitID2;
+    String lastCommitID1 = "";
+    String lastCommitID2 = "";
     /*
         传进来的参数的含义如下 ：
         timestamp :时间戳
