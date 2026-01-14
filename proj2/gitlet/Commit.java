@@ -46,10 +46,11 @@ public class Commit implements Serializable {
         }
 
         this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2);
-
-        for (int i = 0; i < stage.stages.size(); i++) {
-            Blobs blob = stage.stages.get(i);
-            blobsList.add(blob);
+        if (stage != null) {
+            for (int i = 0; i < stage.stages.size(); i++) {
+                Blobs blob = stage.stages.get(i);
+                blobsList.add(blob);
+            }
         }
 
         /*
