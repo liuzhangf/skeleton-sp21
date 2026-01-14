@@ -6,6 +6,7 @@ import java.io.Serializable;
 import static gitlet.Main.*;
 import static gitlet.Main.Head;
 import static gitlet.Stage.clearFile;
+import static gitlet.Main.Objects;
 
 // TODO: any imports you need here
 
@@ -39,18 +40,23 @@ public class Commit implements Serializable {
         this.blobsList = new LinkedList<>();
         String s1 = "";
         String s2 = "";
+
         for (int i = 0; i < text.length; i++) {
+        //    System.out.println(text[i]);
             s2 += text[i];
         }
+
         for (int i = 0; i < BolbID.length; i++) {
+        //    System.out.println(BolbID[i]);
             s1 += BolbID[i];
         }
 
         this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2);
 
-        if (stage.stages.size() > 0) {
-            for (int i = 0; i < stage.stages.size(); i++) {
-                Blobs blob = stage.stages.get(i);
+    //    System.out.println("ID is " + ID);
+
+        if (stage != null && stage.stages.size() > 0) {
+            for (Blobs blob : stage.stages.values()) {
                 blobsList.add(blob);
             }
         }
@@ -60,17 +66,24 @@ public class Commit implements Serializable {
             读出来上一次commit文件里的东西
             然后再添加本次Commit的add stage的文件
          */
+
         readOldBlobs();
 
         if (BolbID != null && text != null) {
             matchBolbWithCommit(BolbID, text);
         }
+
         /*
             生成新的Commit文件存入Object文件夹
          */
 
-        BuildNewCommitObject();
+        /*
+            将全部的Blobs存到Object文件夹中
+         */
 
+        storeBlobsToObjects();
+
+        BuildNewCommitObject();
         /*
          清空当前的stage, 这个地方直接清空文件就行
          */
@@ -79,7 +92,6 @@ public class Commit implements Serializable {
 
     /*
         这段代码主要是用于存下来本次commit的全部Blobs
-
      */
     private void matchBolbWithCommit (String[] BolbID, String[] text) throws IOException {
         for (int i = 0; i < BolbID.length; i++) {
@@ -92,7 +104,7 @@ public class Commit implements Serializable {
 
     private void readOldBlobs() throws IOException, ClassNotFoundException {
         if (Head.length() > 0) {
-            System.out.println(Head.length());
+        //    System.out.println(Head.length());
             lastCommitID1 = Utils.readContentsAsString(Head);
             ObjectInputStream fis = new ObjectInputStream(new FileInputStream(Stage));
             File parentCommitFile = new File(gitlet.Main.Objects,lastCommitID1);
@@ -104,12 +116,25 @@ public class Commit implements Serializable {
 
     private void BuildNewCommitObject() throws IOException, ClassNotFoundException {
         File NewCommitFile = new File(gitlet.Main.Objects, this.ID);
+    //    System.out.println("New FIlE NAME IS :" + NewCommitFile.getName());
         if (!NewCommitFile.exists()) {
+        //    System.out.println("Creating new commit object");
             NewCommitFile.createNewFile();
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(NewCommitFile));
             oos.writeObject(this);
             oos.close();
+            Utils.writeContents( Head , this.ID);
         }
     }
 
+    private void storeBlobsToObjects() throws IOException {
+        if (blobsList.size() > 0) {
+            for (Blobs blob : blobsList) {
+                File storeFile = new File(gitlet.Main.Objects, blob.ID);
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(storeFile));
+                oos.writeObject(blob);
+                oos.close();
+            }
+        }
+    }
 }

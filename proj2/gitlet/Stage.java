@@ -35,7 +35,6 @@ public class Stage implements Serializable {
         if (existing.exists()) {
 
             Blobs newBlob = new Blobs(filename);
-
             File commitFile = new File(Objects, newBlob.ID);
 
             /*
@@ -55,7 +54,6 @@ public class Stage implements Serializable {
 
             else {
                 stages.put(filename, newBlob);
-
             }
 
             /*

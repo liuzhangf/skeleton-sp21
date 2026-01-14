@@ -11,14 +11,15 @@ public class Blobs implements Serializable {
 
     public Blobs(String Filename) throws IOException {
         File file = new File(Filename);
-        FileInputStream  ois = new FileInputStream (file);
         if (file.exists()) {
+        //    System.out.println("File exists And will be overwritten");
+            FileInputStream  ois = new FileInputStream (file);
             byte[] content = new byte[(int) Filename.length()];
             ois.read(content);
             this.content = content;
             this.ID = Utils.sha1(content);
+            ois.close();
         }
-        ois.close();
         this.FileName = Filename;
     }
 
