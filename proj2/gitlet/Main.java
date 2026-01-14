@@ -50,7 +50,8 @@ public class Main {
                         new Find("args[1]");
                     }
                     break;
-                case "checkout ":
+                case "checkout":
+//                    System.out.println("Checking out " + args[1]);
                     checkout(args);
                     break;
             }
@@ -70,11 +71,13 @@ public class Main {
      */
 
     public static void checkout(String[] args) throws IOException, ClassNotFoundException {
-        if (args.length == 2) {
-            new Checkout(args[1], "");
+        if (args.length == 3) {
+        //    System.out.println("Fuck you");
+            new Checkout(args[2], "");
         }
         else {
-            new Checkout(args[1], args[2]);
+        //    System.out.println("hello");
+            new Checkout(args[1], args[3]);
         }
     }
 

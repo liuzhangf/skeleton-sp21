@@ -3,13 +3,17 @@ package gitlet;
 import java.io.*;
 import java.util.HashMap;
 
+import static gitlet.Stage.clearFile;
+
 public class Checkout {
 
     public Checkout(String Filename, String CommitID) throws IOException, ClassNotFoundException {
         if (CommitID.equals("")) {
+        //    System.out.println("Commit ID is empty");
             checkoutOverride(Filename);
         }
         else {
+        //    System.out.println("cnm");
             checkoutOverride(Filename, CommitID);
         }
     }
@@ -30,8 +34,10 @@ public class Checkout {
             for (String file : lastCommit.HashMapBlobs.keySet()) {
                 if (fileName.equals(file)) {
                     HashMap<String, Blobs> HashBlobs = lastCommit.HashMapBlobs.get(file);
+                    File writeFile = new File(Main.CWD,file);
+                    clearFile(writeFile);
                     for (Blobs blobs : HashBlobs.values()) {
-                        File writeFile = new File(Main.CWD,file);
+                    //    File writeFile = new File(Main.CWD,file);
                         Utils.writeContents(writeFile,blobs.getContent());
                     }
                 }
