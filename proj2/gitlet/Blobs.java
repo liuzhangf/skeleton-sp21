@@ -7,6 +7,7 @@ public class Blobs implements Serializable {
 
     public String ID;
     private byte[] content;
+    String FileName;
 
     public Blobs(String Filename) throws IOException {
         File file = new File(Filename);
@@ -18,6 +19,7 @@ public class Blobs implements Serializable {
             this.ID = Utils.sha1(content);
         }
         ois.close();
+        this.FileName = Filename;
     }
 
     public String getID() {
@@ -28,4 +30,7 @@ public class Blobs implements Serializable {
         return content;
     }
 
+    public String getFileName() {
+        return FileName;
+    }
 }

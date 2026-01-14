@@ -2,21 +2,31 @@ package gitlet;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedList;
+
 import static gitlet.Main.Objects;
 import static gitlet.Main.Stage;
-
-
-import static gitlet.Main.Objects;
+import static gitlet.Main.Commit;
 
 public class Stage implements Serializable {
 
-    HashMap <String, String> stages; // <FILEPATH, HASHCODE>
+    HashMap <String, Blobs > stages; // <FILEPATH, HASHCODE>
 
-    public Stage() {
-        stages = new HashMap<>();
+    public Stage() throws IOException, ClassNotFoundException {
+
+        ObjectInputStream input = new ObjectInputStream(new FileInputStream(Stage));
+        this.stages = (HashMap<String, Blobs>) input.readObject();
+
     }
 
-    public void addStage(String filename) throws IOException {
+    /*
+        HashMap 的put(Key, Value) 执行时，底层会自动做这 3 件事
+        自动判断 Key 是否存在：在 HashMap 中查找你传入的文件名(Key)，看 HashMap 里有没有这个 Key；
+        如果 Key 存在 → 自动覆盖 Value：用你传入的「新 Blob 哈希」，直接替换掉 HashMap 里「旧 Blob 哈希」，旧的键值对被隐形删除 + 覆盖，一步完成；
+        如果 Key 不存在 → 自动新增键值对：把你的「文件名 + 新 Blob 哈希」直接新增到 HashMap 里，没有任何多余操作。
+     */
+
+    public void addStage(String filename) throws IOException, ClassNotFoundException {
         File existing = new File(filename);
 
         if (existing.exists()) {
@@ -25,33 +35,48 @@ public class Stage implements Serializable {
 
             File commitFile = new File(Objects, newBlob.ID);
 
-            if (commitFile.exists()) {                  // 如果说已经commit了和当前一模一样的
+            /*
+            If the current working version of the file is identical to the version in the current commit,
+            do not stage it to be added, and remove it from the staging area if it is already there
+            (as can happen when a file is changed, added, and then changed back to it’s original version).
+             */
+
+            if (commitFile.exists()) { //commitFile 直接是用内容比较的
                 if (stages.containsKey( filename )) {
-                    if (stages.get( filename).equals(newBlob.ID)) {
+
+                    if (stages.get( filename).equals(newBlob)) {
                         stages.remove(filename);
-                    }
-                    else {
-                        stages.put(filename, newBlob.ID);
                     }
                 }
             }
 
             else {
-                stages.put(filename, newBlob.ID);
+                stages.put(filename, newBlob);
+
             }
 
+            /*
+                写入暂存区
+             */
             clearFile(Stage);
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Stage));
             out.writeObject(stages);
             out.close();
 
+            /*
+                写入存上一次贡献的没问题的地方
+                这里的没问题主要是指删掉了会被覆盖的原来的Blobs
+             */
         }
+
         else {
             System.out.println("File does not exist.");
         }
+
     }
 
     public static void clearFile(File file) throws IOException {
         new FileOutputStream(file).close();
     }
+
 }

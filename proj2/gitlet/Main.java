@@ -2,16 +2,10 @@ package gitlet;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedList;
+import gitlet.Commit;
 
-
-/** Driver class for Gitlet, a subset of the Git version-control system.
- *  @author TODO
- */
 public class Main {
-
-    /** Usage: java gitlet.Main ARGS, where ARGS contains
-     *  <COMMAND> <OPERAND1> <OPERAND2> ... 
-     */
 
     public static final File CWD= new File(System.getProperty("user.dir"));
     public static final File Gitlet = new File(CWD, ".gitlet");
@@ -19,6 +13,9 @@ public class Main {
     public static final File Branches = new File(Gitlet, "branches");
     public static final File Head = new File(Gitlet, "HEAD");
     public static final File Stage = new File(Gitlet, "stage");
+    public static final File Commit = new File(Gitlet, "commit");
+
+    //LinkedList<Commit> commitsList;
 
     public static void main(String[] args) {
         // TODO: what if args is empty?
@@ -34,6 +31,8 @@ public class Main {
                     add(args[1]);
                     break;
                 // TODO: FILL THE REST IN
+                case "commit":
+                    commit(args);
             }
         }
         catch (Exception e) {
@@ -50,7 +49,7 @@ public class Main {
         └─ 📄 HEAD           # 全局唯一的「当前分支标记文件」（文件内容=字符串，比如：master）
      */
 
-    public static void init () throws IOException {
+    public static void init () throws IOException, ClassNotFoundException {
 
         if (Gitlet.exists()) {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
@@ -65,8 +64,7 @@ public class Main {
             Head.createNewFile();
             Stage.createNewFile();
 
-
-            Commit cm = new Commit(0, "initial commit", "", "", new String[0] , new String[0]);
+            Commit cm = new Commit(0, "initial commit", new String[0] , new String[0], null);
 
             File Object_commit = new File(Objects, cm.ID);
             Object_commit.createNewFile();
@@ -84,13 +82,37 @@ public class Main {
     }
 
     public static void add (String arg) throws IOException, ClassNotFoundException {
-
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
         Stage stage = new Stage();
-        stage.stages = (HashMap<String, String>) ois.readObject();
+        stage.stages = (HashMap<String, Blobs>) ois.readObject();
         ois.close();
         stage.addStage(arg);
+    }
 
+    public static void commit (String[] args) throws IOException, ClassNotFoundException {
+        if (args.length != 2) {
+            System.out.println("Please enter a commit message.\n");
+        }
+        else {
+            ObjectInputStream inp = new ObjectInputStream(new FileInputStream(Stage));
+            Stage stage = (Stage) inp.readObject();
+            inp.close();
+            if (stage.stages == null) {
+                System.out.println("No changes added to the commit.\n");
+            }
+            else {
+                String[] blobsArray = new String[0];
+                String[] fileArray = stage.stages.keySet().toArray(new String[0]);
+                Blobs[] blobsObjectArray = stage.stages.values().toArray(new Blobs[0]);
+                for (int i = 0; i < blobsObjectArray.length; i++) {
+                    blobsArray[i] = blobsObjectArray[i].getID();
+                }
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
+                Stage stage2 = (Stage) ois.readObject();
+                ois.close();
+                new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
+            }
+        }
     }
 
 }
