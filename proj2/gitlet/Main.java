@@ -37,6 +37,8 @@ public class Main {
                     commit(args);
                 case  "rm":
                     delete(args);
+                case "log":
+                    new Log();
             }
         }
         catch (Exception e) {
@@ -78,7 +80,7 @@ public class Main {
             File branches = new File(Branches, "master");
             branches.createNewFile();
             Utils.writeContents( branches , cm.ID);
-
+            cm.lastCommitID1 = "";
         }
 
     }

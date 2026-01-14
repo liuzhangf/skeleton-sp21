@@ -14,10 +14,10 @@ import static gitlet.Main.Objects;
 public class Commit implements Serializable {
 
     public final String ID;
-    private final long timestamp;
+    public final long timestamp;
     public Map<String, HashMap<String, Blobs>> HashMapBlobs;
     private LinkedList<Blobs> blobsList;
-    private String message;
+    public String message;
     String lastCommitID1 = "";
     String lastCommitID2 = "";
 
