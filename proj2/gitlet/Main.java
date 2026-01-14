@@ -50,6 +50,9 @@ public class Main {
                         new Find("args[1]");
                     }
                     break;
+                case "checkout ":
+                    checkout(args);
+                    break;
             }
         }
         catch (Exception e) {
@@ -65,6 +68,15 @@ public class Main {
         │  └─ master         # 只有1个文件：master分支文件（文件名=分支名，文件内容=该分支指向的Commit哈希）
         └─ 📄 HEAD           # 全局唯一的「当前分支标记文件」（文件内容=字符串，比如：master）
      */
+
+    public static void checkout(String[] args) throws IOException, ClassNotFoundException {
+        if (args.length == 2) {
+            new Checkout(args[1], "");
+        }
+        else {
+            new Checkout(args[1], args[2]);
+        }
+    }
 
     public static void init () throws IOException, ClassNotFoundException {
 
