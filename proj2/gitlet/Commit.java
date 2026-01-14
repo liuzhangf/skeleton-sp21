@@ -10,7 +10,6 @@ import static gitlet.Main.Objects;
 
 // TODO: any imports you need here
 
-
 public class Commit implements Serializable {
 
     public final String ID;

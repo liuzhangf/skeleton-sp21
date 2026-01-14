@@ -17,7 +17,7 @@ public class Log implements Serializable {
             System.out.println("commit " + lastCommitHashCode);
 
             String date = formatTimestamp(lastCommit.timestamp);
-            System.out.println("Date " + date);
+            System.out.println("Date: " + date);
             System.out.println(lastCommit.message);
             System.out.println();
 
@@ -38,5 +38,7 @@ public class Log implements Serializable {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy Z");
         return sdf.format(date);
     }
+
+
 
 }

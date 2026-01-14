@@ -70,7 +70,7 @@ public class Main {
             Head.createNewFile();
             Stage.createNewFile();
 
-            Commit cm = new Commit(0, "initial commit", new String[0] , new String[0], null);
+            Commit cm = new Commit(System.currentTimeMillis(), "initial commit", new String[0] , new String[0], null);
 
             File Object_commit = new File(Objects, cm.ID);
             Object_commit.createNewFile();
@@ -142,7 +142,9 @@ public class Main {
 
     public static void delete(String[] args) throws IOException, ClassNotFoundException {
         if (args.length != 2) {
+            System.out.println("Please enter a commit message.");
             System.out.println("No reason to remove the file.");
+            System.out.println("hahaa");
         }
         else {
             new Remove(args[1]);
