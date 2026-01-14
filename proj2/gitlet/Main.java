@@ -70,8 +70,6 @@ public class Main {
             Object_commit.createNewFile();
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Object_commit));
             out.writeObject(cm);
-            String head =  "master";            // 标记当前是什么工作的branch。
-            Utils.writeContents( Head , head);
 
             File branches = new File(Branches, "master");
             branches.createNewFile();
@@ -82,11 +80,20 @@ public class Main {
     }
 
     public static void add (String arg) throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
-        Stage stage = new Stage();
-        stage.stages = (HashMap<String, Blobs>) ois.readObject();
-        ois.close();
+        Stage stage;
+        if(!Stage.exists() || Stage.length() == 0){
+            stage = new Stage();
+        }
+        else {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage))) {
+                stage = (Stage) ois.readObject();
+            }
+        }
         stage.addStage(arg);
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Stage))) {
+            oos.writeObject(stage);
+        }
     }
 
     public static void commit (String[] args) throws IOException, ClassNotFoundException {
@@ -101,15 +108,18 @@ public class Main {
                 System.out.println("No changes added to the commit.\n");
             }
             else {
-                String[] blobsArray = new String[0];
+
                 String[] fileArray = stage.stages.keySet().toArray(new String[0]);
                 Blobs[] blobsObjectArray = stage.stages.values().toArray(new Blobs[0]);
+                //System.out.println("Length of blobs: " + blobsObjectArray.length);
+                String[] blobsArray = new String[blobsObjectArray.length];
                 for (int i = 0; i < blobsObjectArray.length; i++) {
                     blobsArray[i] = blobsObjectArray[i].getID();
                 }
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
                 Stage stage2 = (Stage) ois.readObject();
                 ois.close();
+
                 new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
             }
         }

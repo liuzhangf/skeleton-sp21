@@ -21,6 +21,7 @@ public class Commit implements Serializable {
     private String message;
     String lastCommitID1 = "";
     String lastCommitID2 = "";
+
     /*
         传进来的参数的含义如下 ：
         timestamp :时间戳
@@ -35,7 +36,7 @@ public class Commit implements Serializable {
         this.timestamp = timestamp;
         this.message = message;
         HashMapBlobs = new HashMap<>();
-
+        this.blobsList = new LinkedList<>();
         String s1 = "";
         String s2 = "";
         for (int i = 0; i < text.length; i++) {
@@ -46,7 +47,8 @@ public class Commit implements Serializable {
         }
 
         this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2);
-        if (stage != null) {
+
+        if (stage.stages.size() > 0) {
             for (int i = 0; i < stage.stages.size(); i++) {
                 Blobs blob = stage.stages.get(i);
                 blobsList.add(blob);
@@ -89,14 +91,15 @@ public class Commit implements Serializable {
     }
 
     private void readOldBlobs() throws IOException, ClassNotFoundException {
-        ObjectInputStream fis = new ObjectInputStream(new FileInputStream(Head));
-        lastCommitID1 = String.valueOf(fis.readObject());
-        File parentCommitFile = new File(gitlet.Main.Objects,lastCommitID1);
-        fis = new ObjectInputStream(new FileInputStream(parentCommitFile));
-
-        Commit lastCommit = (Commit) fis.readObject();
-
-        this.HashMapBlobs = lastCommit.HashMapBlobs;
+        if (Head.length() > 0) {
+            System.out.println(Head.length());
+            lastCommitID1 = Utils.readContentsAsString(Head);
+            ObjectInputStream fis = new ObjectInputStream(new FileInputStream(Stage));
+            File parentCommitFile = new File(gitlet.Main.Objects,lastCommitID1);
+            fis = new ObjectInputStream(new FileInputStream(parentCommitFile));
+            Commit lastCommit = (Commit) fis.readObject();
+            this.HashMapBlobs = lastCommit.HashMapBlobs;
+        }
     }
 
     private void BuildNewCommitObject() throws IOException, ClassNotFoundException {

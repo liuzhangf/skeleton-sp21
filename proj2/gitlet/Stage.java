@@ -14,11 +14,14 @@ public class Stage implements Serializable {
 
     public Stage() throws IOException, ClassNotFoundException {
 
-        ObjectInputStream input = new ObjectInputStream(new FileInputStream(Stage));
-        this.stages = (HashMap<String, Blobs>) input.readObject();
-
+        if(Stage.length() > 0) {
+            ObjectInputStream input = new ObjectInputStream(new FileInputStream(Stage));
+            this.stages = (HashMap<String, Blobs>) input.readObject();
+        }
+        else {
+            stages = new HashMap<>();
+        }
     }
-
     /*
         HashMap 的put(Key, Value) 执行时，底层会自动做这 3 件事
         自动判断 Key 是否存在：在 HashMap 中查找你传入的文件名(Key)，看 HashMap 里有没有这个 Key；
