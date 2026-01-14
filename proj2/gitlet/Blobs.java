@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.io.*;
+import java.nio.file.Files;
 
 
 public class Blobs implements Serializable {
@@ -12,13 +13,13 @@ public class Blobs implements Serializable {
     public Blobs(String Filename) throws IOException {
         File file = new File(Filename);
         if (file.exists()) {
-        //    System.out.println("File exists And will be overwritten");
+            /*
             FileInputStream  ois = new FileInputStream (file);
             byte[] content = new byte[(int) Filename.length()];
             ois.read(content);
-            this.content = content;
+             */
+            this.content = Files.readAllBytes(file.toPath());
             this.ID = Utils.sha1(content);
-            ois.close();
         }
         this.FileName = Filename;
     }

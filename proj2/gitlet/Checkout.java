@@ -38,6 +38,7 @@ public class Checkout {
                     clearFile(writeFile);
                     for (Blobs blobs : HashBlobs.values()) {
                     //    File writeFile = new File(Main.CWD,file);
+                    //    System.out.println(blobs.getContent().toString());
                         Utils.writeContents(writeFile,blobs.getContent());
                     }
                 }
