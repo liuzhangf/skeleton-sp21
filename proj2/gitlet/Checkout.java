@@ -46,10 +46,9 @@ public class Checkout {
     }
 
     private void checkoutOverride(String fileName, String commitHash) throws IOException, ClassNotFoundException {
-
-
-
+        boolean flag  = false;
         File lastCommitFile = new File(Main.Objects,commitHash);
+
         if (!lastCommitFile.exists()) {
             System.out.println("No commit with that id exists.");
         }
@@ -66,7 +65,12 @@ public class Checkout {
                     for (Blobs blobs : HashBlobs.values()) {
                         Utils.writeContents(writeFile,blobs.getContent());
                     }
+                    flag = true;
                 }
+            }
+
+            if (!flag) {
+                System.out.println("File does not exist in that commit.");
             }
         }
     }
