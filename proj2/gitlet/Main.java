@@ -17,8 +17,6 @@ public class Main {
     public static final File Stage = new File(Gitlet, "stage");
     public static final File Commit = new File(Gitlet, "commit");
 
-    //LinkedList<Commit> commitsList;
-
     public static void main(String[] args) {
         // TODO: what if args is empty?
         try {
@@ -72,12 +70,10 @@ public class Main {
 
     public static void checkout(String[] args) throws IOException, ClassNotFoundException {
         if (args.length == 3) {
-        //    System.out.println("Fuck you");
             new Checkout(args[2], "");
         }
         else {
-        //    System.out.println("hello");
-            new Checkout(args[1], args[3]);
+            new Checkout(args[3], args[1]);
         }
     }
 

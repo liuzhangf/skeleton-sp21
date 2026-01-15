@@ -9,11 +9,9 @@ public class Checkout {
 
     public Checkout(String Filename, String CommitID) throws IOException, ClassNotFoundException {
         if (CommitID.equals("")) {
-        //    System.out.println("Commit ID is empty");
             checkoutOverride(Filename);
         }
         else {
-        //    System.out.println("cnm");
             checkoutOverride(Filename, CommitID);
         }
     }
@@ -27,6 +25,7 @@ public class Checkout {
             /*
                 读取出来lastCommit
              */
+            boolean flag  = false;
             File lastCommitFile = new File(Main.Objects,lastCommitHashCode);
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
             Commit lastCommit = (Commit) ois.readObject();
@@ -39,9 +38,12 @@ public class Checkout {
                     for (Blobs blobs : HashBlobs.values()) {
                         Utils.writeContents(writeFile,blobs.getContent());
                     }
+                    flag = true;
                 }
             }
-
+            if (!flag) {
+                System.out.println("File does not exist in that commit.");
+            }
         }
     }
 
