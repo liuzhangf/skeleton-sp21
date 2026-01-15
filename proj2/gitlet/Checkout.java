@@ -37,8 +37,6 @@ public class Checkout {
                     File writeFile = new File(Main.CWD,file);
                     clearFile(writeFile);
                     for (Blobs blobs : HashBlobs.values()) {
-                    //    File writeFile = new File(Main.CWD,file);
-                    //    System.out.println(blobs.getContent().toString());
                         Utils.writeContents(writeFile,blobs.getContent());
                     }
                 }
@@ -63,9 +61,9 @@ public class Checkout {
             for (String file : lastCommit.HashMapBlobs.keySet()) {
                 if (fileName.equals(file)) {
                     HashMap<String, Blobs> HashBlobs = lastCommit.HashMapBlobs.get(file);
+                    File writeFile = new File(Main.CWD,file);
+                    clearFile(writeFile);
                     for (Blobs blobs : HashBlobs.values()) {
-
-                        File writeFile = new File(Main.CWD,file);
                         Utils.writeContents(writeFile,blobs.getContent());
                     }
                 }
