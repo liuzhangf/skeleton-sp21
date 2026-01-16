@@ -18,7 +18,6 @@ public class Main {
     public static final File Commit = new File(Gitlet, "commit");
 
     public static void main(String[] args) {
-        // TODO: what if args is empty?
         try {
             String firstArg = args[0];
 
@@ -27,10 +26,8 @@ public class Main {
                     init();
                     break;
                 case "add":
-                    // TODO: handle the `add [filename]` command
                     add(args[1]);
                     break;
-                // TODO: FILL THE REST IN
                 case "commit":
                     commit(args);
                     break;
@@ -38,7 +35,7 @@ public class Main {
                     delete(args);
                     break;
                 case "log":
-                    new Log();
+                    dealWithLog();
                     break;
                 case "find":
                     if (args.length < 2) {
@@ -49,13 +46,13 @@ public class Main {
                     }
                     break;
                 case "checkout":
-//                    System.out.println("Checking out " + args[1]);
                     checkout(args);
                     break;
+                case "global-log" :
+                    dealWithGlobalLog();
             }
         }
         catch (Exception e) {
-        //    e.printStackTrace();
         }
     }
 
@@ -75,6 +72,16 @@ public class Main {
         else {
             new Checkout(args[3], args[1]);
         }
+    }
+
+    public static void dealWithGlobalLog() throws IOException, ClassNotFoundException {
+        new Log("");
+    }
+
+    public static void dealWithLog() throws IOException, ClassNotFoundException {
+        String inp = Utils.readContentsAsString(Main.Head);
+        String lastCommitPointer = Utils.readContentsAsString(new File(Main.Branches, inp));
+        new Log(lastCommitPointer);
     }
 
     public static void init () throws IOException, ClassNotFoundException {
@@ -99,9 +106,7 @@ public class Main {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Object_commit));
             out.writeObject(cm);
             out.close();
-            File branches = new File(Branches, "master");
-            branches.createNewFile();
-            Utils.writeContents( branches , cm.ID);
+            new Branch("master");
             cm.lastCommitID1 = "";
         }
 
@@ -125,11 +130,12 @@ public class Main {
     }
 
     public static void commit (String[] args) throws IOException, ClassNotFoundException {
+
         if (args.length != 2) {
             System.out.println("Please enter a commit message.");
         }
-        else {
 
+        else {
             if (Stage.length() == 0) {
                 System.out.println("No changes added to the commit.");
             }
@@ -154,7 +160,8 @@ public class Main {
                     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
                     Stage stage2 = (Stage) ois.readObject();
                     ois.close();
-                    new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
+                    Commit newCommit = new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
+                    newCommit.witchBranch = Utils.readContentsAsString(Main.Head);
 
                 }
             }
@@ -163,9 +170,7 @@ public class Main {
 
     public static void delete(String[] args) throws IOException, ClassNotFoundException {
         if (args.length != 2) {
-        //    System.out.println("Please enter a commit message.");
             System.out.println("No reason to remove the file.");
-        //    System.out.println("hahaa");
         }
         else {
             new Remove(args[1]);

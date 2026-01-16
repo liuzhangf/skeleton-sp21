@@ -27,11 +27,15 @@ public class Remove {
         }
 
         /*
-           如果这个文件，没有在暂存区里，但是这个文件是「仓库里的正式文件」
-           （也就是在你最近一次 commit 的快照里、被 HEAD 指向的最新提交记录着）
+            如果这个文件，没有在暂存区里，但是这个文件是「仓库里的正式文件」
+           （也就是在你最近一次 commit 的快照里、被 HEAD 指向的branch,branch指向最新一次的提交记录，
+            最新提交记录着）
          */
+
         else {
             String lastCommitPaht = Utils.readContentsAsString(gitlet.Main.Head);
+            String lastCommitPointer = Utils.readContentsAsString(new File(Main.Branches, lastCommitPaht));
+            lastCommitPaht = lastCommitPointer;
             File lastCommitFile = new File(Main.Objects, lastCommitPaht);
 
             ObjectInputStream oos = new ObjectInputStream(new FileInputStream(lastCommitFile));

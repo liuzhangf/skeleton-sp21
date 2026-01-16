@@ -7,32 +7,40 @@ import java.util.Date;
 public class Find implements Serializable {
 
     public Find(String message) throws IOException, ClassNotFoundException {
-        String inp = Utils.readContentsAsString(Main.Head);
-        File file = new File(Main.Objects, inp);
-        ObjectInputStream fis = new ObjectInputStream(new FileInputStream(file));
-        Commit lastCommit = (Commit) fis.readObject();
-        String lastCommitHashCode = lastCommit.ID;
-
-        while(true) {
-            if (lastCommit.message.equals(message)) {
-
-                System.out.println(lastCommitHashCode);
-            }
+        for (File branches : Main.Branches.listFiles()) {
 
             /*
-                这个地方是找到
-             */
+            String inp = Utils.readContentsAsString(Main.Head);
+            String lastCommitPointer = Utils.readContentsAsString(new File(Main.Branches, inp));
+            */
+            String lastCommitPointer = Utils.readContentsAsString(branches);
+            String inp = lastCommitPointer;
+            File file = new File(Main.Objects, inp);
+            ObjectInputStream fis = new ObjectInputStream(new FileInputStream(file));
+            Commit lastCommit = (Commit) fis.readObject();
+            String lastCommitHashCode = lastCommit.ID;
 
-            if (lastCommitHashCode != null && lastCommitHashCode != "") {
-                lastCommitHashCode = lastCommit.lastCommitID1;
+            while(true) {
+                if (lastCommit.message.equals(message)) {
 
-                file = new File(Main.Objects, lastCommitHashCode);
+                    System.out.println(lastCommitHashCode);
+                }
 
-                if (file.length() == 0) break;
+                /*
+                    这个地方是找到
+                 */
 
-                else {
-                    fis = new ObjectInputStream(new FileInputStream(file));
-                    lastCommit = (Commit) fis.readObject();
+                if (lastCommitHashCode != null && lastCommitHashCode != "") {
+                    lastCommitHashCode = lastCommit.lastCommitID1;
+
+                    file = new File(Main.Objects, lastCommitHashCode);
+
+                    if (file.length() == 0) break;
+
+                    else {
+                        fis = new ObjectInputStream(new FileInputStream(file));
+                        lastCommit = (Commit) fis.readObject();
+                    }
                 }
             }
         }

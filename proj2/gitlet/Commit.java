@@ -19,6 +19,7 @@ public class Commit implements Serializable {
     public String message;
     String lastCommitID1 = "";
     String lastCommitID2 = "";
+    String witchBranch = "";
 
     /*
         传进来的参数的含义如下 ：
@@ -97,7 +98,12 @@ public class Commit implements Serializable {
 
     private void readOldBlobs() throws IOException, ClassNotFoundException {
         if (Head.length() > 0) {
-            lastCommitID1 = Utils.readContentsAsString(Head);
+            String lastBranchID = Utils.readContentsAsString(Head);
+            File LastBranch = new File(Objects,lastBranchID);
+            /*
+                上面两行的核心含义就是读出当前的branch文件。
+             */
+            lastCommitID1 = Utils.readContentsAsString(LastBranch);
             ObjectInputStream fis = new ObjectInputStream(new FileInputStream(Stage));
             File parentCommitFile = new File(gitlet.Main.Objects,lastCommitID1);
             fis = new ObjectInputStream(new FileInputStream(parentCommitFile));
@@ -113,7 +119,9 @@ public class Commit implements Serializable {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(NewCommitFile));
             oos.writeObject(this);
             oos.close();
-            Utils.writeContents( Head , this.ID);
+            String lastBranchID = Utils.readContentsAsString(Head);
+            File LastBranch = new File(Objects,lastBranchID);
+            Utils.writeContents( LastBranch , this.ID);
         }
     }
 
