@@ -31,7 +31,6 @@ public class Checkout {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
             Commit lastCommit = (Commit) ois.readObject();
             ois.close();
-
             for (String file : lastCommit.HashMapBlobs.keySet()) {
                 if (fileName.equals(file)) {
                     HashMap<String, Blobs> HashBlobs = lastCommit.HashMapBlobs.get(file);

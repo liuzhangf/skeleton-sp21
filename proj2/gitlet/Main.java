@@ -159,6 +159,7 @@ public class Main {
                     String[] fileArray = stage.stages.keySet().toArray(new String[0]);
                     Blobs[] blobsObjectArray = stage.stages.values().toArray(new Blobs[0]);
                     String[] blobsArray = new String[blobsObjectArray.length];
+
                     for (int i = 0; i < blobsObjectArray.length; i++) {
                         blobsArray[i] = blobsObjectArray[i].getID();
                     }
@@ -167,7 +168,6 @@ public class Main {
                     ois.close();
                     Commit newCommit = new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
                     newCommit.witchBranch = Utils.readContentsAsString(Main.Head);
-
                 }
             }
         }
