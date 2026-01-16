@@ -31,13 +31,10 @@ public class Checkout {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
             Commit lastCommit = (Commit) ois.readObject();
             ois.close();
-
-            //Utils.writeContents(Main.Head, Branch);
-
             for (File cwdFile : Main.CWD.listFiles()){
                 cwdFile.delete();
             }
-
+            Utils.writeContents(Main.Head, Branch);
             for (String file : lastCommit.HashMapBlobs.keySet()) {
                 HashMap<String, Blobs> HashBlobs = lastCommit.HashMapBlobs.get(file);
                 File writeFile = new File(Main.CWD,file);
@@ -53,7 +50,6 @@ public class Checkout {
 
         String LastBranches = Utils.readContentsAsString(Main.Head);
         String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, LastBranches));
-
         if (lastCommitHashCode.length() == 0) {
             System.out.println("File does not exist in that commit.");
         }
