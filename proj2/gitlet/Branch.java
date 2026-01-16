@@ -36,7 +36,10 @@ public class Branch implements Serializable {
             latestCommitFile = null;
             newBranch.createNewFile();
             Utils.writeContents(Main.Head, name);
-            new Checkout("",  name);
+            //new Checkout("",  name);
+            String LastBranches = Utils.readContentsAsString(Main.Head);
+            String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, LastBranches));
+            Utils.writeContents(newBranch, lastCommitHashCode);
         }
         else {
             System.out.println("A branch with that name already exists.");
