@@ -48,7 +48,7 @@ public class Remove {
                 Stage newstage = new Stage();
                 newstage.deleteFiles.add(file);
                 ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(gitlet.Main.Stage));
-                oos2.writeObject(LastCommit);
+                oos2.writeObject(newstage);
                 oos2.close();
                 File currentFile = new File(Main.CWD, file);
                 if(currentFile.exists()) {
