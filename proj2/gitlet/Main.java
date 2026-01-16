@@ -105,9 +105,7 @@ public class Main {
             Branches.mkdir();
             Head.createNewFile();
             Stage.createNewFile();
-
             Branch newBranch = new Branch("create","master");
-
             Utils.writeContents(Main.Head, newBranch.getBranchName());
             /*写入commit*/
 
@@ -115,7 +113,6 @@ public class Main {
                     new String[0] , new String[0], null);
             File BranchesFile = new File(Main.Branches, newBranch.getBranchName() );
             Utils.writeContents(BranchesFile, cm.ID);
-            System.out.println(cm.ID);
             File Object_commit = new File(Objects, cm.ID);
             Object_commit.createNewFile();
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Object_commit));
