@@ -88,9 +88,9 @@ public class Main {
 
     public static void dealWithLog() throws IOException, ClassNotFoundException {
         String inp = Utils.readContentsAsString(Main.Head);
-        System.out.println(inp);
+        //System.out.println(inp);
         String lastCommitPointer = Utils.readContentsAsString(new File(Main.Branches, inp));
-        System.out.println(lastCommitPointer);
+        //System.out.println(lastCommitPointer);
         new Log(lastCommitPointer);
     }
 
