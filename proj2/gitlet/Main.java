@@ -54,13 +54,16 @@ public class Main {
                     break;
                 case "global-log" :
                     dealWithGlobalLog();
+                    break;
                 case "branch" :
-                    new Branch("create","args[1]");
+                    new Branch("create",args[1]);
+                    break;
                 case "rm-branch" :
-                    new Branch("delete","args[1]");
+                    new Branch("delete",args[1]);
+                    break;
                 case "reset" :
-                    new Reset("args[1]");
-
+                    new Reset(args[1]);
+                    break;
             }
         }
         catch (Exception e) {
@@ -81,11 +84,8 @@ public class Main {
     }
 
     public static void dealWithLog() throws IOException, ClassNotFoundException {
-    //    System.out.println("dealWithLog");
         String inp = Utils.readContentsAsString(Main.Head);
-        //System.out.println(inp);
         String lastCommitPointer = Utils.readContentsAsString(new File(Main.Branches, inp));
-        //System.out.println(lastCommitPointer);
         new Log(lastCommitPointer);
     }
 
@@ -103,9 +103,7 @@ public class Main {
             Stage.createNewFile();
             Branch newBranch = new Branch("create","master");
             Utils.writeContents(Main.Head, newBranch.getBranchName());
-            /*
-                写入commit
-             */
+            /*写入commit*/
             Commit cm = new Commit(System.currentTimeMillis(), "initial commit",
                     new String[0] , new String[0], null);
             File Object_commit = new File(Objects, cm.ID);
@@ -128,7 +126,6 @@ public class Main {
             }
         }
         stage.addStage(arg);
-
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Stage))) {
             oos.writeObject(stage);
         }

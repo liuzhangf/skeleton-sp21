@@ -35,6 +35,7 @@ public class Branch implements Serializable {
             this.name = name;
             latestCommitFile = null;
             newBranch.createNewFile();
+            Utils.writeContents(Main.Head, name);
         }
         else {
             System.out.println("A branch with that name already exists.");
@@ -52,15 +53,11 @@ public class Branch implements Serializable {
         }
         else {
             String currentBranchName = Utils.readContentsAsString(Main.Head);
-            /*
-                试图删除当前的分支
-             */
+            /*试图删除当前的分支*/
             if (currentBranchName.equals(name)) {
                 System.out.println("Cannot remove the current branch.");
             }
-            /*
-                否则就删除当前的分支
-             */
+            /*否则就删除当前的分支*/
             else {
                 deleteBranch.delete();
             }
