@@ -74,8 +74,11 @@ public class Main {
         if (args.length == 3) {
             new Checkout(args[2], "");
         }
-        else {
+        else if (args.length == 4) {
             new Checkout(args[3], args[1]);
+        }
+        else {
+            new Checkout("", args[1]);
         }
     }
 
@@ -90,10 +93,12 @@ public class Main {
     }
 
     public static void init () throws IOException, ClassNotFoundException {
+
         if (Gitlet.exists()) {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
             System.exit(0);
         }
+
         else {
 
             Gitlet.mkdir();
@@ -136,7 +141,6 @@ public class Main {
         if (args.length != 2) {
             System.out.println("Please enter a commit message.");
         }
-
         else {
             if (Stage.length() == 0) {
                 System.out.println("No changes added to the commit.");

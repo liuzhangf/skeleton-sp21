@@ -36,14 +36,15 @@ public class Branch implements Serializable {
             latestCommitFile = null;
             newBranch.createNewFile();
             Utils.writeContents(Main.Head, name);
+            changeDirectory();
         }
         else {
             System.out.println("A branch with that name already exists.");
         }
     }
 
-    public File getNewBranch() {
-        return this.newBranchFile;
+    public void changeDirectory() {
+
     }
 
     public void removeBranch(String name) {

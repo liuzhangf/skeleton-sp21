@@ -8,11 +8,37 @@ import static gitlet.Stage.clearFile;
 public class Checkout {
 
     public Checkout(String Filename, String CommitID) throws IOException, ClassNotFoundException {
+        /* 两个参数可以表示四种状态 */
         if (CommitID.equals("")) {
             checkoutOverride(Filename);
         }
+        else if (Filename.equals("")) {
+            checkoutOverride1(CommitID);
+        }
         else {
             checkoutOverride(Filename, CommitID);
+        }
+    }
+
+    private void checkoutOverride1(String Branch) throws IOException, ClassNotFoundException {
+
+        String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, Branch));
+        File lastCommitFile = new File(Main.Objects,lastCommitHashCode);
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
+        Commit lastCommit = (Commit) ois.readObject();
+        ois.close();
+
+        for (File cwdFile : Main.CWD.listFiles()){
+            cwdFile.delete();
+        }
+
+        for (String file : lastCommit.HashMapBlobs.keySet()) {
+            HashMap<String, Blobs> HashBlobs = lastCommit.HashMapBlobs.get(file);
+            File writeFile = new File(Main.CWD,file);
+            clearFile(writeFile);
+            for (Blobs blobs : HashBlobs.values()) {
+                Utils.writeContents(writeFile,blobs.getContent());
+            }
         }
     }
 
