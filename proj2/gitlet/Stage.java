@@ -12,7 +12,7 @@ public class Stage implements Serializable {
 
     HashMap <String, Blobs > stages; // <FILEPATH, HASHCODE>
 
-    LinkedList <String> deleteFiles;
+    LinkedList <String> deleteFiles = new LinkedList <> ();
 
     public Stage() throws IOException, ClassNotFoundException {
 
@@ -34,8 +34,8 @@ public class Stage implements Serializable {
      */
 
     public void addStage(String filename) throws IOException, ClassNotFoundException {
-        File existing = new File(filename);
 
+        File existing = new File(filename);
         if (existing.exists()) {
 
             Blobs newBlob = new Blobs(filename);
@@ -49,7 +49,6 @@ public class Stage implements Serializable {
 
             if (commitFile.exists()) { //commitFile 直接是用内容比较的
                 if (stages.containsKey( filename )) {
-
                     if (stages.get( filename).equals(newBlob)) {
                         stages.remove(filename);
                     }
@@ -57,27 +56,21 @@ public class Stage implements Serializable {
             }
 
             else {
+                if (this.deleteFiles.contains(filename)) {
+                    this.deleteFiles.remove(filename);
+                }
                 stages.put(filename, newBlob);
             }
-
-            /*
-                写入暂存区
-             */
+            /*写入暂存区 */
             clearFile(Stage);
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Stage));
             out.writeObject(stages);
             out.close();
-
-            /*
-                写入存上一次贡献的没问题的地方
-                这里的没问题主要是指删掉了会被覆盖的原来的Blobs
-             */
+            /*写入存上一次贡献的没问题的地方这里的没问题主要是指删掉了会被覆盖的原来的Blobs*/
         }
-
         else {
             System.out.println("File does not exist.");
         }
-
     }
 
     public static void clearFile(File file) throws IOException {
