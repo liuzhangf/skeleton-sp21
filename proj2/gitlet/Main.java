@@ -46,7 +46,7 @@ public class Main {
                         System.out.println("Found no commit with that message.");
                     }
                     else {
-                        new Find("args[1]");
+                        new Find(args[1]);
                     }
                     break;
                 case "checkout":
