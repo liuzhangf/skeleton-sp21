@@ -2,13 +2,10 @@ package gitlet;
 import java.io.*;
 import java.util.*;
 import java.io.Serializable;
-
 import static gitlet.Main.*;
 import static gitlet.Main.Head;
 import static gitlet.Stage.clearFile;
 import static gitlet.Main.Objects;
-
-// TODO: any imports you need here
 
 public class Commit implements Serializable {
 
@@ -20,7 +17,6 @@ public class Commit implements Serializable {
     String lastCommitID1 = "";
     String lastCommitID2 = "";
     String witchBranch = "";
-
     /*
         传进来的参数的含义如下 ：
         timestamp :时间戳
@@ -29,7 +25,6 @@ public class Commit implements Serializable {
         BlobID : 所有Bolbs的hashcode
         text : 文件名
      */
-
     public Commit(long timestamp, String message, String[] BolbID, String[] text, gitlet.Stage stage) throws IOException, ClassNotFoundException {
 
         this.timestamp = timestamp;
@@ -38,15 +33,12 @@ public class Commit implements Serializable {
         this.blobsList = new LinkedList<>();
         String s1 = "";
         String s2 = "";
-
         for (int i = 0; i < text.length; i++) {
             s2 += text[i];
         }
-
         for (int i = 0; i < BolbID.length; i++) {
             s1 += BolbID[i];
         }
-
         this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2);
 
         if (stage != null && stage.stages.size() > 0) {
@@ -54,19 +46,15 @@ public class Commit implements Serializable {
                 blobsList.add(blob);
             }
         }
-
         /*
             Head存放的是上一次commit的commit的hashcode
             读出来上一次commit文件里的东西
             然后再添加本次Commit的add stage的文件
          */
-
         readOldBlobs();
-
         if (BolbID != null && text != null) {
             matchBolbWithCommit(BolbID, text);
         }
-
         /*
             生成新的Commit文件存入Object文件夹
          */
@@ -74,9 +62,7 @@ public class Commit implements Serializable {
         /*
             将全部的Blobs存到Object文件夹中
          */
-
         storeBlobsToObjects();
-
         BuildNewCommitObject();
         /*
          清空当前的stage, 这个地方直接清空文件就行
@@ -97,7 +83,8 @@ public class Commit implements Serializable {
     }
 
     private void readOldBlobs() throws IOException, ClassNotFoundException {
-        if (Head.length() > 0) {
+        File branchFile = new File(Branches, Utils.readContentsAsString(Head));
+        if (branchFile.length() > 0) {
             String lastBranchID = Utils.readContentsAsString(Head);
             File LastBranch = new File(Objects,lastBranchID);
             /*
@@ -120,7 +107,7 @@ public class Commit implements Serializable {
             oos.writeObject(this);
             oos.close();
             String lastBranchID = Utils.readContentsAsString(Head);
-            File LastBranch = new File(Objects,lastBranchID);
+            File LastBranch = new File(Branches,lastBranchID);
             Utils.writeContents( LastBranch , this.ID);
         }
     }

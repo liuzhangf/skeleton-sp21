@@ -17,19 +17,21 @@ public class Checkout {
     }
 
     private void checkoutOverride(String fileName) throws IOException, ClassNotFoundException {
-        String lastCommitHashCode = Utils.readContentsAsString(Main.Head);
+
+        String LastBranches = Utils.readContentsAsString(Main.Head);
+        String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, LastBranches));
+
         if (lastCommitHashCode.length() == 0) {
             System.out.println("File does not exist in that commit.");
         }
         else {
-            /*
-                读取出来lastCommit
-             */
+            /*读取出来lastCommit*/
             boolean flag  = false;
             File lastCommitFile = new File(Main.Objects,lastCommitHashCode);
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
             Commit lastCommit = (Commit) ois.readObject();
             ois.close();
+
             for (String file : lastCommit.HashMapBlobs.keySet()) {
                 if (fileName.equals(file)) {
                     HashMap<String, Blobs> HashBlobs = lastCommit.HashMapBlobs.get(file);

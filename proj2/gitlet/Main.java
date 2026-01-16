@@ -81,18 +81,19 @@ public class Main {
     }
 
     public static void dealWithLog() throws IOException, ClassNotFoundException {
+    //    System.out.println("dealWithLog");
         String inp = Utils.readContentsAsString(Main.Head);
+        System.out.println(inp);
         String lastCommitPointer = Utils.readContentsAsString(new File(Main.Branches, inp));
+        System.out.println(lastCommitPointer);
         new Log(lastCommitPointer);
     }
 
     public static void init () throws IOException, ClassNotFoundException {
-
         if (Gitlet.exists()) {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
             System.exit(0);
         }
-
         else {
 
             Gitlet.mkdir();
@@ -100,18 +101,20 @@ public class Main {
             Branches.mkdir();
             Head.createNewFile();
             Stage.createNewFile();
-
-            Commit cm = new Commit(System.currentTimeMillis(), "initial commit", new String[0] , new String[0], null);
-
+            Branch newBranch = new Branch("create","master");
+            Utils.writeContents(Main.Head, newBranch.getBranchName());
+            /*
+                写入commit
+             */
+            Commit cm = new Commit(System.currentTimeMillis(), "initial commit",
+                    new String[0] , new String[0], null);
             File Object_commit = new File(Objects, cm.ID);
             Object_commit.createNewFile();
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Object_commit));
             out.writeObject(cm);
             out.close();
-            new Branch("create","master");
             cm.lastCommitID1 = "";
         }
-
     }
 
     public static void add (String arg) throws IOException, ClassNotFoundException {

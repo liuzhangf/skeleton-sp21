@@ -9,7 +9,7 @@ import java.io.*;
  */
 
 public class Branch implements Serializable {
-    private String name;
+    public String name;
     private File latestCommitFile;
     private File newBranchFile;
 
@@ -33,10 +33,8 @@ public class Branch implements Serializable {
         File newBranch = new File(Main.Branches, name);
         if (!newBranch.exists()) {
             this.name = name;
-            latestCommitFile = Main.Head;
+            latestCommitFile = null;
             newBranch.createNewFile();
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(newBranch));
-            out.writeObject(this);
         }
         else {
             System.out.println("A branch with that name already exists.");
@@ -67,5 +65,9 @@ public class Branch implements Serializable {
                 deleteBranch.delete();
             }
         }
+    }
+
+    public String getBranchName() {
+        return this.name;
     }
 }
