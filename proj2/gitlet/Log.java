@@ -35,7 +35,6 @@ public class Log implements Serializable {
                     fis = new ObjectInputStream(new FileInputStream(file));
                     lastCommit = (Commit) fis.readObject();
                 }
-
             }
         }
         else {global_Log();}

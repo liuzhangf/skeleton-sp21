@@ -100,17 +100,22 @@ public class Main {
         }
 
         else {
-
             Gitlet.mkdir();
             Objects.mkdir();
             Branches.mkdir();
             Head.createNewFile();
             Stage.createNewFile();
+
             Branch newBranch = new Branch("create","master");
+
             Utils.writeContents(Main.Head, newBranch.getBranchName());
             /*写入commit*/
+
             Commit cm = new Commit(System.currentTimeMillis(), "initial commit",
                     new String[0] , new String[0], null);
+            File BranchesFile = new File(Main.Branches, newBranch.getBranchName() );
+            Utils.writeContents(BranchesFile, cm.ID);
+            System.out.println(cm.ID);
             File Object_commit = new File(Objects, cm.ID);
             Object_commit.createNewFile();
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Object_commit));
@@ -167,7 +172,6 @@ public class Main {
                     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
                     Stage stage2 = (Stage) ois.readObject();
                     ois.close();
-
                     Commit newCommit = new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
                     newCommit.witchBranch = Utils.readContentsAsString(Main.Head);
                 }

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import static gitlet.Main.*;
 import static gitlet.Main.Head;
 import static gitlet.Stage.clearFile;
-import static gitlet.Main.Objects;
 
 public class Commit implements Serializable {
 
@@ -40,16 +39,14 @@ public class Commit implements Serializable {
             s1 += BolbID[i];
         }
         this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2);
-
         if (stage != null && stage.stages.size() > 0) {
             for (Blobs blob : stage.stages.values()) {
                 blobsList.add(blob);
             }
         }
-        /*
-            Head存放的是上一次commit的commit的hashcode
-            读出来上一次commit文件里的东西
-            然后再添加本次Commit的add stage的文件
+        /* Head存放的是上一次commit的commit的hashcode
+           读出来上一次commit文件里的东西
+           然后再添加本次Commit的add stage的文件
          */
         readOldBlobs();
 
@@ -60,7 +57,6 @@ public class Commit implements Serializable {
 
         /*将全部的Blobs存到Object文件夹中*/
         storeBlobsToObjects();
-        //System.out.println("store successfully");
         BuildNewCommitObject();
         /*清空当前的stage, 这个地方直接清空文件就行*/
         clearFile(Stage);
@@ -94,11 +90,11 @@ public class Commit implements Serializable {
         if (!NewCommitFile.exists()) {
             NewCommitFile.createNewFile();
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(NewCommitFile));
-            oos.writeObject(this);
-            oos.close();
             String lastBranchID = Utils.readContentsAsString(Head);
             File LastBranch = new File(Branches,lastBranchID);
             this.lastCommitID1 = Utils.readContentsAsString(LastBranch);
+            oos.writeObject(this);
+            oos.close();
             Utils.writeContents( LastBranch , this.ID);
         }
     }
