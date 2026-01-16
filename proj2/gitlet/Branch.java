@@ -1,7 +1,4 @@
 package gitlet;
-
-import jdk.javadoc.internal.doclets.formats.html.markup.Head;
-
 import java.io.*;
 
 /*
@@ -23,8 +20,13 @@ public class Branch implements Serializable {
         这个Commit File指向的是当前的Head文件。
     */
 
-    public Branch(String name) throws IOException {
-        createNewBranch(name);
+    public Branch(String command,String name) throws IOException {
+        if (command.equals("create")) {
+            createNewBranch(name);
+        }
+        else if (command.equals("delete")) {
+            removeBranch(name);
+        }
     }
 
     private void createNewBranch(String name) throws IOException {

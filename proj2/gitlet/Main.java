@@ -1,11 +1,15 @@
 package gitlet;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Random;
 
-import gitlet.Commit;
+    /*
+        .gitlet/
+        ├─ 📂 objects/       # 存放【所有Commit对象+所有Blob对象】的地方
+        │  └─ xxxxxx...      # 只有1个文件：初始Commit的哈希文件（文件名=哈希值，内容=序列化的Commit）
+        ├─ 📂 branches/      # 存放【所有分支】的地方 → ✅【重点】多分支的核心存储目录✅
+        │  └─ master         # 只有1个文件：master分支文件（文件名=分支名，文件内容=该分支指向的Commit哈希）
+        └─ 📄 HEAD           # 全局唯一的「当前分支标记文件」（文件内容=字符串，比如：master）
+     */
 
 public class Main {
 
@@ -50,20 +54,18 @@ public class Main {
                     break;
                 case "global-log" :
                     dealWithGlobalLog();
+                case "branch" :
+                    new Branch("create","args[1]");
+                case "rm-branch" :
+                    new Branch("delete","args[1]");
+                case "reset" :
+                    new Reset("args[1]");
+
             }
         }
         catch (Exception e) {
         }
     }
-
-    /*
-        .gitlet/
-        ├─ 📂 objects/       # 存放【所有Commit对象+所有Blob对象】的地方
-        │  └─ xxxxxx...      # 只有1个文件：初始Commit的哈希文件（文件名=哈希值，内容=序列化的Commit）
-        ├─ 📂 branches/      # 存放【所有分支】的地方 → ✅【重点】多分支的核心存储目录✅
-        │  └─ master         # 只有1个文件：master分支文件（文件名=分支名，文件内容=该分支指向的Commit哈希）
-        └─ 📄 HEAD           # 全局唯一的「当前分支标记文件」（文件内容=字符串，比如：master）
-     */
 
     public static void checkout(String[] args) throws IOException, ClassNotFoundException {
         if (args.length == 3) {
@@ -106,7 +108,7 @@ public class Main {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Object_commit));
             out.writeObject(cm);
             out.close();
-            new Branch("master");
+            new Branch("create","master");
             cm.lastCommitID1 = "";
         }
 
