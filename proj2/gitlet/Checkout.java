@@ -32,7 +32,7 @@ public class Checkout {
             Commit lastCommit = (Commit) ois.readObject();
             ois.close();
 
-            Utils.writeContents(Main.Head, Branch);
+            //Utils.writeContents(Main.Head, Branch);
 
             for (File cwdFile : Main.CWD.listFiles()){
                 cwdFile.delete();

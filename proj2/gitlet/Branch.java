@@ -35,8 +35,9 @@ public class Branch implements Serializable {
             this.name = name;
             latestCommitFile = null;
             newBranch.createNewFile();
-            String LastBranches = Utils.readContentsAsString(Main.Head);
+            String LastBranches = Utils.readContentsAsString(Main.Head).trim();
             String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, LastBranches));
+            //System.out.println("Last commit hash: " + lastCommitHashCode);
             Utils.writeContents(newBranch, lastCommitHashCode);
         }
         else {

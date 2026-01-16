@@ -88,7 +88,9 @@ public class Main {
 
     public static void dealWithLog() throws IOException, ClassNotFoundException {
         String inp = Utils.readContentsAsString(Main.Head);
+        System.out.println(inp);
         String lastCommitPointer = Utils.readContentsAsString(new File(Main.Branches, inp));
+        System.out.println(lastCommitPointer);
         new Log(lastCommitPointer);
     }
 
@@ -105,10 +107,9 @@ public class Main {
             Branches.mkdir();
             Head.createNewFile();
             Stage.createNewFile();
+            Utils.writeContents(Main.Head, "master");
             Branch newBranch = new Branch("create","master");
-            Utils.writeContents(Main.Head, newBranch.getBranchName());
             /*写入commit*/
-
             Commit cm = new Commit(System.currentTimeMillis(), "initial commit",
                     new String[0] , new String[0], null);
             File BranchesFile = new File(Main.Branches, newBranch.getBranchName() );
