@@ -35,8 +35,6 @@ public class Branch implements Serializable {
             this.name = name;
             latestCommitFile = null;
             newBranch.createNewFile();
-            Utils.writeContents(Main.Head, name);
-            //new Checkout("",  name);
             String LastBranches = Utils.readContentsAsString(Main.Head);
             String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, LastBranches));
             Utils.writeContents(newBranch, lastCommitHashCode);
@@ -54,6 +52,7 @@ public class Branch implements Serializable {
         }
         else {
             String currentBranchName = Utils.readContentsAsString(Main.Head);
+
             /*试图删除当前的分支*/
             if (currentBranchName.equals(name)) {
                 System.out.println("Cannot remove the current branch.");
