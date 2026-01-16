@@ -20,7 +20,7 @@ public class Branch implements Serializable {
         这个Commit File指向的是当前的Head文件。
     */
 
-    public Branch(String command,String name) throws IOException {
+    public Branch(String command,String name) throws IOException, ClassNotFoundException {
         if (command.equals("create")) {
             createNewBranch(name);
         }
@@ -29,23 +29,20 @@ public class Branch implements Serializable {
         }
     }
 
-    private void createNewBranch(String name) throws IOException {
+    private void createNewBranch(String name) throws IOException, ClassNotFoundException {
         File newBranch = new File(Main.Branches, name);
         if (!newBranch.exists()) {
             this.name = name;
             latestCommitFile = null;
             newBranch.createNewFile();
             Utils.writeContents(Main.Head, name);
-            changeDirectory();
+            new Checkout("",  name);
         }
         else {
             System.out.println("A branch with that name already exists.");
         }
     }
 
-    public void changeDirectory() {
-
-    }
 
     public void removeBranch(String name) {
         File deleteBranch = new File(Main.Branches, name);

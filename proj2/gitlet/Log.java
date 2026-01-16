@@ -7,6 +7,7 @@ import java.util.Date;
 public class Log implements Serializable {
 
     public Log(String lastCommitPointer) throws IOException, ClassNotFoundException {
+
         if (lastCommitPointer != "") {
 
             String inp = lastCommitPointer;
@@ -16,6 +17,7 @@ public class Log implements Serializable {
             String lastCommitHashCode = lastCommit.ID;
 
             while(true) {
+
                 System.out.println("===");
                 System.out.println("commit " + lastCommitHashCode);
 
@@ -33,12 +35,10 @@ public class Log implements Serializable {
                     fis = new ObjectInputStream(new FileInputStream(file));
                     lastCommit = (Commit) fis.readObject();
                 }
-            }
 
+            }
         }
-        else {
-            global_Log();
-        }
+        else {global_Log();}
     }
 
     private static String formatTimestamp(long timestamp) {

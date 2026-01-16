@@ -167,6 +167,7 @@ public class Main {
                     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
                     Stage stage2 = (Stage) ois.readObject();
                     ois.close();
+
                     Commit newCommit = new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
                     newCommit.witchBranch = Utils.readContentsAsString(Main.Head);
                 }

@@ -7,12 +7,9 @@ import java.util.Date;
 public class Find implements Serializable {
 
     public Find(String message) throws IOException, ClassNotFoundException {
+
         for (File branches : Main.Branches.listFiles()) {
 
-            /*
-            String inp = Utils.readContentsAsString(Main.Head);
-            String lastCommitPointer = Utils.readContentsAsString(new File(Main.Branches, inp));
-            */
             String lastCommitPointer = Utils.readContentsAsString(branches);
             String inp = lastCommitPointer;
             File file = new File(Main.Objects, inp);
@@ -22,14 +19,9 @@ public class Find implements Serializable {
 
             while(true) {
                 if (lastCommit.message.equals(message)) {
-
                     System.out.println(lastCommitHashCode);
                 }
-
-                /*
-                    这个地方是找到
-                 */
-
+                /* 这个地方是找到*/
                 if (lastCommitHashCode != null && lastCommitHashCode != "") {
                     lastCommitHashCode = lastCommit.lastCommitID1;
 

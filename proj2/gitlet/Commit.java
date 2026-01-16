@@ -52,31 +52,21 @@ public class Commit implements Serializable {
             然后再添加本次Commit的add stage的文件
          */
         readOldBlobs();
-        //System.out.println("read ok");
 
         if (BolbID != null && text != null) {
             matchBolbWithCommit(BolbID, text);
-        //    System.out.println("match successfully");
         }
-        /*
-            生成新的Commit文件存入Object文件夹
-         */
+        /*生成新的Commit文件存入Object文件夹*/
 
-        /*
-            将全部的Blobs存到Object文件夹中
-         */
+        /*将全部的Blobs存到Object文件夹中*/
         storeBlobsToObjects();
         //System.out.println("store successfully");
         BuildNewCommitObject();
-        /*
-         清空当前的stage, 这个地方直接清空文件就行
-         */
+        /*清空当前的stage, 这个地方直接清空文件就行*/
         clearFile(Stage);
     }
 
-    /*
-        这段代码主要是用于存下来本次commit的全部Blobs
-     */
+    /*这段代码主要是用于存下来本次commit的全部Blobs*/
     private void matchBolbWithCommit (String[] BolbID, String[] text) throws IOException {
         for (int i = 0; i < BolbID.length; i++) {
             Blobs newblobs = new Blobs(text[i]);
@@ -89,8 +79,6 @@ public class Commit implements Serializable {
     private void readOldBlobs() throws IOException, ClassNotFoundException {
         File branchFile = new File(Branches, Utils.readContentsAsString(Head));
         if (branchFile.length() > 0) {
-            //String lastBranchID = Utils.readContentsAsString(branchFile);
-            //File LastBranch = new File(Objects,lastBranchID);
             /* 上面两行的核心含义就是读出当前的branch文件。*/
             lastCommitID1 = Utils.readContentsAsString(branchFile);
             ObjectInputStream fis = new ObjectInputStream(new FileInputStream(Stage));
@@ -110,6 +98,7 @@ public class Commit implements Serializable {
             oos.close();
             String lastBranchID = Utils.readContentsAsString(Head);
             File LastBranch = new File(Branches,lastBranchID);
+            this.lastCommitID1 = Utils.readContentsAsString(LastBranch);
             Utils.writeContents( LastBranch , this.ID);
         }
     }
