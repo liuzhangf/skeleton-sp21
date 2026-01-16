@@ -29,7 +29,7 @@ public class Log implements Serializable {
                 lastCommitHashCode = lastCommit.lastCommitID1;
 
                 file = new File(Main.Objects, lastCommitHashCode);
-
+                if (lastCommitHashCode == null || lastCommitHashCode.isEmpty()) break;
                 if (file.length() == 0) break;
                 else {
                     fis = new ObjectInputStream(new FileInputStream(file));

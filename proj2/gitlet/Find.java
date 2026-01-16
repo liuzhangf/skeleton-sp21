@@ -25,10 +25,9 @@ public class Find implements Serializable {
                 if (lastCommitHashCode != null && lastCommitHashCode != "") {
                     lastCommitHashCode = lastCommit.lastCommitID1;
 
+                    if (lastCommitHashCode == null || lastCommitHashCode.isEmpty()) break;
                     file = new File(Main.Objects, lastCommitHashCode);
-
                     if (file.length() == 0) break;
-
                     else {
                         fis = new ObjectInputStream(new FileInputStream(file));
                         lastCommit = (Commit) fis.readObject();

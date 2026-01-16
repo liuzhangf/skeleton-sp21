@@ -38,6 +38,7 @@ public class Commit implements Serializable {
         for (int i = 0; i < BolbID.length; i++) {
             s1 += BolbID[i];
         }
+        this.lastCommitID1 = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
         this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2);
         if (stage != null && stage.stages.size() > 0) {
             for (Blobs blob : stage.stages.values()) {
