@@ -19,7 +19,9 @@ public class Status implements java.io.Serializable {
                 continue;
             }
             else {
-                System.out.println(branchFile.getName());
+                if (branchFile.isFile()) {
+                    System.out.println(branchFile.getName());
+                }
             }
         }
         System.out.println();
@@ -51,14 +53,19 @@ public class Status implements java.io.Serializable {
         System.out.println("=== Modifications Not Staged For Commit ===");
         if (Main.Stage != null) {
 
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
-            Stage currentStage = (Stage) ois.readObject();
+            Stage currentStage;
+            if (Main.Stage != null && Main.Stage.length() > 0) {
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
+                currentStage = (Stage) ois.readObject();
+            }
+            else {
+                currentStage = null;
+            }
 
             File lastBranches = new File( Main.Branches, Utils.readContentsAsString(Main.Head));
             File lastCommitFile = new File(Main.Objects, Utils.readContentsAsString(lastBranches));
-
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(lastCommitFile));
-            Commit lastCommit = (Commit) ois.readObject();
+            ObjectInputStream oos = new ObjectInputStream(new FileInputStream(lastCommitFile));
+            Commit lastCommit = (Commit) oos.readObject();
 
             for (File currentFile : Main.CWD.listFiles()) {
                 if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0 &&  lastCommit.HashMapBlobs.containsKey(currentFile.getName())) {
@@ -68,7 +75,7 @@ public class Status implements java.io.Serializable {
                     Blobs currentBlob = (Blobs) mapBlobs1.values();
 
                     if (!currentBlob.getContent().equals(Files.readAllBytes(currentFile.toPath()))) {
-                        if (Main.Stage != null && Main.Stage.length() > 0 &&!currentStage.stages.containsKey(currentFile.getName())) {
+                        if (currentStage != null && !currentStage.stages.containsKey(currentFile.getName())) {
                         /*
                             Tracked in the current commit, changed in the working directory,
                             but not staged;  这里并不包含删除的逻辑
@@ -76,7 +83,7 @@ public class Status implements java.io.Serializable {
                             System.out.println(currentFile.getName() + " (modified)");
                         }
                         else {
-                            if (Main.Stage != null && Main.Stage.length() == 0) {
+                            if (currentStage == null) {
                                 System.out.println(currentFile.getName() + " (modified)");
                             }
                         }
@@ -101,19 +108,24 @@ public class Status implements java.io.Serializable {
                 Staged for addition, but with different contents than in the working directory;
                 Staged for addition, but deleted in the working directory
              */
-            if (Main.Stage != null && Main.Stage.length() > 0) {
+            if (currentStage != null) {
                 for (String fileName : currentStage.stages.keySet()) {
-                    if (!new File(Main.CWD, fileName).exists()) {
-                        /*压根不存在，就是删除*/
-                        System.out.println(fileName + " (deleted)");
-                    }
-                    else {
-                        /*存在但是变了，就是修改*/
-                        if (Main.Stage != null && Main.Stage.length() > 0) {
-                            File currentFile = new File(Main.CWD, fileName);
-                            Blobs currentBlob = (Blobs) currentStage.stages.get(fileName);
-                            if (Files.readAllBytes(currentFile.toPath()) != currentBlob.getContent()) {
-                                System.out.println(fileName + " (modified)");
+                    if (new File(Main.CWD, fileName).isFile()){
+                        if (!new File(Main.CWD, fileName).exists()) {
+                            /*压根不存在，就是删除*/
+                            if (new File(Main.CWD, fileName).isFile()) {
+                                System.out.println(fileName + " (deleted)");
+                            }
+                        }
+
+                        else {
+                            /*存在但是变了，就是修改*/
+                            if (currentStage != null) {
+                                File currentFile = new File(Main.CWD, fileName);
+                                Blobs currentBlob = (Blobs) currentStage.stages.get(fileName);
+                                if (Files.readAllBytes(currentFile.toPath()) != currentBlob.getContent()) {
+                                    System.out.println(fileName + " (modified)");
+                                }
                             }
                         }
                     }
@@ -125,34 +137,41 @@ public class Status implements java.io.Serializable {
         System.out.println("=== Untracked Files ===");
         if (Main.Stage != null) {
 
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
-            Stage currentStage = (Stage) ois.readObject();
-
+            Stage currentStage;
+            if (Main.Stage != null && Main.Stage.length() > 0) {
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
+                currentStage = (Stage) ois.readObject();
+            }
+            else {
+                currentStage = null;
+            }
             File lastBranches = new File( Main.Branches, Utils.readContentsAsString(Main.Head));
             File lastCommitFile = new File(Main.Objects, Utils.readContentsAsString(lastBranches));
 
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(lastCommitFile));
-            Commit lastCommit = (Commit) ois.readObject();
+            ObjectInputStream oos = new ObjectInputStream(new FileInputStream(lastCommitFile));
+            Commit lastCommit = (Commit) oos.readObject();
 
             for (File currentFile : Main.CWD.listFiles()) {
-                if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0 && ! lastCommit.HashMapBlobs.containsKey(currentFile.getName())) {
-                    if (Main.Stage != null && Main.Stage.length() > 0) {
-                        if (!currentStage.stages.containsKey(currentFile.getName())) {
+                if (currentFile.isFile()) {
+                    if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0 && ! lastCommit.HashMapBlobs.containsKey(currentFile.getName())) {
+                        if (currentStage != null) {
+                            if (!currentStage.stages.containsKey(currentFile.getName())) {
+                                System.out.println(currentFile.getName() + " (modified)");
+                            }
+                        }
+                        else if (currentStage == null) {
                             System.out.println(currentFile.getName() + " (modified)");
                         }
                     }
-                    else if (Main.Stage != null && Main.Stage.length() == 0) {
-                        System.out.println(currentFile.getName() + " (modified)");
-                    }
-                }
-                else if (lastCommit != null && lastCommit.HashMapBlobs.size() == 0) {
-                    if (Main.Stage != null && Main.Stage.length() > 0) {
-                        if (!currentStage.stages.containsKey(currentFile.getName())) {
+                    else if (lastCommit != null && lastCommit.HashMapBlobs.size() == 0) {
+                        if (currentStage != null) {
+                            if (!currentStage.stages.containsKey(currentFile.getName())) {
+                                System.out.println(currentFile.getName() + " (modified)");
+                            }
+                        }
+                        else if (currentStage == null) {
                             System.out.println(currentFile.getName() + " (modified)");
                         }
-                    }
-                    else if (Main.Stage != null && Main.Stage.length() == 0) {
-                        System.out.println(currentFile.getName() + " (modified)");
                     }
                 }
             }
