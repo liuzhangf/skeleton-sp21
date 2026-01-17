@@ -33,7 +33,8 @@ public class Checkout {
             /*
                 最开始的一段是用来判断是否具有未被最近的一次commit追踪， 同时会被覆盖的文件
              */
-            String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, Branch));
+            String newBranchh = Utils.readContentsAsString((Main.Head));
+            String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, newBranchh));
             File checkoutCommit = new File(Main.Objects, lastCommitHashCode);
             ObjectInputStream oiss = new ObjectInputStream(new FileInputStream(checkoutCommit));
             Commit lastCommit1 = (Commit) oiss.readObject();
@@ -43,30 +44,25 @@ public class Checkout {
             /*
                 没有被当前的commit跟踪
              */
+
+            String targetCheckoutHash = Utils.readContentsAsString(new File(Main.Branches, Branch));
+            File targetCheckoutCommit = new File(Main.Objects, targetCheckoutHash);
+            ObjectInputStream oos = new ObjectInputStream(new FileInputStream(targetCheckoutCommit));
+            Commit targetCommit1 = (Commit) oos.readObject();
+            oos.close();
+            ObjectInputStream inppp = new ObjectInputStream(new FileInputStream(Main.Stage));
+            Stage stage = (Stage) inppp.readObject();
+
             for (File singleFile : Main.CWD.listFiles()) {
                 if (singleFile.isFile()) {
-                    if (!lastCommit1.HashMapBlobs.containsKey(singleFile.getName())) {
+                    if (!lastCommit1.HashMapBlobs.containsKey(singleFile.getName()) && targetCommit1.HashMapBlobs.containsKey(singleFile.getName())
+                        && !stage.stages.containsKey(singleFile.getName())) {
                         flag = false;
                     }
                 }
             }
-            boolean flag2 = true;
-            if (!flag) {
-                String targetCheckoutHash = Utils.readContentsAsString(new File(Main.Branches, Branch));
-                File targetCheckoutCommit = new File(Main.Objects, targetCheckoutHash);
-                ObjectInputStream oos = new ObjectInputStream(new FileInputStream(targetCheckoutCommit));
-                Commit targetCommit1 = (Commit) oos.readObject();
-                oos.close();
-                for (File singleFile : Main.CWD.listFiles()) {
-                    if (singleFile.isFile()) {
-                        if (!targetCommit1.HashMapBlobs.containsKey(singleFile.getName())) {
-                            flag2 = false;
-                        }
-                    }
-                }
-            }
 
-            if (!flag2) {
+            if (!flag) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 return;
             }
@@ -79,7 +75,7 @@ public class Checkout {
                 if (cwdFile.isFile()) cwdFile.delete();
             }
             Utils.writeContents(Main.Head, Branch);
-            for (String file : lastCommit.HashMapBlobs.keySet()) {
+            for (String file : targetCommit1.HashMapBlobs.keySet()) {
                 HashMap<String, Blobs> HashBlobs = lastCommit.HashMapBlobs.get(file);
                 File writeFile = new File(Main.CWD,file);
                 clearFile(writeFile);
