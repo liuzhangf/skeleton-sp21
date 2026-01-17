@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.LinkedList;
 import static gitlet.Main.Objects;
@@ -40,25 +41,27 @@ public class Stage implements Serializable {
                 do not stage it to be added, and remove it from the staging area if it is already there
                 (as can happen when a file is changed, added, and then changed back to it’s original version).
             */
-
             /*
                 这里的话 是没解决branch的问题。
                 可能对于不同的branch  确对应完全相同的文件。
              */
             if (commitFile.exists()) { //commitFile 直接是用内容比较的
                 if (stages.containsKey( filename )) {
-                    if (stages.get( filename).equals(newBlob)) {
-                        stages.remove(filename);
-                    }
+                    stages.remove(filename);
                 }
             }
+            /*
+            现在的问题是commitfile也存在   delefiles也有
+             */
 
-            else {
-                if (this.deleteFiles.contains(filename)) {
-                    this.deleteFiles.remove(filename);
-                }
+            if (this.deleteFiles.contains(filename)) {
+                System.out.println("Delete file " + filename);
+                this.deleteFiles.remove(filename);
+            }
+            else{
                 stages.put(filename, newBlob);
             }
+
             /*写入暂存区 */
             clearFile(Stage);
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Stage));

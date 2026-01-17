@@ -1,8 +1,6 @@
 package gitlet;
 
 import java.io.*;
-
-
 public class Remove {
 
     public Remove(String file) throws IOException, ClassNotFoundException {
@@ -49,7 +47,6 @@ public class Remove {
         if (LastCommit != null) {
             if (LastCommit.HashMapBlobs.containsKey(file)) {
                 /*如果被上一个从commit追踪*/
-
                 Stage newstage;
                 if (Main.Stage.length() > 0){
                     ObjectInputStream inp = new ObjectInputStream(new FileInputStream(Main.Stage));
@@ -61,11 +58,9 @@ public class Remove {
 
                 if (newstage.stages.containsKey(file)) {
                     newstage.stages.remove(file);
-
                 }
                 else {
                     newstage.deleteFiles.add(file);
-
                 }
 
                 ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(gitlet.Main.Stage));
