@@ -47,7 +47,6 @@ public class Reset {
         */
         String currentBranches = Utils.readContentsAsString(Main.Head);
         File branchesFile = new File(Main.Branches, currentBranches);
-        //if (!branchesFile.exists()) {return;}
         String currentCommitId = Utils.readContentsAsString(branchesFile);
         inp = new ObjectInputStream(new FileInputStream(new File(Main.Objects, currentCommitId)));
         Commit currentCommit = (Commit) inp.readObject();
@@ -70,7 +69,7 @@ public class Reset {
         inp.close();
         Utils.writeContents(Main.Head, thisCommit.witchBranch);
         File branchesFile = new File(Main.Branches, thisCommit.witchBranch);
-        Utils.writeContents(branchesFile, Commitid);
+    //    Utils.writeContents(branchesFile, Commitid);
     }
     public static void clearFile(File file) throws IOException {
         new FileOutputStream(file).close();
