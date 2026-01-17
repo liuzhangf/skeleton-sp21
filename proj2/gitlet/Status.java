@@ -1,6 +1,7 @@
 package gitlet;
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,6 +84,7 @@ public class Status implements java.io.Serializable {
                         }
                         else {
                             if (currentStage == null) {
+
                                 System.out.println(currentFile.getName() + " (modified)");
                             }
                         }
@@ -98,6 +100,7 @@ public class Status implements java.io.Serializable {
                 if ( lastCommit != null && lastCommit.HashMapBlobs != null ) {
                     if (! new File(Main.CWD, fileName).exists()) {
                         if (!currentStage.deleteFiles.contains(fileName)) {
+
                             System.out.println(fileName + " (deleted)");
                         }
                     }
@@ -109,25 +112,24 @@ public class Status implements java.io.Serializable {
              */
             if (currentStage != null) {
                 for (String fileName : currentStage.stages.keySet()) {
-                    if (new File(Main.CWD, fileName).isFile()){
                         if (!new File(Main.CWD, fileName).exists()) {
                             /*压根不存在，就是删除*/
-                            if (new File(Main.CWD, fileName).isFile()) {
-                                System.out.println(fileName + " (deleted)");
-                            }
+                            System.out.println(fileName + " (deleted)");
                         }
 
                         else {
                             /*存在但是变了，就是修改*/
-                            if (currentStage != null) {
-                                File currentFile = new File(Main.CWD, fileName);
-                                Blobs currentBlob = (Blobs) currentStage.stages.get(fileName);
-                                if (!Files.readAllBytes(currentFile.toPath()).equals(currentBlob.getContent())) {
+                            File currentFile = new File(Main.CWD, fileName);
+                            if(currentFile.exists() && currentFile.isFile()) {
+                                Blobs currentBlob = currentStage.stages.get(fileName);
+                                byte[] workBytes = Files.readAllBytes(currentFile.toPath());
+                                byte[] stageBytes = currentBlob.getContent();
+
+                                if (!Arrays.equals(workBytes, stageBytes)) {
                                     System.out.println(fileName + " (modified)");
                                 }
                             }
                         }
-                    }
                 }
             }
         }
