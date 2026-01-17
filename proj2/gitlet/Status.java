@@ -83,12 +83,12 @@ public class Status implements java.io.Serializable {
                             Tracked in the current commit, changed in the working directory,
                             but not staged;  这里并不包含删除的逻辑
                          */
-                            System.out.println("1");
+
                             System.out.println(currentFile.getName() + " (modified)");
                         }
                         else {
                             if (currentStage == null) {
-                                System.out.println("2");
+                            //    System.out.println("2");
                                 System.out.println(currentFile.getName() + " (modified)");
                             }
                         }
@@ -105,12 +105,12 @@ public class Status implements java.io.Serializable {
                     if (! new File(Main.CWD, fileName).exists()) {
                         if (currentStage != null) {
                             if (!currentStage.deleteFiles.contains(fileName)) {
-                                System.out.println("3");
+                           //     System.out.println("3");
                                 System.out.println(fileName + " (deleted)");
                             }
                         }
                         else {
-                            System.out.println("4");
+                        //    System.out.println("4");
                             System.out.println(fileName + " (deleted)");
                         }
                     }
@@ -124,7 +124,7 @@ public class Status implements java.io.Serializable {
                 for (String fileName : currentStage.stages.keySet()) {
                     if (!new File(Main.CWD, fileName).exists()) {
                         /*压根不存在，就是删除*/
-                        System.out.println("5");
+                    //    System.out.println("5");
                         System.out.println(fileName + " (deleted)");
                     }
                     else {
@@ -136,7 +136,7 @@ public class Status implements java.io.Serializable {
                             byte[] stageBytes = currentBlob.getContent();
 
                             if (!Arrays.equals(workBytes, stageBytes)) {
-                                System.out.println("6");
+                           //     System.out.println("6");
                                 System.out.println(fileName + " (modified)");
                             }
                         }
