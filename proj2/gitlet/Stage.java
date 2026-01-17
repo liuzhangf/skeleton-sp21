@@ -45,7 +45,7 @@ public class Stage implements Serializable {
             If the current working version of the file is identical to the version in the current commit,
             do not stage it to be added, and remove it from the staging area if it is already there
             (as can happen when a file is changed, added, and then changed back to it’s original version).
-             */
+            */
 
             if (commitFile.exists()) { //commitFile 直接是用内容比较的
                 if (stages.containsKey( filename )) {

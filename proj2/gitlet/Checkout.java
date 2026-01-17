@@ -55,11 +55,7 @@ public class Checkout {
                 stage = (Stage) inppp.readObject();
             }
 
-            System.out.println(lastCommit1.HashMapBlobs.size());
-
-            for (String file : lastCommit1.HashMapBlobs.keySet()){
-                System.out.println("Checking out file " + file);
-            }
+          //  System.out.println(lastCommit1.HashMapBlobs.size());
 
             for (File singleFile : Main.CWD.listFiles()) {
                 if (singleFile.isFile()) {

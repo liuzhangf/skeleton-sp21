@@ -16,6 +16,7 @@ public class Commit implements Serializable {
     String lastCommitID1 = "";
     String lastCommitID2 = "";
     String witchBranch = "";
+
     /*
         传进来的参数的含义如下 ：
         timestamp :时间戳
@@ -24,6 +25,7 @@ public class Commit implements Serializable {
         BlobID : 所有Bolbs的hashcode
         text : 文件名
      */
+
     public Commit(long timestamp, String message, String[] BolbID, String[] text, gitlet.Stage stage) throws IOException, ClassNotFoundException {
 
         this.timestamp = timestamp;
@@ -49,14 +51,14 @@ public class Commit implements Serializable {
            读出来上一次commit文件里的东西
            然后再添加本次Commit的add stage的文件
          */
-        this.witchBranch = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
+        this.witchBranch = Utils.readContentsAsString(Head);
         readOldBlobs();
 
         if (BolbID != null && text != null) {
             matchBolbWithCommit(BolbID, text);
         }
+        handleDeleteFiles(stage);
         /*生成新的Commit文件存入Object文件夹*/
-
         /*将全部的Blobs存到Object文件夹中*/
         storeBlobsToObjects();
         BuildNewCommitObject();
@@ -104,7 +106,17 @@ public class Commit implements Serializable {
             Utils.writeContents( LastBranch , this.ID);
         }
     }
-
+    private void handleDeleteFiles(Stage stage) {
+        if (stage != null && stage.deleteFiles != null && !stage.deleteFiles.isEmpty()) {
+            for (String deleteFile : stage.deleteFiles) {
+                if (this.HashMapBlobs.containsKey(deleteFile)) {
+                    this.HashMapBlobs.remove(deleteFile);
+                }
+            }
+            // 删除后清空deleteFiles，避免残留
+            stage.deleteFiles.clear();
+        }
+    }
     private void storeBlobsToObjects() throws IOException {
         if (blobsList.size() > 0) {
             for (Blobs blob : blobsList) {
