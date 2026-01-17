@@ -30,9 +30,10 @@ public class Checkout {
             System.out.println("No need to checkout the current branch.");
         }
         else  {
-            /*最开始的一段是用来判断是否具有未被最近的一次commit追踪， 同时会被覆盖的文件
-             */
+
+            /*最开始的一段是用来判断是否具有未被最近的一次commit追踪， 同时会被覆盖的文件*/
             String newBranchh = Utils.readContentsAsString((Main.Head));
+            //System.out.println("Checking out branch " + newBranchh);
             String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, newBranchh));
             File checkoutCommit = new File(Main.Objects, lastCommitHashCode);
             ObjectInputStream oiss = new ObjectInputStream(new FileInputStream(checkoutCommit));
@@ -54,6 +55,12 @@ public class Checkout {
                 stage = (Stage) inppp.readObject();
             }
 
+            System.out.println(lastCommit1.HashMapBlobs.size());
+
+            for (String file : lastCommit1.HashMapBlobs.keySet()){
+                System.out.println("Checking out file " + file);
+            }
+
             for (File singleFile : Main.CWD.listFiles()) {
                 if (singleFile.isFile()) {
                     if (!lastCommit1.HashMapBlobs.containsKey(singleFile.getName()) && targetCommit1.HashMapBlobs.containsKey(singleFile.getName())) {
@@ -65,6 +72,10 @@ public class Checkout {
                                 flag = true;
                             }
                         }
+                    }
+                    if (!flag) {
+                        System.out.println("Checkout " + singleFile.getName() + " failed.");
+                        break;
                     }
                 }
             }
