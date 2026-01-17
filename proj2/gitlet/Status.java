@@ -70,9 +70,8 @@ public class Status implements java.io.Serializable {
             for (File currentFile : Main.CWD.listFiles()) {
                 if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0 &&  lastCommit.HashMapBlobs.containsKey(currentFile.getName())) {
 
-                    HashMap<String, Blobs> mapBlobs = lastCommit.HashMapBlobs.get(currentFile.getName());
-                    HashMap<String, Blobs> mapBlobs1 = mapBlobs;
-                    Blobs currentBlob = (Blobs) mapBlobs1.values();
+                    HashMap<String, Blobs> innerMap = lastCommit.HashMapBlobs.get(currentFile.getName());
+                    Blobs currentBlob = innerMap.values().iterator().next();
 
                     if (!currentBlob.getContent().equals(Files.readAllBytes(currentFile.toPath()))) {
                         if (currentStage != null && !currentStage.stages.containsKey(currentFile.getName())) {
@@ -123,7 +122,7 @@ public class Status implements java.io.Serializable {
                             if (currentStage != null) {
                                 File currentFile = new File(Main.CWD, fileName);
                                 Blobs currentBlob = (Blobs) currentStage.stages.get(fileName);
-                                if (Files.readAllBytes(currentFile.toPath()) != currentBlob.getContent()) {
+                                if (!Files.readAllBytes(currentFile.toPath()).equals(currentBlob.getContent())) {
                                     System.out.println(fileName + " (modified)");
                                 }
                             }
