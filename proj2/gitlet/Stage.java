@@ -35,7 +35,6 @@ public class Stage implements Serializable {
         if (existing.exists()) {
             Blobs newBlob = new Blobs(filename);
             File commitFile = new File(Objects, newBlob.ID);
-
             /*
                 If the current working version of the file is identical to the version in the current commit,
                 do not stage it to be added, and remove it from the staging area if it is already there
