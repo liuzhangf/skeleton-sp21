@@ -41,23 +41,30 @@ public class Checkout {
             oiss.close();
 
             boolean flag = true;
-            /*
-                没有被当前的commit跟踪
-             */
 
+            /*没有被当前的commit跟踪*/
             String targetCheckoutHash = Utils.readContentsAsString(new File(Main.Branches, Branch));
             File targetCheckoutCommit = new File(Main.Objects, targetCheckoutHash);
             ObjectInputStream oos = new ObjectInputStream(new FileInputStream(targetCheckoutCommit));
             Commit targetCommit1 = (Commit) oos.readObject();
             oos.close();
             ObjectInputStream inppp = new ObjectInputStream(new FileInputStream(Main.Stage));
-            Stage stage = (Stage) inppp.readObject();
+            Stage stage = null;
+            if (Main.Stage.length() > 0) {
+                stage = (Stage) inppp.readObject();
+            }
 
             for (File singleFile : Main.CWD.listFiles()) {
                 if (singleFile.isFile()) {
-                    if (!lastCommit1.HashMapBlobs.containsKey(singleFile.getName()) && targetCommit1.HashMapBlobs.containsKey(singleFile.getName())
-                        && !stage.stages.containsKey(singleFile.getName())) {
+                    if (!lastCommit1.HashMapBlobs.containsKey(singleFile.getName()) && targetCommit1.HashMapBlobs.containsKey(singleFile.getName())) {
                         flag = false;
+                    }
+                    if (!flag) {
+                        if (stage != null) {
+                            if (!stage.stages.containsKey(singleFile.getName())) {
+                                flag = true;
+                            }
+                        }
                     }
                 }
             }
