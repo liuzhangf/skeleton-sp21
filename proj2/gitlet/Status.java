@@ -25,8 +25,8 @@ public class Status implements java.io.Serializable {
                 }
             }
         }
-        System.out.println();
 
+        System.out.println();
         System.out.println("=== Staged Files ===");
         if (Main.Stage != null && Main.Stage.length() > 0) {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
@@ -74,17 +74,21 @@ public class Status implements java.io.Serializable {
                     HashMap<String, Blobs> innerMap = lastCommit.HashMapBlobs.get(currentFile.getName());
                     Blobs currentBlob = innerMap.values().iterator().next();
 
-                    if (!currentBlob.getContent().equals(Files.readAllBytes(currentFile.toPath()))) {
+                    byte[] workBytes = Files.readAllBytes(currentFile.toPath());
+                    byte[] stageBytes = currentBlob.getContent();
+
+                    if (!Arrays.equals(stageBytes, workBytes)) {
                         if (currentStage != null && !currentStage.stages.containsKey(currentFile.getName())) {
                         /*
                             Tracked in the current commit, changed in the working directory,
                             but not staged;  这里并不包含删除的逻辑
                          */
+                            System.out.println("1");
                             System.out.println(currentFile.getName() + " (modified)");
                         }
                         else {
                             if (currentStage == null) {
-
+                                System.out.println("2");
                                 System.out.println(currentFile.getName() + " (modified)");
                             }
                         }
@@ -99,8 +103,14 @@ public class Status implements java.io.Serializable {
             for (String fileName : lastCommit.HashMapBlobs.keySet()) {
                 if ( lastCommit != null && lastCommit.HashMapBlobs != null ) {
                     if (! new File(Main.CWD, fileName).exists()) {
-                        if (!currentStage.deleteFiles.contains(fileName)) {
-
+                        if (currentStage != null) {
+                            if (!currentStage.deleteFiles.contains(fileName)) {
+                                System.out.println("3");
+                                System.out.println(fileName + " (deleted)");
+                            }
+                        }
+                        else {
+                            System.out.println("4");
                             System.out.println(fileName + " (deleted)");
                         }
                     }
@@ -112,24 +122,25 @@ public class Status implements java.io.Serializable {
              */
             if (currentStage != null) {
                 for (String fileName : currentStage.stages.keySet()) {
-                        if (!new File(Main.CWD, fileName).exists()) {
-                            /*压根不存在，就是删除*/
-                            System.out.println(fileName + " (deleted)");
-                        }
+                    if (!new File(Main.CWD, fileName).exists()) {
+                        /*压根不存在，就是删除*/
+                        System.out.println("5");
+                        System.out.println(fileName + " (deleted)");
+                    }
+                    else {
+                        /*存在但是变了，就是修改*/
+                        File currentFile = new File(Main.CWD, fileName);
+                        if(currentFile.exists() && currentFile.isFile()) {
+                            Blobs currentBlob = currentStage.stages.get(fileName);
+                            byte[] workBytes = Files.readAllBytes(currentFile.toPath());
+                            byte[] stageBytes = currentBlob.getContent();
 
-                        else {
-                            /*存在但是变了，就是修改*/
-                            File currentFile = new File(Main.CWD, fileName);
-                            if(currentFile.exists() && currentFile.isFile()) {
-                                Blobs currentBlob = currentStage.stages.get(fileName);
-                                byte[] workBytes = Files.readAllBytes(currentFile.toPath());
-                                byte[] stageBytes = currentBlob.getContent();
-
-                                if (!Arrays.equals(workBytes, stageBytes)) {
-                                    System.out.println(fileName + " (modified)");
-                                }
+                            if (!Arrays.equals(workBytes, stageBytes)) {
+                                System.out.println("6");
+                                System.out.println(fileName + " (modified)");
                             }
                         }
+                    }
                 }
             }
         }
@@ -137,7 +148,6 @@ public class Status implements java.io.Serializable {
 
         System.out.println("=== Untracked Files ===");
         if (Main.Stage != null) {
-
             Stage currentStage;
             if (Main.Stage != null && Main.Stage.length() > 0) {
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
