@@ -1,8 +1,4 @@
 package gitlet;
-
-
-import jdk.javadoc.internal.doclets.formats.html.markup.Head;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
