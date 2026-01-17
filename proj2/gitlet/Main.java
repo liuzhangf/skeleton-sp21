@@ -73,13 +73,26 @@ public class Main {
 
     public static void checkout(String[] args) throws IOException, ClassNotFoundException {
         if (args.length == 3) {
-            new Checkout(args[2], "");
+            if (args[2].equals("--")) {
+                new Checkout(args[2], "");
+            }
+            else {
+                System.out.println("Incorrect operands.");
+            }
         }
         else if (args.length == 4) {
-            new Checkout(args[3], args[1]);
+            if (args[2].equals("--")) {
+                new Checkout(args[3], args[1]);
+            }
+            else {
+                System.out.println("Incorrect operands.");
+            }
+        }
+        else if (args.length == 2) {
+            new Checkout("", args[1]);
         }
         else {
-            new Checkout("", args[1]);
+            System.out.println("Incorrect operands.");
         }
     }
 
