@@ -45,7 +45,13 @@ public class Remove {
 
         if (LastCommit != null) {
             if (LastCommit.HashMapBlobs.containsKey(file)) {
-                Stage newstage = new Stage();
+                ObjectInputStream inp = new ObjectInputStream(new FileInputStream(Main.Stage));
+                Stage newstage = (Stage) inp.readObject();
+                if (Main.Stage.length() > 0){
+                    newstage.deleteFiles.add(file);
+                }else {
+                    newstage = new Stage();
+                }
                 newstage.deleteFiles.add(file);
                 ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(gitlet.Main.Stage));
                 oos2.writeObject(newstage);

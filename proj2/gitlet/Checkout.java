@@ -22,11 +22,27 @@ public class Checkout {
 
     private void checkoutOverride1(String Branch) throws IOException, ClassNotFoundException {
 
-        String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, Branch));
-        if (lastCommitHashCode == null || lastCommitHashCode.length() == 0) {
-
+        File checkoutDir = new File(Main.Branches, Branch);
+        if (!checkoutDir.exists()) {
+            System.out.println("No such branch exists.");
         }
-        else {
+        else if (Utils.readContentsAsString(Main.Head).equals(Branch)) {
+            System.out.println("No need to checkout the current branch.");
+        }
+        else  {
+            String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, Branch));
+            File checkoutCommit = new File(Main.Objects, lastCommitHashCode);
+            ObjectInputStream oiss = new ObjectInputStream(new FileInputStream(checkoutCommit));
+            Commit lastCommit1 = (Commit) oiss.readObject();
+            oiss.close();
+
+            for(String file : lastCommit1.HashMapBlobs.keySet()) {
+                if (new File(Main.CWD, file).exists()) {
+                    System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                    return;
+                }
+            }
+
             File lastCommitFile = new File(Main.Objects,lastCommitHashCode);
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
             Commit lastCommit = (Commit) ois.readObject();
@@ -43,6 +59,7 @@ public class Checkout {
                     Utils.writeContents(writeFile,blobs.getContent());
                 }
             }
+
         }
     }
 
