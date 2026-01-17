@@ -30,8 +30,7 @@ public class Checkout {
             System.out.println("No need to checkout the current branch.");
         }
         else  {
-            /*
-                最开始的一段是用来判断是否具有未被最近的一次commit追踪， 同时会被覆盖的文件
+            /*最开始的一段是用来判断是否具有未被最近的一次commit追踪， 同时会被覆盖的文件
              */
             String newBranchh = Utils.readContentsAsString((Main.Head));
             String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, newBranchh));
@@ -42,13 +41,14 @@ public class Checkout {
 
             boolean flag = true;
 
-            /*没有被当前的commit跟踪*/
+            /*没有被目标的commit跟踪*/
             String targetCheckoutHash = Utils.readContentsAsString(new File(Main.Branches, Branch));
             File targetCheckoutCommit = new File(Main.Objects, targetCheckoutHash);
             ObjectInputStream oos = new ObjectInputStream(new FileInputStream(targetCheckoutCommit));
             Commit targetCommit1 = (Commit) oos.readObject();
             oos.close();
             Stage stage = null;
+
             if (Main.Stage.length() > 0) {
                 ObjectInputStream inppp = new ObjectInputStream(new FileInputStream(Main.Stage));
                 stage = (Stage) inppp.readObject();
@@ -61,7 +61,7 @@ public class Checkout {
                     }
                     if (!flag) {
                         if (stage != null) {
-                            if (!stage.stages.containsKey(singleFile.getName())) {
+                            if (stage.stages.containsKey(singleFile.getName())) {
                                 flag = true;
                             }
                         }
@@ -86,6 +86,9 @@ public class Checkout {
                 HashMap<String, Blobs> HashBlobs = lastCommit.HashMapBlobs.get(file);
                 File writeFile = new File(Main.CWD,file);
                 clearFile(writeFile);
+                if (HashBlobs.size() == 0) {
+                    continue;
+                }
                 for (Blobs blobs : HashBlobs.values()) {
                     Utils.writeContents(writeFile,blobs.getContent());
                 }
