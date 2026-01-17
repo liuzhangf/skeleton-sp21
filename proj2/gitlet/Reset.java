@@ -8,15 +8,15 @@ import static gitlet.Stage.clearFile;
 
 public class Reset {
     public Reset(String Commitid) throws IOException, ClassNotFoundException {
-        Reset(Commitid);
+        Reset.Reset(Commitid);
         deleteThisCommit(Commitid);
         followUp();
     }
 
     /*
-        尝试恢复当前的全部的
+        尝试恢复当前的全部的, Head也写入
      */
-    private void Reset(String Commitid) throws IOException, ClassNotFoundException {
+    private static void Reset(String Commitid) throws IOException, ClassNotFoundException {
         File commitidFile = new File(Main.Objects, Commitid);
         if (!commitidFile.exists()) {
             System.out.println("No commit with that id exists.");
@@ -47,8 +47,7 @@ public class Reset {
         File commitidFile = new File(Main.Objects, Commitid);
         ObjectInputStream inp = new ObjectInputStream(new FileInputStream(commitidFile));
         Commit thisCommit = (Commit) inp.readObject();
-        /*
-            读入当前的commit, 如果目标commit不存在，
+        /*读入当前的commit, 如果目标commit不存在，
             但是当前的commit存在，那么就删除。
         */
         String currentBranches = Utils.readContentsAsString(Main.Head);
@@ -60,9 +59,13 @@ public class Reset {
 
         for (String file : currentCommit.HashMapBlobs.keySet()) {
             if (!thisCommit.HashMapBlobs.containsKey(file)) {
-                currentCommit.HashMapBlobs.remove(file);
+                File workspaceFile = new File(Main.CWD, file);
+                if (workspaceFile.exists()) {
+                    workspaceFile.delete();
+                }
             }
         }
+
     }
 
     private void followUp() throws IOException {
