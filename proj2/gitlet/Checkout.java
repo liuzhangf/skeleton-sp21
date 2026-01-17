@@ -48,9 +48,9 @@ public class Checkout {
             ObjectInputStream oos = new ObjectInputStream(new FileInputStream(targetCheckoutCommit));
             Commit targetCommit1 = (Commit) oos.readObject();
             oos.close();
-            ObjectInputStream inppp = new ObjectInputStream(new FileInputStream(Main.Stage));
             Stage stage = null;
             if (Main.Stage.length() > 0) {
+                ObjectInputStream inppp = new ObjectInputStream(new FileInputStream(Main.Stage));
                 stage = (Stage) inppp.readObject();
             }
 
