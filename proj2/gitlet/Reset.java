@@ -2,21 +2,16 @@ package gitlet;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Objects;
 
-import static gitlet.Stage.clearFile;
 
 public class Reset {
     public Reset(String Commitid) throws IOException, ClassNotFoundException {
-        Reset.Reset(Commitid);
+        Reset1(Commitid);
         deleteThisCommit(Commitid);
         followUp(Commitid);
     }
-
-    /*
-        尝试恢复当前的全部的, Head也写入
-     */
-    private static void Reset(String Commitid) throws IOException, ClassNotFoundException {
+    /*尝试恢复当前的全部的, Head也写入*/
+    private static void Reset1(String Commitid) throws IOException, ClassNotFoundException {
         File commitidFile = new File(Main.Objects, Commitid);
         if (!commitidFile.exists()) {
             System.out.println("No commit with that id exists.");
@@ -74,6 +69,8 @@ public class Reset {
         Commit thisCommit = (Commit) inp.readObject();
         inp.close();
         Utils.writeContents(Main.Head, thisCommit.witchBranch);
+        File branchesFile = new File(Main.Branches, thisCommit.witchBranch);
+        Utils.writeContents(branchesFile, Commitid);
     }
     public static void clearFile(File file) throws IOException {
         new FileOutputStream(file).close();
