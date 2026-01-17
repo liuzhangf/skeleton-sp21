@@ -25,7 +25,7 @@ public class Status implements java.io.Serializable {
         System.out.println();
 
         System.out.println("=== Staged Files ===");
-        if (Main.Stage != null) {
+        if (Main.Stage != null && Main.Stage.length() > 0) {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
             Stage currentStage = (Stage) ois.readObject();
             if (currentStage != null) {
@@ -37,7 +37,7 @@ public class Status implements java.io.Serializable {
         System.out.println();
 
         System.out.println("=== Removed Files ===");
-        if (Main.Stage != null) {
+        if (Main.Stage != null && Main.Stage.length() > 0) {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
             Stage currentStage = (Stage) ois.readObject();
             if (currentStage != null) {
@@ -68,54 +68,95 @@ public class Status implements java.io.Serializable {
                     Blobs currentBlob = (Blobs) mapBlobs1.values();
 
                     if (!currentBlob.getContent().equals(Files.readAllBytes(currentFile.toPath()))) {
-                        if (!currentStage.stages.containsKey(currentFile.getName())) {
+                        if (Main.Stage != null && Main.Stage.length() > 0 &&!currentStage.stages.containsKey(currentFile.getName())) {
                         /*
                             Tracked in the current commit, changed in the working directory,
                             but not staged;  这里并不包含删除的逻辑
                          */
                             System.out.println(currentFile.getName() + " (modified)");
                         }
-                    }
-                }
-            }
-
-
-            for (String fileName : lastCommit.HashMapBlobs.keySet()) {
-                if ( lastCommit != null && lastCommit.HashMapBlobs != null && lastCommit.HashMapBlobs.containsKey(fileName)) {
-                    if (! new File(Main.CWD, fileName).exists()) {
-                        if (currentStage.deleteFiles.contains(fileName)) {
-                            System.out.println(fileName + " (deleted)");
+                        else {
+                            if (Main.Stage != null && Main.Stage.length() == 0) {
+                                System.out.println(currentFile.getName() + " (modified)");
+                            }
                         }
                     }
                 }
             }
 
             /*
+                Not staged for removal, but tracked in the current
+                commit and deleted from the working directory.
+             */
+            for (String fileName : lastCommit.HashMapBlobs.keySet()) {
+                if ( lastCommit != null && lastCommit.HashMapBlobs != null ) {
+                    if (! new File(Main.CWD, fileName).exists()) {
+                        if (!currentStage.deleteFiles.contains(fileName)) {
+                            System.out.println(fileName + " (deleted)");
+                        }
+                    }
+                }
+            }
+            /*
                 Staged for addition, but with different contents than in the working directory;
                 Staged for addition, but deleted in the working directory
              */
-            for (String fileName : currentStage.stages.keySet()) {
-                if (!new File(Main.CWD, fileName).exists()) {
-                    /*
-                        压根不存在，就是删除
-                     */
-                    System.out.println(fileName + " (deleted)");
+            if (Main.Stage != null && Main.Stage.length() > 0) {
+                for (String fileName : currentStage.stages.keySet()) {
+                    if (!new File(Main.CWD, fileName).exists()) {
+                        /*压根不存在，就是删除*/
+                        System.out.println(fileName + " (deleted)");
+                    }
+                    else {
+                        /*存在但是变了，就是修改*/
+                        if (Main.Stage != null && Main.Stage.length() > 0) {
+                            File currentFile = new File(Main.CWD, fileName);
+                            Blobs currentBlob = (Blobs) currentStage.stages.get(fileName);
+                            if (Files.readAllBytes(currentFile.toPath()) != currentBlob.getContent()) {
+                                System.out.println(fileName + " (modified)");
+                            }
+                        }
+                    }
                 }
-                else {
-                    /*
-                        存在但是变了，就是修改
-                     */
-                    File currentFile = new File(Main.CWD, fileName);
-                    Blobs currentBlob = (Blobs) currentStage.stages.get(fileName);
-                    if (Files.readAllBytes(currentFile.toPath()) != currentBlob.getContent()) {
+            }
+        }
+        System.out.println();
+
+        System.out.println("=== Untracked Files ===");
+        if (Main.Stage != null) {
+
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
+            Stage currentStage = (Stage) ois.readObject();
+
+            File lastBranches = new File( Main.Branches, Utils.readContentsAsString(Main.Head));
+            File lastCommitFile = new File(Main.Objects, Utils.readContentsAsString(lastBranches));
+
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(lastCommitFile));
+            Commit lastCommit = (Commit) ois.readObject();
+
+            for (File currentFile : Main.CWD.listFiles()) {
+                if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0 && ! lastCommit.HashMapBlobs.containsKey(currentFile.getName())) {
+                    if (Main.Stage != null && Main.Stage.length() > 0) {
+                        if (!currentStage.stages.containsKey(currentFile.getName())) {
+                            System.out.println(currentFile.getName() + " (modified)");
+                        }
+                    }
+                    else if (Main.Stage != null && Main.Stage.length() == 0) {
+                        System.out.println(currentFile.getName() + " (modified)");
+                    }
+                }
+                else if (lastCommit != null && lastCommit.HashMapBlobs.size() == 0) {
+                    if (Main.Stage != null && Main.Stage.length() > 0) {
+                        if (!currentStage.stages.containsKey(currentFile.getName())) {
+                            System.out.println(currentFile.getName() + " (modified)");
+                        }
+                    }
+                    else if (Main.Stage != null && Main.Stage.length() == 0) {
                         System.out.println(currentFile.getName() + " (modified)");
                     }
                 }
             }
-
         }
-        System.out.println();
-        System.out.println("=== Untracked Files ===");
         System.out.println();
     }
 }
