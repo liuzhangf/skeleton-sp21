@@ -73,7 +73,7 @@ public class Main {
 
     public static void checkout(String[] args) throws IOException, ClassNotFoundException {
         if (args.length == 3) {
-            if (args[2].equals("--")) {
+            if (args[1].equals("--")) {
                 new Checkout(args[2], "");
             }
             else {
