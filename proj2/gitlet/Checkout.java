@@ -30,17 +30,45 @@ public class Checkout {
             System.out.println("No need to checkout the current branch.");
         }
         else  {
+            /*
+                最开始的一段是用来判断是否具有未被最近的一次commit追踪， 同时会被覆盖的文件
+             */
             String lastCommitHashCode = Utils.readContentsAsString(new File(Main.Branches, Branch));
             File checkoutCommit = new File(Main.Objects, lastCommitHashCode);
             ObjectInputStream oiss = new ObjectInputStream(new FileInputStream(checkoutCommit));
             Commit lastCommit1 = (Commit) oiss.readObject();
             oiss.close();
 
-            for(String file : lastCommit1.HashMapBlobs.keySet()) {
-                if (new File(Main.CWD, file).exists()) {
-                    System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                    return;
+            boolean flag = true;
+            /*
+                没有被当前的commit跟踪
+             */
+            for (File singleFile : Main.CWD.listFiles()) {
+                if (singleFile.isFile()) {
+                    if (!lastCommit1.HashMapBlobs.containsKey(singleFile.getName())) {
+                        flag = false;
+                    }
                 }
+            }
+            boolean flag2 = true;
+            if (!flag) {
+                String targetCheckoutHash = Utils.readContentsAsString(new File(Main.Branches, Branch));
+                File targetCheckoutCommit = new File(Main.Objects, targetCheckoutHash);
+                ObjectInputStream oos = new ObjectInputStream(new FileInputStream(targetCheckoutCommit));
+                Commit targetCommit1 = (Commit) oos.readObject();
+                oos.close();
+                for (File singleFile : Main.CWD.listFiles()) {
+                    if (singleFile.isFile()) {
+                        if (!targetCommit1.HashMapBlobs.containsKey(singleFile.getName())) {
+                            flag2 = false;
+                        }
+                    }
+                }
+            }
+
+            if (!flag2) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                return;
             }
 
             File lastCommitFile = new File(Main.Objects,lastCommitHashCode);
