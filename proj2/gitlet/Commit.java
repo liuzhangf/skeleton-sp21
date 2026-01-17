@@ -83,7 +83,11 @@ public class Commit implements Serializable {
             File parentCommitFile = new File(gitlet.Main.Objects,lastCommitID1);
             fis = new ObjectInputStream(new FileInputStream(parentCommitFile));
             Commit lastCommit = (Commit) fis.readObject();
-            this.HashMapBlobs = lastCommit.HashMapBlobs;
+            this.HashMapBlobs = new HashMap<>();
+            for (Map.Entry<String, HashMap<String, Blobs>> entry : lastCommit.HashMapBlobs.entrySet()) {
+                HashMap<String, Blobs> innerCopy = new HashMap<>(entry.getValue());
+                this.HashMapBlobs.put(entry.getKey(), innerCopy);
+            }
         }
     }
 

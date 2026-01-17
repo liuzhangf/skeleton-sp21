@@ -48,7 +48,7 @@ public class Checkout {
             Commit lastCommit = (Commit) ois.readObject();
             ois.close();
             for (File cwdFile : Main.CWD.listFiles()){
-                cwdFile.delete();
+                if (cwdFile.isFile()) cwdFile.delete();
             }
             Utils.writeContents(Main.Head, Branch);
             for (String file : lastCommit.HashMapBlobs.keySet()) {
