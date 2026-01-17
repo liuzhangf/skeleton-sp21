@@ -55,7 +55,7 @@ public class Stage implements Serializable {
              */
 
             if (this.deleteFiles.contains(filename)) {
-                System.out.println("Delete file " + filename);
+            //    System.out.println("Delete file " + filename);
                 this.deleteFiles.remove(filename);
             }
             else{
