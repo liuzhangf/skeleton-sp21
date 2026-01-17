@@ -172,9 +172,6 @@ public class Main {
                     Stage stage2 = (Stage) ois.readObject();
                     ois.close();
                     Commit newCommit = new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
-                    newCommit.witchBranch = Utils.readContentsAsString(Main.Head);
-                //    System.out.println("This Id is " + newCommit.ID );
-                //    System.out.println("Last ID is " + newCommit.lastCommitID1);
                 }
             }
         }

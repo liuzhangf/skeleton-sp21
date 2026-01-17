@@ -10,7 +10,7 @@ public class Reset {
     public Reset(String Commitid) throws IOException, ClassNotFoundException {
         Reset.Reset(Commitid);
         deleteThisCommit(Commitid);
-        followUp();
+        followUp(Commitid);
     }
 
     /*
@@ -36,7 +36,6 @@ public class Reset {
                     Utils.writeContents(writeFile,blobs.getContent());
                 }
             }
-            Utils.writeContents(Main.Head, thisCommit.witchBranch);
         }
     }
 
@@ -47,16 +46,17 @@ public class Reset {
         File commitidFile = new File(Main.Objects, Commitid);
         ObjectInputStream inp = new ObjectInputStream(new FileInputStream(commitidFile));
         Commit thisCommit = (Commit) inp.readObject();
-        /*读入当前的commit, 如果目标commit不存在，
+        /*
+            读入当前的commit, 如果目标commit不存在，
             但是当前的commit存在，那么就删除。
         */
         String currentBranches = Utils.readContentsAsString(Main.Head);
         File branchesFile = new File(Main.Branches, currentBranches);
+        //if (!branchesFile.exists()) {return;}
         String currentCommitId = Utils.readContentsAsString(branchesFile);
         inp = new ObjectInputStream(new FileInputStream(new File(Main.Objects, currentCommitId)));
         Commit currentCommit = (Commit) inp.readObject();
         inp.close();
-
         for (String file : currentCommit.HashMapBlobs.keySet()) {
             if (!thisCommit.HashMapBlobs.containsKey(file)) {
                 File workspaceFile = new File(Main.CWD, file);
@@ -65,11 +65,15 @@ public class Reset {
                 }
             }
         }
-
     }
 
-    private void followUp() throws IOException {
+    private void followUp(String Commitid) throws IOException, ClassNotFoundException {
         clearFile(Main.Stage);
+        File commitidFile = new File(Main.Objects, Commitid);
+        ObjectInputStream inp = new ObjectInputStream(new FileInputStream(commitidFile));
+        Commit thisCommit = (Commit) inp.readObject();
+        inp.close();
+        Utils.writeContents(Main.Head, thisCommit.witchBranch);
     }
     public static void clearFile(File file) throws IOException {
         new FileOutputStream(file).close();

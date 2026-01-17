@@ -49,6 +49,7 @@ public class Commit implements Serializable {
            读出来上一次commit文件里的东西
            然后再添加本次Commit的add stage的文件
          */
+        this.witchBranch = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
         readOldBlobs();
 
         if (BolbID != null && text != null) {
