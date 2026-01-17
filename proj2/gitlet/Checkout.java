@@ -81,7 +81,7 @@ public class Checkout {
                 return;
             }
 
-            File lastCommitFile = new File(Main.Objects,lastCommitHashCode);
+            File lastCommitFile = new File(Main.Objects,targetCheckoutHash);
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
             Commit lastCommit = (Commit) ois.readObject();
             ois.close();
