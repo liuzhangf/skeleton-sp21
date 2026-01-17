@@ -45,9 +45,10 @@ public class Remove {
 
         if (LastCommit != null) {
             if (LastCommit.HashMapBlobs.containsKey(file)) {
-                ObjectInputStream inp = new ObjectInputStream(new FileInputStream(Main.Stage));
-                Stage newstage = (Stage) inp.readObject();
+                Stage newstage;
                 if (Main.Stage.length() > 0){
+                    ObjectInputStream inp = new ObjectInputStream(new FileInputStream(Main.Stage));
+                    newstage = (Stage) inp.readObject();
                     newstage.deleteFiles.add(file);
                 }else {
                     newstage = new Stage();
