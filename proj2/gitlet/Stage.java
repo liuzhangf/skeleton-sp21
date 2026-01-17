@@ -3,19 +3,15 @@ package gitlet;
 import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
-
 import static gitlet.Main.Objects;
 import static gitlet.Main.Stage;
-import static gitlet.Main.Commit;
 
 public class Stage implements Serializable {
 
     HashMap <String, Blobs > stages; // <FILEPATH, HASHCODE>
-
     LinkedList <String> deleteFiles = new LinkedList <> ();
 
     public Stage() throws IOException, ClassNotFoundException {
-
         if(Stage.length() > 0) {
             ObjectInputStream input = new ObjectInputStream(new FileInputStream(Stage));
             this.stages = (HashMap<String, Blobs>) input.readObject();
@@ -37,16 +33,19 @@ public class Stage implements Serializable {
 
         File existing = new File(filename);
         if (existing.exists()) {
-
             Blobs newBlob = new Blobs(filename);
             File commitFile = new File(Objects, newBlob.ID);
 
             /*
-            If the current working version of the file is identical to the version in the current commit,
-            do not stage it to be added, and remove it from the staging area if it is already there
-            (as can happen when a file is changed, added, and then changed back to it’s original version).
+                If the current working version of the file is identical to the version in the current commit,
+                do not stage it to be added, and remove it from the staging area if it is already there
+                (as can happen when a file is changed, added, and then changed back to it’s original version).
             */
 
+            /*
+                这里的话 是没解决branch的问题。
+                可能对于不同的branch  确对应完全相同的文件。
+             */
             if (commitFile.exists()) { //commitFile 直接是用内容比较的
                 if (stages.containsKey( filename )) {
                     if (stages.get( filename).equals(newBlob)) {
@@ -76,5 +75,4 @@ public class Stage implements Serializable {
     public static void clearFile(File file) throws IOException {
         new FileOutputStream(file).close();
     }
-
 }

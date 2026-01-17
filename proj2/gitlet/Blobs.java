@@ -9,6 +9,7 @@ public class Blobs implements Serializable {
     public String ID;
     private byte[] content;
     String FileName;
+    String whichbranch;
 
     public Blobs(String Filename) throws IOException {
         File file = new File(Filename);
@@ -18,8 +19,9 @@ public class Blobs implements Serializable {
             byte[] content = new byte[(int) Filename.length()];
             ois.read(content);
              */
+            this.whichbranch = Utils.readContentsAsString(Main.Head);
             this.content = Files.readAllBytes(file.toPath());
-            this.ID = Utils.sha1(content);
+            this.ID = Utils.sha1(content, whichbranch);
         }
         this.FileName = Filename;
     }

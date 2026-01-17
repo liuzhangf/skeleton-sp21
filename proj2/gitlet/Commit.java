@@ -17,8 +17,7 @@ public class Commit implements Serializable {
     String lastCommitID2 = "";
     String witchBranch = "";
 
-    /*
-        传进来的参数的含义如下 ：
+    /*传进来的参数的含义如下 ：
         timestamp :时间戳
         message ： 要输出的信息
         parentID1 / parentID2 ：可能会存在两个或者更多的
@@ -32,6 +31,7 @@ public class Commit implements Serializable {
         this.message = message;
         HashMapBlobs = new HashMap<>();
         this.blobsList = new LinkedList<>();
+        this.witchBranch = Utils.readContentsAsString(Head);
         String s1 = "";
         String s2 = "";
         for (int i = 0; i < text.length; i++) {
@@ -41,7 +41,7 @@ public class Commit implements Serializable {
             s1 += BolbID[i];
         }
         this.lastCommitID1 = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
-        this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2);
+        this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2, witchBranch);
         if (stage != null && stage.stages.size() > 0) {
             for (Blobs blob : stage.stages.values()) {
                 blobsList.add(blob);
@@ -51,7 +51,7 @@ public class Commit implements Serializable {
            读出来上一次commit文件里的东西
            然后再添加本次Commit的add stage的文件
          */
-        this.witchBranch = Utils.readContentsAsString(Head);
+
         readOldBlobs();
 
         if (BolbID != null && text != null) {

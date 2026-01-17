@@ -93,7 +93,7 @@ public class Checkout {
                 HashMap<String, Blobs> HashBlobs = lastCommit.HashMapBlobs.get(file);
                 File writeFile = new File(Main.CWD,file);
                 clearFile(writeFile);
-                if (HashBlobs.size() == 0) {
+                if (HashBlobs == null || HashBlobs.size() == 0 ) {
                     continue;
                 }
                 for (Blobs blobs : HashBlobs.values()) {
