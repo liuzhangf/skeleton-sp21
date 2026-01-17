@@ -64,6 +64,9 @@ public class Main {
                 case "reset" :
                     new Reset(args[1]);
                     break;
+                case "status" :
+                    new Status();
+                    break;
             }
         }
         catch (Exception e) {
