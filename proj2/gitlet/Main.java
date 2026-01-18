@@ -158,7 +158,7 @@ public class Main {
 
     public static void commit (String[] args) throws IOException, ClassNotFoundException {
 
-        if (args.length != 2) {
+        if (args.length != 2 || args[1].equals("")) {
             System.out.println("Please enter a commit message.");
         }
         else {

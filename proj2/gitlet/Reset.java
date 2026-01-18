@@ -1,10 +1,12 @@
 package gitlet;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.HashMap;
 
 
 public class Reset {
+
     public Reset(String Commitid) throws IOException, ClassNotFoundException {
         Reset1(Commitid);
         deleteThisCommit(Commitid);
@@ -35,14 +37,11 @@ public class Reset {
     }
 
     private void deleteThisCommit(String Commitid) throws IOException, ClassNotFoundException {
-        /*
-            读入目标的Commit
-         */
+        /*读入目标的Commit*/
         File commitidFile = new File(Main.Objects, Commitid);
         ObjectInputStream inp = new ObjectInputStream(new FileInputStream(commitidFile));
         Commit thisCommit = (Commit) inp.readObject();
-        /*
-            读入当前的commit, 如果目标commit不存在，
+        /*  读入当前的commit, 如果目标commit不存在，
             但是当前的commit存在，那么就删除。
         */
         String currentBranches = Utils.readContentsAsString(Main.Head);
@@ -69,9 +68,10 @@ public class Reset {
         inp.close();
         Utils.writeContents(Main.Head, thisCommit.witchBranch);
         File branchesFile = new File(Main.Branches, thisCommit.witchBranch);
-    //    Utils.writeContents(branchesFile, Commitid);
+        Utils.writeContents(branchesFile, Commitid);
     }
+
     public static void clearFile(File file) throws IOException {
-        new FileOutputStream(file).close();
+        Files.write(file.toPath(), new byte[0]);
     }
 }
