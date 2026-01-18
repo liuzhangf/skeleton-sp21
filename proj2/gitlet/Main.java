@@ -88,6 +88,24 @@ public class Main {
         }
         else if (args.length == 4) {
             if (args[2].equals("--")) {
+                /*判断短哈希*/
+                if (args[1].length() < 40) {
+                    int matchCount = 0;
+                    String fullCommitId = args[1];
+                    for (File file : Objects.listFiles()) {
+                        String fileName = file.getName();
+                        if (fileName.startsWith(args[1]) && fileName.length() == 40) {
+                            fullCommitId = fileName;
+                            matchCount++;
+                        }
+                    }
+                    if (matchCount == 1) {
+                        new Checkout(args[2], fullCommitId);
+                    }
+                    else {
+                        System.out.println("No commit with that id exists.");
+                    }
+                }
                 new Checkout(args[3], args[1]);
             }
             else {

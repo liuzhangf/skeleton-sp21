@@ -13,32 +13,35 @@ public class Reset {
         if (!commitidFile.exists()) {
             System.out.println("No commit with that id exists.");
         }
-        /*这个是要reset到的commitid*/
-        Commit thisCommit = null;
-        if (commitidFile != null && commitidFile.length() > 0) {
-            ObjectInputStream in = new ObjectInputStream(Files.newInputStream(commitidFile.toPath()));
-            thisCommit = (Commit) in.readObject();
-            in.close();
-        }
 
-        boolean flag = false;
-        for (File file : Main.CWD.listFiles()) {
-            if (thisCommit!= null && thisCommit.HashMapBlobs != null && file.isFile()) {
-                /*判断是否可能会被覆盖*/
-                if (thisCommit.HashMapBlobs.containsKey(file.getName())) {
-                /*判定是不是被track*/
-                    if  (!judgeTrack (file)) {
-                        System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                        flag = true;  break;
+        else {
+            /*这个是要reset到的commitid*/
+            Commit thisCommit = null;
+            if (commitidFile != null && commitidFile.length() > 0) {
+                ObjectInputStream in = new ObjectInputStream(Files.newInputStream(commitidFile.toPath()));
+                thisCommit = (Commit) in.readObject();
+                in.close();
+            }
+
+            boolean flag = false;
+            for (File file : Main.CWD.listFiles()) {
+                if (thisCommit!= null && thisCommit.HashMapBlobs != null && file.isFile()) {
+                    /*判断是否可能会被覆盖*/
+                    if (thisCommit.HashMapBlobs.containsKey(file.getName())) {
+                        /*判定是不是被track*/
+                        if  (!judgeTrack (file)) {
+                            System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                            flag = true;  break;
+                        }
                     }
                 }
             }
-        }
 
-        if (commitidFile.exists() && !flag) {
-            Reset1(Commitid);
-            deleteThisCommit(Commitid);
-            followUp(Commitid);
+            if (commitidFile.exists() && !flag) {
+                Reset1(Commitid);
+                deleteThisCommit(Commitid);
+                followUp(Commitid);
+            }
         }
     }
 
