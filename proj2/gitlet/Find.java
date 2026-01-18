@@ -1,13 +1,11 @@
 package gitlet;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Find implements Serializable {
 
     public Find(String message) throws IOException, ClassNotFoundException {
-
+        /*
         for (File branches : Main.Branches.listFiles()) {
 
             String lastCommitPointer = Utils.readContentsAsString(branches);
@@ -21,7 +19,7 @@ public class Find implements Serializable {
                 if (lastCommit.message.equals(message)) {
                     System.out.println(lastCommitHashCode);
                 }
-                /* 这个地方是找到*/
+                /* 这个地方是找到
                 if (lastCommitHashCode != null && lastCommitHashCode != "") {
                     lastCommitHashCode = lastCommit.lastCommitID1;
 
@@ -34,6 +32,22 @@ public class Find implements Serializable {
                     }
                 }
             }
+        }
+        */
+        boolean flag = false;
+        for (File file : Main.Objects.listFiles()) {
+            ObjectInputStream fis = new ObjectInputStream(new FileInputStream(file));
+            Object obj = fis.readObject();
+            if (obj instanceof Commit) {
+                Commit commit = (Commit) obj;
+                if (commit.message.equals(message)) {
+                    System.out.println(commit.ID);
+                    flag = true;
+                }
+            }
+        }
+        if (!flag) {
+            System.out.println("Found no commit with that message.");
         }
     }
 }

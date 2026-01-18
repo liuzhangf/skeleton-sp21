@@ -9,8 +9,11 @@ public class Reset {
 
     public Reset(String Commitid) throws IOException, ClassNotFoundException {
         Reset1(Commitid);
-        deleteThisCommit(Commitid);
-        followUp(Commitid);
+        File commitidFile = new File(Main.Objects, Commitid);
+        if (commitidFile.exists()) {
+            deleteThisCommit(Commitid);
+            followUp(Commitid);
+        }
     }
     /*尝试恢复当前的全部的, Head也写入*/
     private static void Reset1(String Commitid) throws IOException, ClassNotFoundException {
@@ -42,8 +45,7 @@ public class Reset {
         ObjectInputStream inp = new ObjectInputStream(new FileInputStream(commitidFile));
         Commit thisCommit = (Commit) inp.readObject();
         /*  读入当前的commit, 如果目标commit不存在，
-            但是当前的commit存在，那么就删除。
-        */
+            但是当前的commit存在，那么就删除*/
         String currentBranches = Utils.readContentsAsString(Main.Head);
         File branchesFile = new File(Main.Branches, currentBranches);
         String currentCommitId = Utils.readContentsAsString(branchesFile);

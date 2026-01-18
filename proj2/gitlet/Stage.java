@@ -36,29 +36,30 @@ public class Stage implements Serializable {
         if (existing.exists()) {
             Blobs newBlob = new Blobs(filename);
             File commitFile = new File(Objects, newBlob.ID);
+
             /*
                 If the current working version of the file is identical to the version in the current commit,
                 do not stage it to be added, and remove it from the staging area if it is already there
                 (as can happen when a file is changed, added, and then changed back to it’s original version).
             */
+
             /*
                 这里的话 是没解决branch的问题。
                 可能对于不同的branch  确对应完全相同的文件。
              */
+
+            if (this.deleteFiles.contains(filename)) {
+                this.deleteFiles.remove(filename);
+            }
+
             if (commitFile.exists()) { //commitFile 直接是用内容比较的
                 if (stages.containsKey( filename )) {
                     stages.remove(filename);
                 }
             }
-            /*
-            现在的问题是commitfile也存在   delefiles也有
-             */
 
-            if (this.deleteFiles.contains(filename)) {
-            //    System.out.println("Delete file " + filename);
-                this.deleteFiles.remove(filename);
-            }
-            else{
+            /*  现在的问题是commitfile也存在delefiles也有*/
+            else {
                 stages.put(filename, newBlob);
             }
 

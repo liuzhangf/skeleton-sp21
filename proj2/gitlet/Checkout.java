@@ -70,7 +70,7 @@ public class Checkout {
                         }
                     }
                     if (!flag) {
-                        System.out.println("Checkout " + singleFile.getName() + " failed.");
+                    //    System.out.println("Checkout " + singleFile.getName() + " failed.");
                         break;
                     }
                 }
