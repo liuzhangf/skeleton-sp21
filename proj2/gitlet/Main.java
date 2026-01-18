@@ -67,6 +67,9 @@ public class Main {
                 case "status" :
                     new Status();
                     break;
+                default:
+                    System.out.println("No command with that name exists.");
+                    break;
             }
         }
         catch (Exception e) {

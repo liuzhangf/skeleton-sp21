@@ -10,7 +10,19 @@ public class Reset {
     public Reset(String Commitid) throws IOException, ClassNotFoundException {
         Reset1(Commitid);
         File commitidFile = new File(Main.Objects, Commitid);
-        if (commitidFile.exists()) {
+        ObjectInputStream in = new ObjectInputStream(Files.newInputStream(commitidFile.toPath()));
+        Commit lastCommit = (Commit) in.readObject();
+        in.close();
+        boolean flag = false;
+        for (File file : Main.CWD.listFiles()) {
+            if (lastCommit.HashMapBlobs != null && file.isFile()) {
+                if (lastCommit.HashMapBlobs.containsKey(file.getName())) {
+                    System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                    flag = true;  break;
+                }
+            }
+        }
+        if (commitidFile.exists() && !flag) {
             deleteThisCommit(Commitid);
             followUp(Commitid);
         }
