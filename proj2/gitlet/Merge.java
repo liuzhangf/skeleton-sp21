@@ -13,7 +13,7 @@ public class Merge {
 
     public Merge( String mergeBranch) throws IOException, ClassNotFoundException {
         failureCases(mergeBranch);
-        boolean judgeConflict = false;
+        boolean judgeConflict = true;
         String currentBranch = Utils.readContentsAsString(Main.Head);
         File currentCommitFile = new File(Main.Objects, Utils.readContentsAsString(new File(Main.Branches, currentBranch)));
         File mergeCommitFile = new File(Main.Objects, Utils.readContentsAsString(new File(Main.Branches, mergeBranch)));
@@ -164,7 +164,9 @@ public class Merge {
              */
 
             Commit lastCommit = null;
+            Commit KmergeCommit = null;
             Stage currentStage = null;
+
             if (Main.Stage != null && Main.Stage.length() > 0){
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
                 currentStage = (Stage) ois.readObject();
@@ -177,11 +179,20 @@ public class Merge {
                 lastCommit = (Commit) in11.readObject();
                 in11.close();
             }
+
+            File mergeFile = new File(Main.Objects, Utils.readContentsAsString(new File(Main.Branches, mergeBranch)));
+            if (mergeFile != null && mergeFile.length() > 0) {
+                ObjectInputStream in11 = new ObjectInputStream(Files.newInputStream(mergeFile.toPath()));
+                KmergeCommit = (Commit) in11.readObject();
+                in11.close();
+            }
+
             for (File file : Main.CWD.listFiles()) {
                 if (lastCommit != null && lastCommit.HashMapBlobs != null && file.isFile()) {
-                    if (!lastCommit.HashMapBlobs.containsKey(file.getName())) {//如果最近的commit不存在 说明不是track的
+                    if (!lastCommit.HashMapBlobs.containsKey(file.getName()) && ! KmergeCommit.HashMapBlobs.containsKey(file.getName())) {//如果最近的commit不存在 说明不是track的
                         if (currentStage != null) {
                             if (currentStage.stages.containsKey(file.getName()) || currentStage.deleteFiles.contains(file.getName())) {
+                                //System.out.println("Deleting " + file.getName());
                                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                                 System.exit(0);
                             }
