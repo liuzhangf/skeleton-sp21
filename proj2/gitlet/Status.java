@@ -167,21 +167,21 @@ public class Status implements java.io.Serializable {
                     if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0 && ! lastCommit.HashMapBlobs.containsKey(currentFile.getName())) {
                         if (currentStage != null) {
                             if (!currentStage.stages.containsKey(currentFile.getName())) {
-                                System.out.println(currentFile.getName() + " (modified)");
+                                System.out.println(currentFile.getName());
                             }
                         }
                         else if (currentStage == null) {
-                            System.out.println(currentFile.getName() + " (modified)");
+                            System.out.println(currentFile.getName());
                         }
                     }
                     else if (lastCommit != null && lastCommit.HashMapBlobs.size() == 0) {
                         if (currentStage != null) {
                             if (!currentStage.stages.containsKey(currentFile.getName())) {
-                                System.out.println(currentFile.getName() + " (modified)");
+                                System.out.println(currentFile.getName());
                             }
                         }
                         else if (currentStage == null) {
-                            System.out.println(currentFile.getName() + " (modified)");
+                            System.out.println(currentFile.getName());
                         }
                     }
                 }
