@@ -41,9 +41,11 @@ public class Merge {
             for (String LCAFileName : LCACommit.HashMapBlobs.keySet()) {
                 /* 遍历全部的LCA文件，然后如果最新的版本包含，并且mergeCommit也包含 */
                 if (currentCommit.HashMapBlobs.containsKey(LCAFileName) && mergeCommit.HashMapBlobs.containsKey(LCAFileName)) {
+
                     HashMap<String, Blobs> mergeBlobs = currentCommit.HashMapBlobs.get(LCAFileName);
-                    HashMap<String, Blobs> currentBlobs = mergeCommit.HashMapBlobs.get(currentBranch);
-                    HashMap<String, Blobs> LCABlobs = LCACommit.HashMapBlobs.get(currentBranch);
+                    HashMap<String, Blobs> currentBlobs = mergeCommit.HashMapBlobs.get(LCAFileName);
+                    HashMap<String, Blobs> LCABlobs = LCACommit.HashMapBlobs.get(LCAFileName);
+
                     Blobs mergeBlob = mergeBlobs.values().iterator().next();
                     Blobs currentBlob = currentBlobs.values().iterator().next();
                     Blobs LCABBlob = LCABlobs.values().iterator().next();
@@ -76,7 +78,7 @@ public class Merge {
                 }
                 //   currentCommit修改了该文件，mergeCommit删除了该文件；
                 if ((currentCommit.HashMapBlobs.containsKey(LCAFileName) && !mergeCommit.HashMapBlobs.containsKey(LCAFileName))) {
-                    HashMap<String, Blobs> currentBlobs = mergeCommit.HashMapBlobs.get(currentBranch);
+                    HashMap<String, Blobs> currentBlobs = currentCommit.HashMapBlobs.get(LCAFileName);
                     Blobs currentBlob = currentBlobs.values().iterator().next();
                     judgeConflict = false;
                     File readyWritingFile = new File(Main.CWD, LCAFileName);
@@ -93,7 +95,7 @@ public class Merge {
                 }
 
                 if ((!currentCommit.HashMapBlobs.containsKey(LCAFileName) && mergeCommit.HashMapBlobs.containsKey(LCAFileName))) {
-                    HashMap<String, Blobs> mergeBlobs = mergeCommit.HashMapBlobs.get(currentBranch);
+                    HashMap<String, Blobs> mergeBlobs = mergeCommit.HashMapBlobs.get(LCAFileName);
                     Blobs currentBlob = mergeBlobs.values().iterator().next();
                     judgeConflict = false;
                     File readyWritingFile = new File(Main.CWD, LCAFileName);
@@ -122,7 +124,7 @@ public class Merge {
             /*规则五*/
             for (String mergeFileName : mergeCommit.HashMapBlobs.keySet()) {
                 if (!LCACommit.HashMapBlobs.containsKey(mergeFileName) && !currentCommit.HashMapBlobs.containsKey(mergeFileName)) {
-                    HashMap<String, Blobs> mergeBlobs = currentCommit.HashMapBlobs.get(mergeFileName);
+                    HashMap<String, Blobs> mergeBlobs = mergeCommit.HashMapBlobs.get(mergeFileName);
                     Blobs mergeBlob = mergeBlobs.values().iterator().next();
                     File readyWritingFile = new File(Main.CWD, mergeFileName);
                     if (!readyWritingFile.exists()) {
@@ -218,7 +220,7 @@ public class Merge {
         }
 
         while (depthb > deptha) {
-            ObjectInputStream oos = new ObjectInputStream(new FileInputStream(new File(Main.Objects, aCommit.lastCommitID1)));
+            ObjectInputStream oos = new ObjectInputStream(new FileInputStream(new File(Main.Objects, bCommit.lastCommitID1)));
             bCommit = (Commit) oos.readObject();
             oos.close();
             depthb = bCommit.depth;
