@@ -47,9 +47,18 @@ public class Log implements Serializable {
     }
 
     public void global_Log() throws IOException, ClassNotFoundException {
-        for (File branches : Main.Branches.listFiles()) {
-            String lastCommitPointer = Utils.readContentsAsString(branches);
-            new Log(lastCommitPointer);
+        for (File file : Main.Objects.listFiles()) {
+            ObjectInputStream fis = new ObjectInputStream(new FileInputStream(file));
+            Object obj = fis.readObject();
+            if (obj instanceof Commit) {
+                Commit commit = (Commit) obj;
+                System.out.println("===");
+                System.out.println("commit " +  commit.ID);
+                String date = formatTimestamp(commit.timestamp);
+                System.out.println("Date: " + date);
+                System.out.println(commit.message);
+                System.out.println();
+            }
         }
     }
 }

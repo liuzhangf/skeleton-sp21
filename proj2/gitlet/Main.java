@@ -117,7 +117,6 @@ public class Main {
             System.out.println("A Gitlet version-control system already exists in the current directory.");
             System.exit(0);
         }
-
         else {
             Gitlet.mkdir();
             Objects.mkdir();
@@ -176,7 +175,6 @@ public class Main {
                 }
 
                 else {
-
                     String[] fileArray = stage.stages.keySet().toArray(new String[0]);
                     Blobs[] blobsObjectArray = stage.stages.values().toArray(new Blobs[0]);
                     String[] blobsArray = new String[blobsObjectArray.length];
