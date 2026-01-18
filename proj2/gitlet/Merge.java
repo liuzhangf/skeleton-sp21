@@ -198,12 +198,12 @@ public class Merge {
     /*  找到最近的公共祖先（LCA）。*/
     public String LCA(File a, File b) throws IOException, ClassNotFoundException {
 
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(a));
+        ObjectInputStream oisLCA = new ObjectInputStream(new FileInputStream(a));
         ObjectInputStream ois2 = new ObjectInputStream(new FileInputStream(b));
-        ois.close();
-        ois2.close();
-        Commit aCommit = (Commit) ois.readObject();
+        Commit aCommit = (Commit) oisLCA.readObject();
         Commit bCommit = (Commit) ois2.readObject();
+        oisLCA.close();
+        ois2.close();
         int deptha = aCommit.depth;
         int depthb = bCommit.depth;
         /*
