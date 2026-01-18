@@ -11,24 +11,55 @@ public class Reset {
 
         Reset1(Commitid);
         File commitidFile = new File(Main.Objects, Commitid);
+
+        /*
+            这个是要reset到的commitid
+         */
         ObjectInputStream in = new ObjectInputStream(Files.newInputStream(commitidFile.toPath()));
-        Commit lastCommit = (Commit) in.readObject();
+        Commit thisCommit = (Commit) in.readObject();
         in.close();
+
         boolean flag = false;
         for (File file : Main.CWD.listFiles()) {
-            if (lastCommit.HashMapBlobs != null && file.isFile()) {
-                if (lastCommit.HashMapBlobs.containsKey(file.getName())) {
-                    System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                    flag = true;  break;
+            if (thisCommit.HashMapBlobs != null && file.isFile()) {
+                if (thisCommit.HashMapBlobs.containsKey(file.getName())) {
+                    if  (!judgeTrack (file)) {
+                        System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                        flag = true;  break;
+                    }
                 }
             }
         }
-
         if (commitidFile.exists() && !flag) {
             deleteThisCommit(Commitid);
             followUp(Commitid);
         }
     }
+
+    public boolean judgeTrack (File file) throws IOException, ClassNotFoundException {
+        Stage currentStage = null;
+        if (Main.Stage != null && Main.Stage.length() > 0){
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
+            currentStage = (Stage) ois.readObject();
+            ois.close();
+        }
+
+        String currentBranches = Utils.readContentsAsString(Main.Head);
+        File lastCommitFile = new File(Main.Objects, Utils.readContentsAsString(new File(Main.Branches,currentBranches)));
+        ObjectInputStream oos = new ObjectInputStream(new FileInputStream(lastCommitFile));
+        Commit lastCommit = (Commit) oos.readObject();
+        if (currentStage != null) {
+            if (!currentStage.stages.containsKey(file.getName())) {
+                if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0) {
+                    if  (!lastCommit.HashMapBlobs.containsKey(file.getName())) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     /*尝试恢复当前的全部的, Head也写入*/
     private static void Reset1(String Commitid) throws IOException, ClassNotFoundException {
         File commitidFile = new File(Main.Objects, Commitid);
