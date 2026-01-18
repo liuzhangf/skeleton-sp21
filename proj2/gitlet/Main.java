@@ -106,7 +106,9 @@ public class Main {
                         System.out.println("No commit with that id exists.");
                     }
                 }
-                new Checkout(args[3], args[1]);
+                else {
+                    new Checkout(args[3], args[1]);
+                }
             }
             else {
                 System.out.println("Incorrect operands.");
