@@ -95,12 +95,17 @@ public class Main {
                     for (File file : Objects.listFiles()) {
                         String fileName = file.getName();
                         if (fileName.startsWith(args[1]) && fileName.length() == 40) {
-                            fullCommitId = fileName;
-                            matchCount++;
+                            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+                            Object object = in.readObject();
+                            if (object instanceof Commit) {
+                                fullCommitId = fileName;
+                                matchCount++;
+                            }
                         }
                     }
                     if (matchCount == 1) {
-                        new Checkout(args[2], fullCommitId);
+                    //    System.out.println("Commit: " + fullCommitId);
+                        new Checkout(args[3], fullCommitId);
                     }
                     else {
                         System.out.println("No commit with that id exists.");
@@ -199,7 +204,6 @@ public class Main {
                     String[] fileArray = stage.stages.keySet().toArray(new String[0]);
                     Blobs[] blobsObjectArray = stage.stages.values().toArray(new Blobs[0]);
                     String[] blobsArray = new String[blobsObjectArray.length];
-                    //System.out.println("Adding " + fileArray.length + " changes to the commit.");
                     for (int i = 0; i < blobsObjectArray.length; i++) {
                         blobsArray[i] = blobsObjectArray[i].getID();
                     }
@@ -207,7 +211,6 @@ public class Main {
                     Stage stage2 = (Stage) ois.readObject();
                     ois.close();
                     Commit newCommit = new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
-                    //System.out.println(newCommit.HashMapBlobs.size());
                 }
             }
         }
