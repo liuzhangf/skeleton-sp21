@@ -46,7 +46,7 @@ public class Commit implements Serializable {
 
         String CommitFileId = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
         File lastCommitFile = new File(Main.Objects,CommitFileId);
-        if (lastCommitFile.exists() && lastCommitFile.length() > 0 ){
+        if (lastCommitFile.isFile() && lastCommitFile.length() > 0 ){
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
             Commit lastCommit = (Commit) ois.readObject();
             this.depth = lastCommit.depth + 1;
