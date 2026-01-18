@@ -9,20 +9,24 @@ public class Reset {
 
     public Reset(String Commitid) throws IOException, ClassNotFoundException {
 
-        Reset1(Commitid);
         File commitidFile = new File(Main.Objects, Commitid);
-
-        /*
-            这个是要reset到的commitid
-         */
-        ObjectInputStream in = new ObjectInputStream(Files.newInputStream(commitidFile.toPath()));
-        Commit thisCommit = (Commit) in.readObject();
-        in.close();
+        if (!commitidFile.exists()) {
+            System.out.println("No commit with that id exists.");
+        }
+        /*这个是要reset到的commitid*/
+        Commit thisCommit = null;
+        if (commitidFile != null && commitidFile.length() > 0) {
+            ObjectInputStream in = new ObjectInputStream(Files.newInputStream(commitidFile.toPath()));
+            thisCommit = (Commit) in.readObject();
+            in.close();
+        }
 
         boolean flag = false;
         for (File file : Main.CWD.listFiles()) {
-            if (thisCommit.HashMapBlobs != null && file.isFile()) {
+            if (thisCommit!= null && thisCommit.HashMapBlobs != null && file.isFile()) {
+                /*判断是否可能会被覆盖*/
                 if (thisCommit.HashMapBlobs.containsKey(file.getName())) {
+                /*判定是不是被track*/
                     if  (!judgeTrack (file)) {
                         System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                         flag = true;  break;
@@ -30,7 +34,9 @@ public class Reset {
                 }
             }
         }
+
         if (commitidFile.exists() && !flag) {
+            Reset1(Commitid);
             deleteThisCommit(Commitid);
             followUp(Commitid);
         }
@@ -67,9 +73,11 @@ public class Reset {
             System.out.println("No commit with that id exists.");
         }
         else {
+
             ObjectInputStream inp = new ObjectInputStream(new FileInputStream(commitidFile));
             Commit thisCommit = (Commit) inp.readObject();
             inp.close();
+
             for (String file : thisCommit.HashMapBlobs.keySet()) {
                 HashMap<String, Blobs> HashBlobs = thisCommit.HashMapBlobs.get(file);
                 File writeFile = new File(Main.CWD,file);
