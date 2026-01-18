@@ -249,9 +249,11 @@ public class Main {
                     Stage stage2 = (Stage) ois.readObject();
                     ois.close();
                     Commit newCommit = new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
+                    return newCommit;
                 }
             }
         }
+        return null;
     }
 
     public static void delete(String[] args) throws IOException, ClassNotFoundException {
