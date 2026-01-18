@@ -45,9 +45,15 @@ public class Commit implements Serializable {
         this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2, witchBranch);
 
         String CommitFileId = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(Main.Objects,CommitFileId)));
-        Commit lastCommit = (Commit) ois.readObject();
-        this.depth = lastCommit.depth + 1;
+        File lastCommitFile = new File(Main.Objects,CommitFileId);
+        if (lastCommitFile.length() > 0 ){
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
+            Commit lastCommit = (Commit) ois.readObject();
+            this.depth = lastCommit.depth + 1;
+        }
+        else {
+            this.depth = 0;
+        }
 
         if (stage != null && stage.stages.size() > 0) {
             for (Blobs blob : stage.stages.values()) {
