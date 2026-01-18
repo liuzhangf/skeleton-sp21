@@ -13,11 +13,12 @@ public class Commit implements Serializable {
     public Map<String, HashMap<String, Blobs>> HashMapBlobs;
     private LinkedList<Blobs> blobsList;
     public String message;
+    public int depth;
     String lastCommitID1 = "";
     String lastCommitID2 = "";
     String witchBranch = "";
 
-    /*传进来的参数的含义如下 ：
+    /*  传进来的参数的含义如下 ：
         timestamp :时间戳
         message ： 要输出的信息
         parentID1 / parentID2 ：可能会存在两个或者更多的
@@ -42,6 +43,12 @@ public class Commit implements Serializable {
         }
         this.lastCommitID1 = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
         this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2, witchBranch);
+
+        String CommitFileId = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(Main.Objects,CommitFileId)));
+        Commit lastCommit = (Commit) ois.readObject();
+        this.depth = lastCommit.depth + 1;
+
         if (stage != null && stage.stages.size() > 0) {
             for (Blobs blob : stage.stages.values()) {
                 blobsList.add(blob);

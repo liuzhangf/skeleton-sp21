@@ -22,7 +22,6 @@ public class Reset {
                 thisCommit = (Commit) in.readObject();
                 in.close();
             }
-
             boolean flag = false;
             for (File file : Main.CWD.listFiles()) {
                 if (thisCommit != null && thisCommit.HashMapBlobs != null && file.isFile()) {
@@ -36,7 +35,6 @@ public class Reset {
                     }
                 }
             }
-
             if (commitidFile.exists() && !flag) {
                 Reset1(Commitid);
                 deleteThisCommit(Commitid);
@@ -52,14 +50,12 @@ public class Reset {
             currentStage = (Stage) ois.readObject();
             ois.close();
         }
-
         String currentBranches = Utils.readContentsAsString(Main.Head);
         File lastCommitFile = new File(Main.Objects, Utils.readContentsAsString(new File(Main.Branches,currentBranches)));
         ObjectInputStream oos = new ObjectInputStream(new FileInputStream(lastCommitFile));
         Commit lastCommit = (Commit) oos.readObject();
         if (currentStage != null) {
             if (!currentStage.stages.containsKey(file.getName())) {
-            //    System.out.println("Stage with that id not exists.");
                 if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0) {
                     if  (!lastCommit.HashMapBlobs.containsKey(file.getName())) {
                         return false;
@@ -90,11 +86,9 @@ public class Reset {
             System.out.println("No commit with that id exists.");
         }
         else {
-
             ObjectInputStream inp = new ObjectInputStream(new FileInputStream(commitidFile));
             Commit thisCommit = (Commit) inp.readObject();
             inp.close();
-
             for (String file : thisCommit.HashMapBlobs.keySet()) {
                 HashMap<String, Blobs> HashBlobs = thisCommit.HashMapBlobs.get(file);
                 File writeFile = new File(Main.CWD,file);

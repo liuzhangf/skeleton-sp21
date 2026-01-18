@@ -67,6 +67,9 @@ public class Main {
                 case "status" :
                     new Status();
                     break;
+                case "merge" :
+                    new Merge(args[1]);
+                    break;
                 default:
                     System.out.println("No command with that name exists.");
                     break;
@@ -182,6 +185,41 @@ public class Main {
     }
 
     public static void commit (String[] args) throws IOException, ClassNotFoundException {
+
+        if (args.length != 2 || args[1].equals("")) {
+            System.out.println("Please enter a commit message.");
+        }
+        else {
+            if (Stage.length() == 0) {
+                System.out.println("No changes added to the commit.");
+            }
+            else {
+
+                ObjectInputStream inp = new ObjectInputStream(new FileInputStream(Stage));
+                Stage stage = (Stage) inp.readObject();
+                inp.close();
+
+                if (stage.stages == null) {
+                    System.out.println("No changes added to the commit.");
+                }
+
+                else {
+                    String[] fileArray = stage.stages.keySet().toArray(new String[0]);
+                    Blobs[] blobsObjectArray = stage.stages.values().toArray(new Blobs[0]);
+                    String[] blobsArray = new String[blobsObjectArray.length];
+                    for (int i = 0; i < blobsObjectArray.length; i++) {
+                        blobsArray[i] = blobsObjectArray[i].getID();
+                    }
+                    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
+                    Stage stage2 = (Stage) ois.readObject();
+                    ois.close();
+                    Commit newCommit = new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
+                }
+            }
+        }
+    }
+
+    public static Commit commit1 (String[] args) throws IOException, ClassNotFoundException {
 
         if (args.length != 2 || args[1].equals("")) {
             System.out.println("Please enter a commit message.");
