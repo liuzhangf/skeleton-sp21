@@ -8,6 +8,7 @@ import java.util.HashMap;
 public class Reset {
 
     public Reset(String Commitid) throws IOException, ClassNotFoundException {
+
         Reset1(Commitid);
         File commitidFile = new File(Main.Objects, Commitid);
         ObjectInputStream in = new ObjectInputStream(Files.newInputStream(commitidFile.toPath()));
@@ -22,6 +23,7 @@ public class Reset {
                 }
             }
         }
+
         if (commitidFile.exists() && !flag) {
             deleteThisCommit(Commitid);
             followUp(Commitid);
