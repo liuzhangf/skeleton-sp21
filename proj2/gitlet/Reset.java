@@ -25,7 +25,7 @@ public class Reset {
 
             boolean flag = false;
             for (File file : Main.CWD.listFiles()) {
-                if (thisCommit!= null && thisCommit.HashMapBlobs != null && file.isFile()) {
+                if (thisCommit != null && thisCommit.HashMapBlobs != null && file.isFile()) {
                     /*判断是否可能会被覆盖*/
                     if (thisCommit.HashMapBlobs.containsKey(file.getName())) {
                         /*判定是不是被track*/
@@ -59,11 +59,25 @@ public class Reset {
         Commit lastCommit = (Commit) oos.readObject();
         if (currentStage != null) {
             if (!currentStage.stages.containsKey(file.getName())) {
+            //    System.out.println("Stage with that id not exists.");
                 if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0) {
                     if  (!lastCommit.HashMapBlobs.containsKey(file.getName())) {
                         return false;
                     }
                 }
+                else {
+                    return false;
+                }
+            }
+        }
+        else {
+            if (lastCommit != null && lastCommit.HashMapBlobs.size() > 0) {
+                if  (!lastCommit.HashMapBlobs.containsKey(file.getName())) {
+                    return false;
+                }
+            }
+            else {
+                return false;
             }
         }
         return true;
@@ -96,12 +110,12 @@ public class Reset {
     }
 
     private void deleteThisCommit(String Commitid) throws IOException, ClassNotFoundException {
-        /*读入目标的Commit*/
+        /*  读入目标的Commit */
         File commitidFile = new File(Main.Objects, Commitid);
         ObjectInputStream inp = new ObjectInputStream(new FileInputStream(commitidFile));
         Commit thisCommit = (Commit) inp.readObject();
         /*  读入当前的commit, 如果目标commit不存在，
-            但是当前的commit存在，那么就删除*/
+            但是当前的commit存在，那么就删除       */
         String currentBranches = Utils.readContentsAsString(Main.Head);
         File branchesFile = new File(Main.Branches, currentBranches);
         String currentCommitId = Utils.readContentsAsString(branchesFile);

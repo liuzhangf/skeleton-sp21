@@ -84,10 +84,12 @@ public class Remove {
                 }
             }
             else {
+            //    System.out.println("File not found");
                 System.out.println("No reason to remove the file.");
             }
         }
         else {
+        //    System.out.println("CNM");
             System.out.println("No reason to remove the file.");
         }
     }
