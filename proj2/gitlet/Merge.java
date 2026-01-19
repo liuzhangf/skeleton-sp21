@@ -415,7 +415,7 @@ public class Merge {
                         if (!currentStage.stages.containsKey(file.getName()) || !currentStage.deleteFiles.contains(file.getName())) {
                             if (KmergeCommit != null) {
                                 if (KmergeCommit.HashMapBlobs.containsKey(file.getName())) {
-                                    HashMap<String, Blobs> currentBlobs = KmergeCommit.HashMapBlobs.get(file);
+                                    HashMap<String, Blobs> currentBlobs = KmergeCommit.HashMapBlobs.get(file.getName());
                                     Blobs KmergeBlobs = currentBlobs.values().iterator().next();
                                     byte[] thisFile = Files.readAllBytes(file.toPath());
                                     if (!judgeIfIsSame(KmergeBlobs.getContent(), thisFile)) {
