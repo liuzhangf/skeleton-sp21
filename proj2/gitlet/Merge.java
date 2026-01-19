@@ -258,7 +258,9 @@ public class Merge {
             Commit thisCommit = Main.commit1(args);
             thisCommit.lastCommitID2 = mergeCommit.ID;
             ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(new File(Main.Objects, thisCommit.ID).toPath()));
+            clearFile(new File(Main.Objects, thisCommit.ID));
             out.writeObject(thisCommit);
+            out.close();
         }
     }
 
