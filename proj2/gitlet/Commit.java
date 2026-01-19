@@ -174,6 +174,7 @@ public class Commit implements Serializable {
                     this.HashMapBlobs.remove(deleteFile);
                 }
             }
+
          //   this.deleteFiles = stage.deleteFiles;
             // 删除后清空deleteFiles，避免残留
             stage.deleteFiles.clear();

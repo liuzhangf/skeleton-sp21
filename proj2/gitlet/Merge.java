@@ -101,6 +101,10 @@ public class Merge {
                     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Main.Stage));
                     out.writeObject(currentStage);
                     out.close();
+                    File readyDeletingFile = new File(Main.CWD, LCAFileName);
+                    if (!readyDeletingFile.exists()) {
+                        readyDeletingFile.delete();
+                    }
                     //System.out.println("Stage has been deleted." + LCAFileName);
 
                     HashMap<String, Blobs> currentBlobs = currentCommit.HashMapBlobs.get(LCAFileName);
