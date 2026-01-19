@@ -78,7 +78,7 @@ public class Merge {
                         String text;
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
-                        text = "<<<<<<< HEAD" + currentStr + "=======" + mergeStr + ">>>>>>>";
+                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
                         Utils.writeContents(readyWritingFile, text);
                         Main.add(readyWritingFile.getName());
                     }
@@ -123,7 +123,7 @@ public class Merge {
                         String text;
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = "";
-                        text = "<<<<<<< HEAD" + currentStr + "=======" + mergeStr + ">>>>>>>";
+                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
                         Utils.writeContents(readyWritingFile, text);
                         Main.add(readyWritingFile.getName());
                     }
@@ -162,7 +162,7 @@ public class Merge {
                         String text;
                         String currentStr = "";
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");;
-                        text = "<<<<<<< HEAD" + currentStr + "=======" + mergeStr + ">>>>>>>";
+                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
                         Utils.writeContents(readyWritingFile, text);
                         Main.add(readyWritingFile.getName());
                     }
@@ -214,7 +214,7 @@ public class Merge {
                     String text ;
                     String currentStr = new String(currentBlob.getContent(), "UTF-8");
                     String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
-                    text = "<<<<<<< HEAD" + currentStr + "=======" + mergeStr + ">>>>>>>";
+                    text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
                     Utils.writeContents(readyWritingFile, text);
                     Main.add(readyWritingFile.getName());
                 }
@@ -270,13 +270,6 @@ public class Merge {
             if (judgeConflict){
                 Commit thisCommit = Main.commit1(args, mergeCommit.ID);
             }
-            /*
-            thisCommit.lastCommitID2 = mergeCommit.ID;
-            ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(new File(Main.Objects, thisCommit.ID).toPath()));
-            clearFile(new File(Main.Objects, thisCommit.ID));
-            out.writeObject(thisCommit);
-            out.close();
-            */
         }
     }
 
