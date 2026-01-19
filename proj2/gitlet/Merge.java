@@ -45,6 +45,11 @@ public class Merge {
 
         else {
             /* Merge的锚点不如就设置为当前的最新的一次Commit */
+
+            for (String files : mergeCommit.deleteFiles) {
+                currentCommit.deleteFiles.add(files);
+            }
+
             for (String LCAFileName : LCACommit.HashMapBlobs.keySet()) {
 
                 /* 遍历全部的LCA文件，然后如果最新的版本包含，并且mergeCommit也包含 */
@@ -77,13 +82,6 @@ public class Merge {
                             readyWritingFile.createNewFile();
                         }
 
-                        /*
-                        String text;
-                        String currentStr = new String(currentBlob.getContent(), "UTF-8");
-                        String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
-                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>\n";
-                        Utils.writeContents(readyWritingFile, text);
-                         */
                         clearFile(readyWritingFile);
                         byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), mergeBlob.getContent());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
@@ -126,15 +124,6 @@ public class Merge {
                         if (!readyWritingFile.exists()) {
                             readyWritingFile.createNewFile();
                         }
-                        /*
-                        clearFile(readyWritingFile);
-                        String text;
-                        String currentStr = new String(currentBlob.getContent(), "UTF-8");
-                        String mergeStr = "";
-                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>\n";
-                        Utils.writeContents(readyWritingFile, text);
-                        Main.add(readyWritingFile.getName());
-                        */
                         clearFile(readyWritingFile);
                         byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), new byte[0]);
                         Utils.writeContents(readyWritingFile, ConflictMessage);
@@ -171,15 +160,6 @@ public class Merge {
                         if (!readyWritingFile.exists()) {
                             readyWritingFile.createNewFile();
                         }
-                        /*
-                        clearFile(readyWritingFile);
-                        String text;
-                        String currentStr = "";
-                        String mergeStr = new String(mergeBlob.getContent(), "UTF-8");;
-                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>\n";
-                        Utils.writeContents(readyWritingFile, text);
-                        Main.add(readyWritingFile.getName());
-                        */
                         clearFile(readyWritingFile);
                         byte[]ConflictMessage = buildConflictMessage(new byte[0], mergeBlob.getContent());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
@@ -229,15 +209,6 @@ public class Merge {
                     if (!readyWritingFile.exists()) {
                         readyWritingFile.createNewFile();
                     }
-                    /*
-                    clearFile(readyWritingFile);
-                    String text ;
-                    String currentStr = new String(currentBlob.getContent(), "UTF-8");
-                    String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
-                    text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>\n";
-                    Utils.writeContents(readyWritingFile, text);
-                    Main.add(readyWritingFile.getName());
-                     */
                     clearFile(readyWritingFile);
                     byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), mergeBlob.getContent());
                     Utils.writeContents(readyWritingFile, ConflictMessage);
@@ -254,44 +225,7 @@ public class Merge {
                  之前的判断的时候stage肯定为空 我只需要判断是不是lastcommit的
                  就可以判断是不是track的文件
              */
-            /*
-            Commit lastCommit = null;
-            Commit KmergeCommit = null;
-            Stage currentStage = null;
 
-            if (Main.Stage != null && Main.Stage.length() > 0){
-                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
-                currentStage = (Stage) ois.readObject();
-                ois.close();
-            }
-
-            File commitidFile = new File(Main.Objects, Utils.readContentsAsString(new File(Main.Branches, currentBranch)));
-            if (commitidFile != null && commitidFile.length() > 0) {
-                ObjectInputStream in11 = new ObjectInputStream(Files.newInputStream(commitidFile.toPath()));
-                lastCommit = (Commit) in11.readObject();
-                in11.close();
-            }
-
-            File mergeFile = new File(Main.Objects, Utils.readContentsAsString(new File(Main.Branches, mergeBranch)));
-            if (mergeFile != null && mergeFile.length() > 0) {
-                ObjectInputStream in11 = new ObjectInputStream(Files.newInputStream(mergeFile.toPath()));
-                KmergeCommit = (Commit) in11.readObject();
-                in11.close();
-            }
-
-            for (File file : Main.CWD.listFiles()) {
-                if (lastCommit != null && lastCommit.HashMapBlobs != null && file.isFile()) {
-                    if (!lastCommit.HashMapBlobs.containsKey(file.getName()) && ! KmergeCommit.HashMapBlobs.containsKey(file.getName())) {//如果最近的commit不存在 说明不是track的
-                        if (currentStage != null) {
-                            if (currentStage.stages.containsKey(file.getName()) || currentStage.deleteFiles.contains(file.getName())) {
-                                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
-                                System.exit(0);
-                            }
-                        }
-                    }
-                }
-            }
-            */
             if (judgeConflict){
                 Commit thisCommit = Main.commit1(args, mergeCommit.ID);
             }
@@ -343,8 +277,6 @@ public class Merge {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
             Stage stage = (Stage) ois.readObject();
             ois.close();
-        //    System.out.println("Stage: " + stage.stages.size());
-        //    System.out.println(stage.deleteFiles.size());
             if (stage.stages.size() > 0 || stage.deleteFiles.size() > 0) {
                 System.out.println("You have uncommitted changes.");
                 System.exit(0);
@@ -385,7 +317,7 @@ public class Merge {
     }
 
     private void anUntrackedFile (String currentBranch, String mergeBranch) throws IOException, ClassNotFoundException {
-    //    System.out.println("An untracked file " + currentBranch + "." + mergeBranch);
+
         Commit lastCommit = null;
         Commit KmergeCommit = null;
         Stage currentStage = null;

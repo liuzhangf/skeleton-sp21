@@ -125,6 +125,11 @@ public class Commit implements Serializable {
         storeBlobsToObjects();
         BuildNewCommitObject();
         /*清空当前的stage, 这个地方直接清空文件就行*/
+        for (String fileName : this.deleteFiles) {
+            if (new File(Main.CWD,fileName).exists()) {
+                new File(Main.CWD,fileName).delete();
+            }
+        }
         clearFile(Stage);
     }
     /*这段代码主要是用于存下来本次commit的全部Blobs*/
@@ -173,9 +178,10 @@ public class Commit implements Serializable {
                 if (this.HashMapBlobs.containsKey(deleteFile)) {
                     this.HashMapBlobs.remove(deleteFile);
                 }
+                this.deleteFiles.add(deleteFile);
             }
 
-            this.deleteFiles = stage.deleteFiles;
+           // this.deleteFiles = stage.deleteFiles;
             // 删除后清空deleteFiles，避免残留
             stage.deleteFiles.clear();
         }
