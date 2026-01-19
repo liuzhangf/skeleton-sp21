@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 
@@ -74,12 +75,17 @@ public class Merge {
                         if (!readyWritingFile.exists()) {
                             readyWritingFile.createNewFile();
                         }
-                        clearFile(readyWritingFile);
+
+                        /*
                         String text;
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
                         text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>\n";
                         Utils.writeContents(readyWritingFile, text);
+                         */
+                        clearFile(readyWritingFile);
+                        byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), mergeBlob.getContent());
+                        Utils.writeContents(readyWritingFile, ConflictMessage);
                         Main.add(readyWritingFile.getName());
                     }
                 }
@@ -119,12 +125,18 @@ public class Merge {
                         if (!readyWritingFile.exists()) {
                             readyWritingFile.createNewFile();
                         }
+                        /*
                         clearFile(readyWritingFile);
                         String text;
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = "";
                         text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>\n";
                         Utils.writeContents(readyWritingFile, text);
+                        Main.add(readyWritingFile.getName());
+                        */
+                        clearFile(readyWritingFile);
+                        byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), new byte[0]);
+                        Utils.writeContents(readyWritingFile, ConflictMessage);
                         Main.add(readyWritingFile.getName());
                     }
 
@@ -158,12 +170,18 @@ public class Merge {
                         if (!readyWritingFile.exists()) {
                             readyWritingFile.createNewFile();
                         }
+                        /*
                         clearFile(readyWritingFile);
                         String text;
                         String currentStr = "";
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");;
                         text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>\n";
                         Utils.writeContents(readyWritingFile, text);
+                        Main.add(readyWritingFile.getName());
+                        */
+                        clearFile(readyWritingFile);
+                        byte[]ConflictMessage = buildConflictMessage(new byte[0], mergeBlob.getContent());
+                        Utils.writeContents(readyWritingFile, ConflictMessage);
                         Main.add(readyWritingFile.getName());
                     }
                 }
@@ -210,12 +228,18 @@ public class Merge {
                     if (!readyWritingFile.exists()) {
                         readyWritingFile.createNewFile();
                     }
+                    /*
                     clearFile(readyWritingFile);
                     String text ;
                     String currentStr = new String(currentBlob.getContent(), "UTF-8");
                     String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
                     text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>\n";
                     Utils.writeContents(readyWritingFile, text);
+                    Main.add(readyWritingFile.getName());
+                     */
+                    clearFile(readyWritingFile);
+                    byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), mergeBlob.getContent());
+                    Utils.writeContents(readyWritingFile, ConflictMessage);
                     Main.add(readyWritingFile.getName());
                 }
             }
@@ -339,5 +363,19 @@ public class Merge {
 
     public static void clearFile(File file) throws IOException {
         Files.write(file.toPath(), new byte[0]);
+    }
+
+    private byte[] buildConflictMessage(byte[] cContent, byte[] gContent) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            bos.write("<<<<<<< HEAD\n".getBytes(StandardCharsets.UTF_8));
+            bos.write(cContent);
+            bos.write("=======\n".getBytes(StandardCharsets.UTF_8));
+            bos.write(gContent);
+            bos.write(">>>>>>>\n".getBytes(StandardCharsets.UTF_8));
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
