@@ -62,7 +62,6 @@ public class Merge {
                     两个分支都修改了该文件，且修改后的内容不一样；
                      */
                     if (!mergeBlob.ID.equals(LCABBlob.ID) && !currentBlob.ID.equals(LCABBlob.ID)) {
-                        System.out.println("1");
                         judgeConflict = false;
                         File readyWritingFile = new File(Main.CWD, LCAFileName);
                         if (!readyWritingFile.exists()) {
@@ -77,12 +76,18 @@ public class Merge {
                         Main.add(readyWritingFile.getName());
                     }
                 }
+
                 //   currentCommit修改了该文件，mergeCommit删除了该文件；
                 if ((currentCommit.HashMapBlobs.containsKey(LCAFileName) && !mergeCommit.HashMapBlobs.containsKey(LCAFileName))) {
                     HashMap<String, Blobs> currentBlobs = currentCommit.HashMapBlobs.get(LCAFileName);
                     Blobs currentBlob = currentBlobs.values().iterator().next();
-                    judgeConflict = false;
-                    System.out.println("2");
+
+                    HashMap<String, Blobs> LCABlobs = LCACommit.HashMapBlobs.get(LCAFileName);
+                    Blobs LCABBlob = LCABlobs.values().iterator().next();
+                    if (!currentBlob.ID.equals(LCABBlob.ID))   {
+                        judgeConflict = false;
+                    }
+
                     File readyWritingFile = new File(Main.CWD, LCAFileName);
                     if (!readyWritingFile.exists()) {
                         readyWritingFile.createNewFile();
@@ -98,9 +103,13 @@ public class Merge {
 
                 if ((!currentCommit.HashMapBlobs.containsKey(LCAFileName) && mergeCommit.HashMapBlobs.containsKey(LCAFileName))) {
                     HashMap<String, Blobs> mergeBlobs = mergeCommit.HashMapBlobs.get(LCAFileName);
-                    Blobs currentBlob = mergeBlobs.values().iterator().next();
-                    judgeConflict = false;
-                    System.out.println("3");
+                    Blobs mergeBlob = mergeBlobs.values().iterator().next();
+                    HashMap<String, Blobs> LCABlobs = LCACommit.HashMapBlobs.get(LCAFileName);
+                    Blobs LCABBlob = LCABlobs.values().iterator().next();
+                    if (!mergeBlob.ID.equals(LCABBlob.ID)) {
+                        judgeConflict = false;
+                    }
+
                     File readyWritingFile = new File(Main.CWD, LCAFileName);
                     if (!readyWritingFile.exists()) {
                         readyWritingFile.createNewFile();
@@ -108,7 +117,7 @@ public class Merge {
                     clearFile(readyWritingFile);
                     String text = "";
                     String currentStr = "";
-                    String mergeStr = new String(currentBlob.getContent(), "UTF-8");;
+                    String mergeStr = new String(mergeBlob.getContent(), "UTF-8");;
                     text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>";
                     Utils.writeContents(readyWritingFile, text);
                     Main.add(readyWritingFile.getName());
