@@ -3,6 +3,7 @@ package gitlet;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /*
@@ -253,7 +254,7 @@ public class Merge {
                  之前的判断的时候stage肯定为空 我只需要判断是不是lastcommit的
                  就可以判断是不是track的文件
              */
-
+            /*
             Commit lastCommit = null;
             Commit KmergeCommit = null;
             Stage currentStage = null;
@@ -290,7 +291,7 @@ public class Merge {
                     }
                 }
             }
-
+            */
             if (judgeConflict){
                 Commit thisCommit = Main.commit1(args, mergeCommit.ID);
             }
@@ -358,6 +359,8 @@ public class Merge {
             System.out.println("Cannot merge a branch with itself.");
             System.exit(0);
         }
+        String currentBranchName = Utils.readContentsAsString(Main.Head);
+        anUntrackedFile(currentBranchName, Branch);
 
     }
 
@@ -377,5 +380,84 @@ public class Merge {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void anUntrackedFile (String currentBranch, String mergeBranch) throws IOException, ClassNotFoundException {
+    //    System.out.println("An untracked file " + currentBranch + "." + mergeBranch);
+        Commit lastCommit = null;
+        Commit KmergeCommit = null;
+        Stage currentStage = null;
+
+        if (Main.Stage != null && Main.Stage.length() > 0){
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
+            currentStage = (Stage) ois.readObject();
+            ois.close();
+        }
+
+        File commitidFile = new File(Main.Objects, Utils.readContentsAsString(new File(Main.Branches, currentBranch)));
+        if (commitidFile != null && commitidFile.length() > 0) {
+            ObjectInputStream in11 = new ObjectInputStream(Files.newInputStream(commitidFile.toPath()));
+            lastCommit = (Commit) in11.readObject();
+            in11.close();
+        }
+
+        File mergeFile = new File(Main.Objects, Utils.readContentsAsString(new File(Main.Branches, mergeBranch)));
+        if (mergeFile != null && mergeFile.length() > 0) {
+            ObjectInputStream in11 = new ObjectInputStream(Files.newInputStream(mergeFile.toPath()));
+            KmergeCommit = (Commit) in11.readObject();
+            in11.close();
+        }
+
+        for (File file : Main.CWD.listFiles()) {
+            if (lastCommit != null && lastCommit.HashMapBlobs != null && file.isFile()) {
+                if (!lastCommit.HashMapBlobs.containsKey(file.getName()) ) {//如果最近的commit不存在 说明不是track的
+                    if (currentStage != null) {
+                        if (!currentStage.stages.containsKey(file.getName()) || !currentStage.deleteFiles.contains(file.getName())) {
+                            if (KmergeCommit != null) {
+                                if (KmergeCommit.HashMapBlobs.containsKey(file.getName())) {
+                                    HashMap<String, Blobs> currentBlobs = KmergeCommit.HashMapBlobs.get(file);
+                                    Blobs KmergeBlobs = currentBlobs.values().iterator().next();
+                                    byte[] thisFile = Files.readAllBytes(file.toPath());
+                                    if (!judgeIfIsSame(KmergeBlobs.getContent(), thisFile)) {
+                                        System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                                        System.exit(0);
+                                    }
+                                }
+                                else if (KmergeCommit.deleteFiles.contains(file.getName())) {
+                                    System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                                    System.exit(0);
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        if (KmergeCommit != null) {
+                            if (KmergeCommit.HashMapBlobs.containsKey(file.getName())) {
+                                HashMap<String, Blobs> currentBlobs = KmergeCommit.HashMapBlobs.get(file.getName());
+                                Blobs KmergeBlobs = currentBlobs.values().iterator().next();
+                                byte[] thisFile = Files.readAllBytes(file.toPath());
+                                if (!judgeIfIsSame(KmergeBlobs.getContent(), thisFile)) {
+                                    System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                                    System.exit(0);
+                                }
+                            }
+                            else if (KmergeCommit.deleteFiles.contains(file.getName())) {
+                                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                                System.exit(0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean judgeIfIsSame(byte[] cContent, byte[] gContent) {
+        if (cContent == null && gContent == null) {
+            if (Arrays.equals(cContent, gContent)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
