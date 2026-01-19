@@ -62,6 +62,7 @@ public class Merge {
                     两个分支都修改了该文件，且修改后的内容不一样；
                      */
                     if (!mergeBlob.ID.equals(LCABBlob.ID) && !currentBlob.ID.equals(LCABBlob.ID)) {
+                        System.out.println("1");
                         judgeConflict = false;
                         File readyWritingFile = new File(Main.CWD, LCAFileName);
                         if (!readyWritingFile.exists()) {
@@ -81,6 +82,7 @@ public class Merge {
                     HashMap<String, Blobs> currentBlobs = currentCommit.HashMapBlobs.get(LCAFileName);
                     Blobs currentBlob = currentBlobs.values().iterator().next();
                     judgeConflict = false;
+                    System.out.println("2");
                     File readyWritingFile = new File(Main.CWD, LCAFileName);
                     if (!readyWritingFile.exists()) {
                         readyWritingFile.createNewFile();
@@ -98,6 +100,7 @@ public class Merge {
                     HashMap<String, Blobs> mergeBlobs = mergeCommit.HashMapBlobs.get(LCAFileName);
                     Blobs currentBlob = mergeBlobs.values().iterator().next();
                     judgeConflict = false;
+                    System.out.println("3");
                     File readyWritingFile = new File(Main.CWD, LCAFileName);
                     if (!readyWritingFile.exists()) {
                         readyWritingFile.createNewFile();
@@ -139,6 +142,7 @@ public class Merge {
                     HashMap<String, Blobs> mergeBlobs = currentCommit.HashMapBlobs.get(mergeFileName);
                     Blobs mergeBlob = mergeBlobs.values().iterator().next();
                     judgeConflict = false;
+                    System.out.println("4");
                     File readyWritingFile = new File(Main.CWD, mergeFileName);
                     if (!readyWritingFile.exists()) {
                         readyWritingFile.createNewFile();
