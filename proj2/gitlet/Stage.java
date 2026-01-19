@@ -21,6 +21,7 @@ public class Stage implements Serializable {
         }
         else {
             stages = new HashMap<>();
+            deleteFiles = new LinkedList <>();
         }
     }
     /*

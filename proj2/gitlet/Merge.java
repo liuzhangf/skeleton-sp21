@@ -39,6 +39,7 @@ public class Merge {
         else {
             /* Merge的锚点不如就设置为当前的最新的一次Commit */
             for (String LCAFileName : LCACommit.HashMapBlobs.keySet()) {
+
                 /* 遍历全部的LCA文件，然后如果最新的版本包含，并且mergeCommit也包含 */
                 if (currentCommit.HashMapBlobs.containsKey(LCAFileName) && mergeCommit.HashMapBlobs.containsKey(LCAFileName)) {
 
@@ -79,57 +80,99 @@ public class Merge {
 
                 //   currentCommit修改了该文件，mergeCommit删除了该文件；
                 if ((currentCommit.HashMapBlobs.containsKey(LCAFileName) && !mergeCommit.HashMapBlobs.containsKey(LCAFileName))) {
+
+                    Stage currentStage;
+                    if (Main.Stage.length() > 0){
+                        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
+                        currentStage = (Stage) ois.readObject();
+                        ois.close();
+                    }
+                    else {
+                        currentStage = new Stage();
+                    }
+                    currentStage.stages.remove(LCAFileName);
+                    currentStage.deleteFiles.add(LCAFileName);
+                    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Main.Stage));
+                    out.writeObject(currentStage);
+                    out.close();
+                    //System.out.println("Stage has been deleted." + LCAFileName);
+
                     HashMap<String, Blobs> currentBlobs = currentCommit.HashMapBlobs.get(LCAFileName);
                     Blobs currentBlob = currentBlobs.values().iterator().next();
 
                     HashMap<String, Blobs> LCABlobs = LCACommit.HashMapBlobs.get(LCAFileName);
                     Blobs LCABBlob = LCABlobs.values().iterator().next();
+                    // 做了修改
                     if (!currentBlob.ID.equals(LCABBlob.ID))   {
                         judgeConflict = false;
+                        File readyWritingFile = new File(Main.CWD, LCAFileName);
+                        if (!readyWritingFile.exists()) {
+                            readyWritingFile.createNewFile();
+                        }
+                        clearFile(readyWritingFile);
+                        String text = "";
+                        String currentStr = new String(currentBlob.getContent(), "UTF-8");
+                        String mergeStr = "";
+                        text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>";
+                        Utils.writeContents(readyWritingFile, text);
+                        Main.add(readyWritingFile.getName());
                     }
 
-                    File readyWritingFile = new File(Main.CWD, LCAFileName);
-                    if (!readyWritingFile.exists()) {
-                        readyWritingFile.createNewFile();
-                    }
-                    clearFile(readyWritingFile);
-                    String text = "";
-                    String currentStr = new String(currentBlob.getContent(), "UTF-8");
-                    String mergeStr = "";
-                    text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>";
-                    Utils.writeContents(readyWritingFile, text);
-                    Main.add(readyWritingFile.getName());
                 }
 
                 if ((!currentCommit.HashMapBlobs.containsKey(LCAFileName) && mergeCommit.HashMapBlobs.containsKey(LCAFileName))) {
+
+                    Stage currentStage;
+                    if (Main.Stage.length() > 0){
+                        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
+                        currentStage = (Stage) ois.readObject();
+                        ois.close();
+                    }
+                    else {
+                        currentStage = new Stage();
+                    }
+                    currentStage.stages.remove(LCAFileName);
+                    currentStage.deleteFiles.add(LCAFileName);
+                    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Main.Stage));
+                    out.writeObject(currentStage);
+                    out.close();
+                    //System.out.println("Stage has been deleted " + LCAFileName);
+
+
                     HashMap<String, Blobs> mergeBlobs = mergeCommit.HashMapBlobs.get(LCAFileName);
                     Blobs mergeBlob = mergeBlobs.values().iterator().next();
                     HashMap<String, Blobs> LCABlobs = LCACommit.HashMapBlobs.get(LCAFileName);
                     Blobs LCABBlob = LCABlobs.values().iterator().next();
-                    if (!mergeBlob.ID.equals(LCABBlob.ID)) {
-                        judgeConflict = false;
-                    }
 
-                    File readyWritingFile = new File(Main.CWD, LCAFileName);
-                    if (!readyWritingFile.exists()) {
-                        readyWritingFile.createNewFile();
+                    if (!mergeBlob.ID.equals(LCABBlob.ID)) {// 做了修改
+                        judgeConflict = false;
+                        File readyWritingFile = new File(Main.CWD, LCAFileName);
+                        if (!readyWritingFile.exists()) {
+                            readyWritingFile.createNewFile();
+                        }
+                        clearFile(readyWritingFile);
+                        String text = "";
+                        String currentStr = "";
+                        String mergeStr = new String(mergeBlob.getContent(), "UTF-8");;
+                        text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>";
+                        Utils.writeContents(readyWritingFile, text);
+                        Main.add(readyWritingFile.getName());
                     }
-                    clearFile(readyWritingFile);
-                    String text = "";
-                    String currentStr = "";
-                    String mergeStr = new String(mergeBlob.getContent(), "UTF-8");;
-                    text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>";
-                    Utils.writeContents(readyWritingFile, text);
-                    Main.add(readyWritingFile.getName());
                 }
 
                 /*规则六*/
                 if (currentCommit.HashMapBlobs.containsKey(LCAFileName) && !mergeCommit.HashMapBlobs.containsKey(LCAFileName)) {
                     File readyWritingFile = new File(Main.CWD, LCAFileName);
-                    if (readyWritingFile.exists()) {
-                        readyWritingFile.delete();
-                    }
 
+                    HashMap<String, Blobs> currentBlobs = currentCommit.HashMapBlobs.get(LCAFileName);
+                    Blobs currentBlob = currentBlobs.values().iterator().next();
+                    HashMap<String, Blobs> LCABlobs = LCACommit.HashMapBlobs.get(LCAFileName);
+                    Blobs LCABBlob = LCABlobs.values().iterator().next();
+                    if (currentBlob.ID.equals(LCABBlob.ID)) {
+                        if (readyWritingFile.exists()) {
+                            readyWritingFile.delete();
+                        }
+                    }
                 }
             }
 
@@ -151,7 +194,6 @@ public class Merge {
                     HashMap<String, Blobs> mergeBlobs = currentCommit.HashMapBlobs.get(mergeFileName);
                     Blobs mergeBlob = mergeBlobs.values().iterator().next();
                     judgeConflict = false;
-                    System.out.println("4");
                     File readyWritingFile = new File(Main.CWD, mergeFileName);
                     if (!readyWritingFile.exists()) {
                         readyWritingFile.createNewFile();
@@ -205,7 +247,6 @@ public class Merge {
                     if (!lastCommit.HashMapBlobs.containsKey(file.getName()) && ! KmergeCommit.HashMapBlobs.containsKey(file.getName())) {//如果最近的commit不存在 说明不是track的
                         if (currentStage != null) {
                             if (currentStage.stages.containsKey(file.getName()) || currentStage.deleteFiles.contains(file.getName())) {
-                                //System.out.println("Deleting " + file.getName());
                                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                                 System.exit(0);
                             }

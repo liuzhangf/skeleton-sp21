@@ -17,7 +17,7 @@ public class Commit implements Serializable {
     String lastCommitID1 = "";
     String lastCommitID2 = "";
     String witchBranch = "";
-
+//    public LinkedList<String> deleteFiles;
     /*  传进来的参数的含义如下 ：
         timestamp :时间戳
         message ： 要输出的信息
@@ -124,6 +124,7 @@ public class Commit implements Serializable {
                     this.HashMapBlobs.remove(deleteFile);
                 }
             }
+         //   this.deleteFiles = stage.deleteFiles;
             // 删除后清空deleteFiles，避免残留
             stage.deleteFiles.clear();
         }
