@@ -78,7 +78,7 @@ public class Merge {
                         String text;
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
-                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
+                        text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>\n";
                         Utils.writeContents(readyWritingFile, text);
                         Main.add(readyWritingFile.getName());
                     }
@@ -102,7 +102,7 @@ public class Merge {
                     out.writeObject(currentStage);
                     out.close();
                     File readyDeletingFile = new File(Main.CWD, LCAFileName);
-                    if (!readyDeletingFile.exists()) {
+                    if (readyDeletingFile.exists()) {
                         readyDeletingFile.delete();
                     }
                     //System.out.println("Stage has been deleted." + LCAFileName);
@@ -115,7 +115,6 @@ public class Merge {
                     // 做了修改
                     if (!currentBlob.ID.equals(LCABBlob.ID))   {
                         judgeConflict = false;
-                        //System.out.println("FileName2 :" + LCAFileName);
                         File readyWritingFile = new File(Main.CWD, LCAFileName);
                         if (!readyWritingFile.exists()) {
                             readyWritingFile.createNewFile();
@@ -124,7 +123,7 @@ public class Merge {
                         String text;
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = "";
-                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
+                        text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>\n";
                         Utils.writeContents(readyWritingFile, text);
                         Main.add(readyWritingFile.getName());
                     }
@@ -147,8 +146,6 @@ public class Merge {
                     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Main.Stage));
                     out.writeObject(currentStage);
                     out.close();
-                    //System.out.println("Stage has been deleted " + LCAFileName);
-
 
                     HashMap<String, Blobs> mergeBlobs = mergeCommit.HashMapBlobs.get(LCAFileName);
                     Blobs mergeBlob = mergeBlobs.values().iterator().next();
@@ -157,7 +154,6 @@ public class Merge {
 
                     if (!mergeBlob.ID.equals(LCABBlob.ID)) {// 做了修改
                         judgeConflict = false;
-                        //System.out.println("FileName3 :" + LCAFileName);
                         File readyWritingFile = new File(Main.CWD, LCAFileName);
                         if (!readyWritingFile.exists()) {
                             readyWritingFile.createNewFile();
@@ -166,7 +162,7 @@ public class Merge {
                         String text;
                         String currentStr = "";
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");;
-                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
+                        text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>\n";
                         Utils.writeContents(readyWritingFile, text);
                         Main.add(readyWritingFile.getName());
                     }
@@ -218,8 +214,7 @@ public class Merge {
                     String text ;
                     String currentStr = new String(currentBlob.getContent(), "UTF-8");
                     String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
-                    text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
-                    text = text.replaceAll("\\r", "");
+                    text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>\n";
                     Utils.writeContents(readyWritingFile, text);
                     Main.add(readyWritingFile.getName());
                 }
@@ -272,7 +267,9 @@ public class Merge {
                 }
             }
 
-            Commit thisCommit = Main.commit1(args, mergeCommit.ID);
+            if (!judgeConflict){
+                Commit thisCommit = Main.commit1(args, mergeCommit.ID);
+            }
             /*
             thisCommit.lastCommitID2 = mergeCommit.ID;
             ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(new File(Main.Objects, thisCommit.ID).toPath()));
@@ -330,8 +327,8 @@ public class Merge {
             ois.close();
             if (stage.stages.size() > 0 || stage.deleteFiles.size() > 0) {
                 System.out.println("You have uncommitted changes.");
+                System.exit(0);
             }
-            System.exit(0);
         }
 
         File branchName = new File(Main.Branches, Branch);
