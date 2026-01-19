@@ -21,6 +21,12 @@ public class Log implements Serializable {
                 System.out.println("===");
                 System.out.println("commit " + lastCommitHashCode);
 
+                if (lastCommit.lastCommitID1 != "" && lastCommit.lastCommitID2 != "") {
+                    String short1 = lastCommit.lastCommitID1.substring(0,7);
+                    String short2 = lastCommit.lastCommitID2.substring(0,7);
+                    System.out.println("Merge: " + short1 + " " + short2);
+                }
+
                 String date = formatTimestamp(lastCommit.timestamp);
                 System.out.println("Date: " + date);
                 System.out.println(lastCommit.message);
