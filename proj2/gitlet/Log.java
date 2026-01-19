@@ -30,7 +30,9 @@ public class Log implements Serializable {
                 String date = formatTimestamp(lastCommit.timestamp);
                 System.out.println("Date: " + date);
                 System.out.println(lastCommit.message);
-                System.out.println();
+                if (lastCommit.lastCommitID2 == "" ) {
+                    System.out.println(); // 只有merge commit，加1个空行
+                }
 
                 lastCommitHashCode = lastCommit.lastCommitID1;
 
