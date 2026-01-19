@@ -30,7 +30,7 @@ public class Log implements Serializable {
                 String date = formatTimestamp(lastCommit.timestamp);
                 System.out.println("Date: " + date);
                 System.out.println(lastCommit.message);
-            //    System.out.println();
+                System.out.println();
 
                 lastCommitHashCode = lastCommit.lastCommitID1;
 
