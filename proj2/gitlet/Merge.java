@@ -45,9 +45,12 @@ public class Merge {
 
         else {
             /* Merge的锚点不如就设置为当前的最新的一次Commit */
-
-            for (String files : mergeCommit.deleteFiles) {
-                currentCommit.deleteFiles.add(files);
+            if (mergeCommit.deleteFiles != null) {
+                if (mergeCommit.deleteFiles.size() > 0) {
+                    for (String files : mergeCommit.deleteFiles) {
+                        currentCommit.deleteFiles.add(files);
+                    }
+                }
             }
 
             for (String LCAFileName : LCACommit.HashMapBlobs.keySet()) {
