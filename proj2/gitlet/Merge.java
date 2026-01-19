@@ -75,7 +75,7 @@ public class Merge {
                             readyWritingFile.createNewFile();
                         }
                         clearFile(readyWritingFile);
-                        String text = "";
+                        String text;
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
                         text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
@@ -117,7 +117,7 @@ public class Merge {
                             readyWritingFile.createNewFile();
                         }
                         clearFile(readyWritingFile);
-                        String text = "";
+                        String text;
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = "";
                         text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
@@ -159,7 +159,7 @@ public class Merge {
                             readyWritingFile.createNewFile();
                         }
                         clearFile(readyWritingFile);
-                        String text = "";
+                        String text;
                         String currentStr = "";
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");;
                         text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
@@ -211,10 +211,11 @@ public class Merge {
                         readyWritingFile.createNewFile();
                     }
                     clearFile(readyWritingFile);
-                    String text = "";
+                    String text ;
                     String currentStr = new String(currentBlob.getContent(), "UTF-8");
                     String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
                     text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
+                    System.out.println(text);
                     Utils.writeContents(readyWritingFile, text);
                     Main.add(readyWritingFile.getName());
                 }
