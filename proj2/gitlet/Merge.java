@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class Merge {
 
     public Merge( String mergeBranch) throws IOException, ClassNotFoundException {
+
         failureCases(mergeBranch);
         boolean judgeConflict = true;
         String currentBranch = Utils.readContentsAsString(Main.Head);
@@ -36,9 +37,10 @@ public class Merge {
             new Checkout("", currentBranch);
             System.out.println("Current branch fast-forwarded.");
         }
-        else if (currentCommit.ID == mergeCommit.ID){
+        else if (mergeBranch == currentBranch){
             System.out.println("Cannot merge a branch with itself.");
         }
+
         else {
             /* Merge的锚点不如就设置为当前的最新的一次Commit */
             for (String LCAFileName : LCACommit.HashMapBlobs.keySet()) {
@@ -76,9 +78,7 @@ public class Merge {
                         String text = "";
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
-                        //System.out.println(currentStr);
-                        //System.out.println(mergeStr);
-                        text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>";
+                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
                         Utils.writeContents(readyWritingFile, text);
                         Main.add(readyWritingFile.getName());
                     }
@@ -120,7 +120,7 @@ public class Merge {
                         String text = "";
                         String currentStr = new String(currentBlob.getContent(), "UTF-8");
                         String mergeStr = "";
-                        text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>";
+                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
                         Utils.writeContents(readyWritingFile, text);
                         Main.add(readyWritingFile.getName());
                     }
@@ -162,7 +162,7 @@ public class Merge {
                         String text = "";
                         String currentStr = "";
                         String mergeStr = new String(mergeBlob.getContent(), "UTF-8");;
-                        text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>";
+                        text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
                         Utils.writeContents(readyWritingFile, text);
                         Main.add(readyWritingFile.getName());
                     }
@@ -200,14 +200,12 @@ public class Merge {
                 //该文件在分裂点中不存在，但是在两个分支中各自新增了内容不同的同名文件。
                 if (!LCACommit.HashMapBlobs.containsKey(mergeFileName) && currentCommit.HashMapBlobs.containsKey(mergeFileName)){
 
-                    HashMap<String, Blobs> mergeBlobs = currentCommit.HashMapBlobs.get(mergeFileName);
+                    HashMap<String, Blobs> mergeBlobs = mergeCommit.HashMapBlobs.get(mergeFileName);
                     Blobs mergeBlob = mergeBlobs.values().iterator().next();
-                    HashMap<String, Blobs> currentBlobs = mergeCommit.HashMapBlobs.get(mergeFileName);
+                    HashMap<String, Blobs> currentBlobs = currentCommit.HashMapBlobs.get(mergeFileName);
                     Blobs currentBlob = currentBlobs.values().iterator().next();
 
                     judgeConflict = false;
-
-                    //System.out.println("FileName4 :" + mergeFileName);
                     File readyWritingFile = new File(Main.CWD, mergeFileName);
                     if (!readyWritingFile.exists()) {
                         readyWritingFile.createNewFile();
@@ -216,9 +214,7 @@ public class Merge {
                     String text = "";
                     String currentStr = new String(currentBlob.getContent(), "UTF-8");
                     String mergeStr = new String(mergeBlob.getContent(), "UTF-8");
-                    //System.out.println(currentStr);
-                    //System.out.println(mergeStr);
-                    text = "<<<<<<< HEAD\n" + currentStr + "\n=======\n" + mergeStr + "\n>>>>>>>";
+                    text = "<<<<<<< HEAD\n" + currentStr + "=======\n" + mergeStr + ">>>>>>>";
                     Utils.writeContents(readyWritingFile, text);
                     Main.add(readyWritingFile.getName());
                 }
