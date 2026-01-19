@@ -211,7 +211,7 @@ public class Merge {
             if (!judgeConflict) System.out.println("Encountered a merge conflict.");
             String [] args = new String[2];
             args[0] = "commit";
-            args[1] = "Merged " +  mergeBranch + " into " + currentBranch;
+            args[1] = "Merged " +  mergeBranch + " into " + currentBranch + ".";
 
             /*
                  之前的判断的时候stage肯定为空 我只需要判断是不是lastcommit的
