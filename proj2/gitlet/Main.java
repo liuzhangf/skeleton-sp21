@@ -219,7 +219,7 @@ public class Main {
         }
     }
 
-    public static Commit commit1 (String[] args) throws IOException, ClassNotFoundException {
+    public static Commit commit1 (String[] args, String lastcommitid) throws IOException, ClassNotFoundException {
 
         if (args.length != 2 || args[1].equals("")) {
             System.out.println("Please enter a commit message.");
@@ -248,7 +248,7 @@ public class Main {
                     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Stage));
                     Stage stage2 = (Stage) ois.readObject();
                     ois.close();
-                    Commit newCommit = new Commit(System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
+                    Commit newCommit = new Commit(lastcommitid, System.currentTimeMillis(), args[1], blobsArray, fileArray, stage2);
                     return newCommit;
                 }
             }

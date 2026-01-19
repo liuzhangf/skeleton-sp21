@@ -77,6 +77,56 @@ public class Commit implements Serializable {
         clearFile(Stage);
     }
 
+    public Commit(String lastCommitID, long timestamp, String message, String[] BolbID, String[] text, gitlet.Stage stage) throws IOException, ClassNotFoundException {
+        this.lastCommitID2 = lastCommitID;
+        this.timestamp = timestamp;
+        this.message = message;
+        HashMapBlobs = new HashMap<>();
+        this.blobsList = new LinkedList<>();
+        this.witchBranch = Utils.readContentsAsString(Head);
+        String s1 = "";
+        String s2 = "";
+        for (int i = 0; i < text.length; i++) {
+            s2 += text[i];
+        }
+        for (int i = 0; i < BolbID.length; i++) {
+            s1 += BolbID[i];
+        }
+        this.lastCommitID1 = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
+        this.ID = Utils.sha1(this.message, s1, s2, lastCommitID1, lastCommitID2, witchBranch);
+
+        String CommitFileId = Utils.readContentsAsString(new File(Branches, Utils.readContentsAsString(Head)));
+        File lastCommitFile = new File(Main.Objects,CommitFileId);
+        if (lastCommitFile.isFile() && lastCommitFile.length() > 0 ){
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lastCommitFile));
+            Commit lastCommit = (Commit) ois.readObject();
+            this.depth = lastCommit.depth + 1;
+        }
+        else {
+            this.depth = 0;
+        }
+
+        if (stage != null && stage.stages.size() > 0) {
+            for (Blobs blob : stage.stages.values()) {
+                blobsList.add(blob);
+            }
+        }
+        /* Head存放的是上一次commit的commit的hashcode
+           读出来上一次commit文件里的东西
+           然后再添加本次Commit的add stage的文件
+         */
+        readOldBlobs();
+        if (BolbID != null && text != null) {
+            matchBolbWithCommit(BolbID, text);
+        }
+        handleDeleteFiles(stage);
+        /*生成新的Commit文件存入Object文件夹*/
+        /*将全部的Blobs存到Object文件夹中*/
+        storeBlobsToObjects();
+        BuildNewCommitObject();
+        /*清空当前的stage, 这个地方直接清空文件就行*/
+        clearFile(Stage);
+    }
     /*这段代码主要是用于存下来本次commit的全部Blobs*/
     private void matchBolbWithCommit (String[] BolbID, String[] text) throws IOException {
         for (int i = 0; i < BolbID.length; i++) {
