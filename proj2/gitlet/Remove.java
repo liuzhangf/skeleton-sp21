@@ -14,7 +14,6 @@ public class Remove {
             ois.close();
             if (currentStage != null) {
                 if (currentStage.stages.containsKey(file)) {
-                    //System.out.println("Removing ");
                     currentStage.stages.remove(file);
                     ObjectOutputStream oos3 = new ObjectOutputStream(new FileOutputStream(gitlet.Main.Stage));
                     oos3.writeObject(currentStage);
@@ -84,12 +83,10 @@ public class Remove {
                 }
             }
             else {
-            //    System.out.println("File not found");
                 System.out.println("No reason to remove the file.");
             }
         }
         else {
-        //    System.out.println("CNM");
             System.out.println("No reason to remove the file.");
         }
     }
