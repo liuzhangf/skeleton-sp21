@@ -343,6 +343,8 @@ public class Merge {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
             Stage stage = (Stage) ois.readObject();
             ois.close();
+        //    System.out.println("Stage: " + stage.stages.size());
+        //    System.out.println(stage.deleteFiles.size());
             if (stage.stages.size() > 0 || stage.deleteFiles.size() > 0) {
                 System.out.println("You have uncommitted changes.");
                 System.exit(0);

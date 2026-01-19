@@ -19,11 +19,11 @@ public class Blobs implements Serializable {
             byte[] content = new byte[(int) Filename.length()];
             ois.read(content);
              */
+            this.FileName = Filename;
             this.whichbranch = Utils.readContentsAsString(Main.Head);
             this.content = Files.readAllBytes(file.toPath());
-            this.ID = Utils.sha1(content, whichbranch);
+            this.ID = Utils.sha1(content, whichbranch,FileName);
         }
-        this.FileName = Filename;
     }
 
     public String getID() {

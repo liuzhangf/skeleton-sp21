@@ -4,7 +4,7 @@ import java.util.*;
 import java.io.Serializable;
 import static gitlet.Main.*;
 import static gitlet.Main.Head;
-import static gitlet.Stage.clearFile;
+import static gitlet.Merge.clearFile;
 
 public class Commit implements Serializable {
 

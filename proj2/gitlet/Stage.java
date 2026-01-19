@@ -33,7 +33,7 @@ public class Stage implements Serializable {
 
     public void addStage(String filename) throws IOException, ClassNotFoundException {
 
-        File existing = new File(filename);
+        File existing = new File(Main.CWD, filename);
         if (existing.exists()) {
             Blobs newBlob = new Blobs(filename);
             File commitFile = new File(Objects, newBlob.ID);
@@ -54,6 +54,7 @@ public class Stage implements Serializable {
             }
 
             if (commitFile.exists()) { //commitFile 直接是用内容比较的
+            //    System.out.println("File already exists!");
                 if (stages.containsKey( filename )) {
                     stages.remove(filename);
                 }
@@ -61,6 +62,7 @@ public class Stage implements Serializable {
 
             /*  现在的问题是commitfile也存在delefiles也有*/
             else {
+            //    System.out.println("File does not exist");
                 stages.put(filename, newBlob);
             }
 
@@ -76,7 +78,11 @@ public class Stage implements Serializable {
         }
     }
 
+    /*
     public static void clearFile(File file) throws IOException {
         new FileOutputStream(file).close();
+    }*/
+    public static void clearFile(File file) throws IOException {
+        Files.write(file.toPath(), new byte[0]);
     }
 }
