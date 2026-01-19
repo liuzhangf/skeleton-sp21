@@ -46,9 +46,10 @@ public class Merge {
         else {
             /* Merge的锚点不如就设置为当前的最新的一次Commit */
             if (mergeCommit.deleteFiles != null) {
+                //System.out.println(mergeBranch);
                 if (mergeCommit.deleteFiles.size() > 0) {
                     for (String files : mergeCommit.deleteFiles) {
-                        currentCommit.deleteFiles.add(files);
+                        new File(Main.CWD, files).delete();
                     }
                 }
             }
