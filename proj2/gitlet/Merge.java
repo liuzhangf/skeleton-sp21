@@ -32,14 +32,16 @@ public class Merge {
         ObjectInputStream in2 = new ObjectInputStream(new FileInputStream(new File(Main.Objects, LCAID)));
         Commit LCACommit = (Commit) in2.readObject();
 
-        if (LCAID == mergeCommit.ID ){
+      // System.out.println("LCACommit: " + LCACommit.ID);
+       // System.out.println("MergeCommit: " + mergeCommit.ID);
+        if (LCAID.equals(mergeCommit.ID )){
             System.out.println("Given branch is an ancestor of the current branch.");
         }
-        else if (LCAID == currentCommit.ID){
+        else if (LCAID.equals(currentCommit.ID)){
             new Checkout("", currentBranch);
             System.out.println("Current branch fast-forwarded.");
         }
-        else if (mergeBranch == currentBranch){
+        else if (mergeBranch.equals(currentBranch)){
             System.out.println("Cannot merge a branch with itself.");
         }
 
