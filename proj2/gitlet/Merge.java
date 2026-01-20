@@ -32,8 +32,6 @@ public class Merge {
         ObjectInputStream in2 = new ObjectInputStream(new FileInputStream(new File(Main.Objects, LCAID)));
         Commit LCACommit = (Commit) in2.readObject();
 
-      // System.out.println("LCACommit: " + LCACommit.ID);
-       // System.out.println("MergeCommit: " + mergeCommit.ID);
         if (LCAID.equals(mergeCommit.ID )){
             System.out.println("Given branch is an ancestor of the current branch.");
         }
@@ -98,7 +96,7 @@ public class Merge {
                         clearFile(readyWritingFile);
                         byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), mergeBlob.getContent());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
-                        Main.add(readyWritingFile.getName());
+                    //    Main.add(readyWritingFile.getName());
                     }
                 }
 
@@ -142,7 +140,7 @@ public class Merge {
                         clearFile(readyWritingFile);
                         byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), "(deleted)\n".getBytes());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
-                        Main.add(readyWritingFile.getName());
+                     //   Main.add(readyWritingFile.getName());
                     }
 
                 }
@@ -178,7 +176,7 @@ public class Merge {
                         clearFile(readyWritingFile);
                         byte[]ConflictMessage = buildConflictMessage("(deleted)\n".getBytes(), mergeBlob.getContent());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
-                        Main.add(readyWritingFile.getName());
+                    //    Main.add(readyWritingFile.getName());
                     }
                 }
 
@@ -227,7 +225,7 @@ public class Merge {
                     clearFile(readyWritingFile);
                     byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), mergeBlob.getContent());
                     Utils.writeContents(readyWritingFile, ConflictMessage);
-                    Main.add(readyWritingFile.getName());
+                //    Main.add(readyWritingFile.getName());
                 }
             }
 
@@ -259,11 +257,8 @@ public class Merge {
                 out.writeObject(currentStage);
                 Commit thisCommit = Main.commit1(args, mergeCommit.ID);
                 for (String files : currentCommit.deleteFiles) {
-                //    System.out.println("CurrentCOmmit :" + files);
                     if (mergeCommit.HashMapBlobs.containsKey(files)) {
-                //        System.out.println("haha");
                         if ( new File(Main.CWD, files).exists() && new File(Main.CWD, files).isFile()) {
-                //            System.out.println("delete");
                             new File(Main.CWD, files).delete();
                         }
                     }
