@@ -67,13 +67,14 @@ public class Merge {
                 /* 遍历全部的LCA文件，然后如果最新的版本包含，并且mergeCommit也包含 */
                 if (currentCommit.HashMapBlobs.containsKey(LCAFileName) && mergeCommit.HashMapBlobs.containsKey(LCAFileName)) {
 
-                    HashMap<String, Blobs> mergeBlobs = currentCommit.HashMapBlobs.get(LCAFileName);
-                    HashMap<String, Blobs> currentBlobs = mergeCommit.HashMapBlobs.get(LCAFileName);
+                    HashMap<String, Blobs> mergeBlobs = mergeCommit.HashMapBlobs.get(LCAFileName);
+                    HashMap<String, Blobs> currentBlobs = currentCommit.HashMapBlobs.get(LCAFileName);
                     HashMap<String, Blobs> LCABlobs = LCACommit.HashMapBlobs.get(LCAFileName);
 
                     Blobs mergeBlob = mergeBlobs.values().iterator().next();
                     Blobs currentBlob = currentBlobs.values().iterator().next();
                     Blobs LCABBlob = LCABlobs.values().iterator().next();
+
                     if (!mergeBlob.ID.equals(LCABBlob.ID) && currentBlob.ID.equals(LCABBlob.ID)) {
                         File readyWritingFile = new File(Main.CWD, LCAFileName);
                         if (!readyWritingFile.exists()) {
