@@ -38,7 +38,7 @@ public class Merge {
             System.out.println("Given branch is an ancestor of the current branch.");
         }
         else if (LCAID.equals(currentCommit.ID)){
-            new Checkout("", currentBranch);
+            //new Checkout("", currentBranch);
             System.out.println("Current branch fast-forwarded.");
         }
         else if (mergeBranch.equals(currentBranch)){
