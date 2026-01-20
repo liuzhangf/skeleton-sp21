@@ -45,30 +45,17 @@ public class Merge {
 
         else {
             /* Merge的锚点不如就设置为当前的最新的一次Commit */
-            //System.out.println(mergeCommit.deleteFiles.size());
             if (mergeCommit.deleteFiles != null) {
                 if (mergeCommit.deleteFiles.size() > 0) {
                     for (String files : mergeCommit.deleteFiles) {
-                        System.out.println(files);
                         currentCommit.deleteFiles.add(files);
                         if (new File(Main.CWD, files).exists()) {
                             if (currentCommit.deleteFiles.size() > 0) {
                                 if (currentCommit.deleteFiles.contains(files)) {
-                                    System.out.println("delete");
                                     new File(Main.CWD, files).delete();
                                 }
                             }
                         }
-                    }
-                }
-            }
-
-            for (String files : currentCommit.deleteFiles) {
-            //    System.out.println(files);
-                if (mergeCommit.HashMapBlobs.containsKey(files)) {
-                    if (currentCommit.deleteFiles.contains(files)) {
-            //            System.out.println("delete");
-                        new File(Main.CWD, files).delete();
                     }
                 }
             }
@@ -132,7 +119,7 @@ public class Merge {
                     File readyDeletingFile = new File(Main.CWD, LCAFileName);
                     if (readyDeletingFile.exists() && mergeCommit.deleteFiles.contains(readyDeletingFile.getName())) {
                         readyDeletingFile.delete();
-                        System.out.println("Stage has been deleted." + LCAFileName);
+                    //    System.out.println("Stage has been deleted." + LCAFileName);
                     }
 
                     //System.out.println("Stage has been deleted." + LCAFileName);
@@ -252,7 +239,32 @@ public class Merge {
              */
 
             if (judgeConflict){
+                Stage currentStage;
+                if (Main.Stage.length() > 0){
+                    ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
+                    currentStage = (Stage) ois.readObject();
+                    ois.close();
+                }
+                else {
+                    currentStage = new Stage();
+                }
+                for (String deleteFileName : currentCommit.deleteFiles) {
+                    currentStage.deleteFiles.add(deleteFileName);
+                }
+                clearFile(Main.Stage);
+                ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Main.Stage));
+                out.writeObject(currentStage);
                 Commit thisCommit = Main.commit1(args, mergeCommit.ID);
+                for (String files : currentCommit.deleteFiles) {
+                //    System.out.println("CurrentCOmmit :" + files);
+                    if (mergeCommit.HashMapBlobs.containsKey(files)) {
+                //        System.out.println("haha");
+                        if ( new File(Main.CWD, files).exists() && new File(Main.CWD, files).isFile()) {
+                //            System.out.println("delete");
+                            new File(Main.CWD, files).delete();
+                        }
+                    }
+                }
             }
         }
     }
