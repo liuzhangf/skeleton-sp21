@@ -57,6 +57,7 @@ public class Remove {
 
                 if (newstage.stages.containsKey(file)) {
                     newstage.stages.remove(file);
+                    newstage.deleteFiles.add(file);
                 }
                 else {
                     newstage.deleteFiles.add(file);
@@ -83,10 +84,34 @@ public class Remove {
                 }
             }
             else {
+                Stage newstage;
+                if (Main.Stage.length() > 0){
+                    ObjectInputStream inp = new ObjectInputStream(new FileInputStream(Main.Stage));
+                    newstage = (Stage) inp.readObject();
+                    newstage.deleteFiles.add(file);
+                }else {
+                    newstage = new Stage();
+                }
+                newstage.deleteFiles.add(file);
+                ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(gitlet.Main.Stage));
+                oos2.writeObject(newstage);
+                oos2.close();
                 System.out.println("No reason to remove the file.");
             }
         }
         else {
+            Stage newstage;
+            if (Main.Stage.length() > 0){
+                ObjectInputStream inp = new ObjectInputStream(new FileInputStream(Main.Stage));
+                newstage = (Stage) inp.readObject();
+                newstage.deleteFiles.add(file);
+            }else {
+                newstage = new Stage();
+            }
+            newstage.deleteFiles.add(file);
+            ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(gitlet.Main.Stage));
+            oos2.writeObject(newstage);
+            oos2.close();
             System.out.println("No reason to remove the file.");
         }
     }

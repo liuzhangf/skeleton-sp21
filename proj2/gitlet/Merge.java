@@ -45,10 +45,29 @@ public class Merge {
 
         else {
             /* Merge的锚点不如就设置为当前的最新的一次Commit */
+            //System.out.println(mergeCommit.deleteFiles.size());
             if (mergeCommit.deleteFiles != null) {
-                //System.out.println(mergeBranch);
                 if (mergeCommit.deleteFiles.size() > 0) {
                     for (String files : mergeCommit.deleteFiles) {
+                        System.out.println(files);
+                        currentCommit.deleteFiles.add(files);
+                        if (new File(Main.CWD, files).exists()) {
+                            if (currentCommit.deleteFiles.size() > 0) {
+                                if (currentCommit.deleteFiles.contains(files)) {
+                                    System.out.println("delete");
+                                    new File(Main.CWD, files).delete();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (String files : currentCommit.deleteFiles) {
+            //    System.out.println(files);
+                if (mergeCommit.HashMapBlobs.containsKey(files)) {
+                    if (currentCommit.deleteFiles.contains(files)) {
+            //            System.out.println("delete");
                         new File(Main.CWD, files).delete();
                     }
                 }
@@ -111,9 +130,11 @@ public class Merge {
                     out.writeObject(currentStage);
                     out.close();
                     File readyDeletingFile = new File(Main.CWD, LCAFileName);
-                    if (readyDeletingFile.exists()) {
+                    if (readyDeletingFile.exists() && mergeCommit.deleteFiles.contains(readyDeletingFile.getName())) {
                         readyDeletingFile.delete();
+                        System.out.println("Stage has been deleted." + LCAFileName);
                     }
+
                     //System.out.println("Stage has been deleted." + LCAFileName);
 
                     HashMap<String, Blobs> currentBlobs = currentCommit.HashMapBlobs.get(LCAFileName);

@@ -33,6 +33,7 @@ public class Commit implements Serializable {
         HashMapBlobs = new HashMap<>();
         this.blobsList = new LinkedList<>();
         this.witchBranch = Utils.readContentsAsString(Head);
+        this.deleteFiles = new LinkedList<>();
         String s1 = "";
         String s2 = "";
         for (int i = 0; i < text.length; i++) {
@@ -84,6 +85,7 @@ public class Commit implements Serializable {
         HashMapBlobs = new HashMap<>();
         this.blobsList = new LinkedList<>();
         this.witchBranch = Utils.readContentsAsString(Head);
+        this.deleteFiles = new LinkedList<>();
         String s1 = "";
         String s2 = "";
         for (int i = 0; i < text.length; i++) {
@@ -124,12 +126,7 @@ public class Commit implements Serializable {
         /*将全部的Blobs存到Object文件夹中*/
         storeBlobsToObjects();
         BuildNewCommitObject();
-        /*清空当前的stage, 这个地方直接清空文件就行
-        for (String fileName : this.deleteFiles) {
-            if (new File(Main.CWD,fileName).exists()) {
-                new File(Main.CWD,fileName).delete();
-            }
-        }*/
+        /*清空当前的stage, 这个地方直接清空文件就行*/
         clearFile(Stage);
     }
     /*这段代码主要是用于存下来本次commit的全部Blobs*/
@@ -178,10 +175,10 @@ public class Commit implements Serializable {
                 if (this.HashMapBlobs.containsKey(deleteFile)) {
                     this.HashMapBlobs.remove(deleteFile);
                 }
-            //    this.deleteFiles.add(deleteFile);
+                this.deleteFiles.add(deleteFile);
             }
 
-            this.deleteFiles = stage.deleteFiles;
+            //this.deleteFiles = stage.deleteFiles;
             // 删除后清空deleteFiles，避免残留
             stage.deleteFiles.clear();
         }
