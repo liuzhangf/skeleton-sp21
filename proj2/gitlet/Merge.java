@@ -140,7 +140,7 @@ public class Merge {
                             readyWritingFile.createNewFile();
                         }
                         clearFile(readyWritingFile);
-                        byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), new byte[0]);
+                        byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), "(deleted)\n".getBytes());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
                         Main.add(readyWritingFile.getName());
                     }
@@ -176,7 +176,7 @@ public class Merge {
                             readyWritingFile.createNewFile();
                         }
                         clearFile(readyWritingFile);
-                        byte[]ConflictMessage = buildConflictMessage(new byte[0], mergeBlob.getContent());
+                        byte[]ConflictMessage = buildConflictMessage("(deleted)\n".getBytes(), mergeBlob.getContent());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
                         Main.add(readyWritingFile.getName());
                     }

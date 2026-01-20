@@ -1,1 +1,4 @@
-not f
+<<<<<<< HEAD
+Another wug.
+=======
+(deleted)>>>>>>>
