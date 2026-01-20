@@ -21,8 +21,18 @@ public class Main {
     public static final File Stage = new File(Gitlet, "stage");
     public static final File Commit = new File(Gitlet, "commit");
 
+    public static final File RemoteDirectory = new File(Gitlet, "RemoteDirectory");
+
+
+
     public static void main(String[] args) {
         try {
+
+            if (args.length == 0) {
+                System.out.println("Please enter a command.");
+                return;
+            }
+
             String firstArg = args[0];
 
             switch (firstArg) {
@@ -30,18 +40,38 @@ public class Main {
                     init();
                     break;
                 case "add":
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     add(args[1]);
                     break;
                 case "commit":
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     commit(args);
                     break;
                 case  "rm":
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     delete(args);
                     break;
                 case "log":
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     dealWithLog();
                     break;
                 case "find":
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     if (args.length < 2) {
                         System.out.println("Found no commit with that message.");
                     }
@@ -50,24 +80,52 @@ public class Main {
                     }
                     break;
                 case "checkout":
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     checkout(args);
                     break;
                 case "global-log" :
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     dealWithGlobalLog();
                     break;
                 case "branch" :
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     new Branch("create",args[1]);
                     break;
                 case "rm-branch" :
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     new Branch("delete",args[1]);
                     break;
                 case "reset" :
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     new Reset(args[1]);
                     break;
                 case "status" :
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     new Status();
                     break;
                 case "merge" :
+                    if (!judgeInit()) {
+                        System.out.println("Not in an initialized Gitlet directory.");
+                        return;
+                    }
                     new Merge(args[1]);
                     break;
                 default:
@@ -78,6 +136,16 @@ public class Main {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean judgeInit() {
+        if (Head.exists()) {
+            if (Head.length() > 0) {
+                return true;
+            }
+            else return false;
+        }
+        return false;
     }
 
     public static void checkout(String[] args) throws IOException, ClassNotFoundException {

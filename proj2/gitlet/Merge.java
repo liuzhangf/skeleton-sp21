@@ -386,7 +386,7 @@ public class Merge {
             if (lastCommit != null && lastCommit.HashMapBlobs != null && file.isFile()) {
                 if (!lastCommit.HashMapBlobs.containsKey(file.getName()) ) {//如果最近的commit不存在 说明不是track的
                     if (currentStage != null) {
-                        if (!currentStage.stages.containsKey(file.getName()) || !currentStage.deleteFiles.contains(file.getName())) {
+                        if (!currentStage.stages.containsKey(file.getName()) && !currentStage.deleteFiles.contains(file.getName())) {
                             if (KmergeCommit != null) {
                                 if (KmergeCommit.HashMapBlobs.containsKey(file.getName())) {
                                     HashMap<String, Blobs> currentBlobs = KmergeCommit.HashMapBlobs.get(file.getName());
@@ -427,7 +427,7 @@ public class Merge {
     }
 
     private boolean judgeIfIsSame(byte[] cContent, byte[] gContent) {
-        if (cContent == null && gContent == null) {
+        if (cContent != null && gContent != null) {
             if (Arrays.equals(cContent, gContent)) {
                 return true;
             }
