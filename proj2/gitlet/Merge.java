@@ -60,6 +60,14 @@ public class Merge {
                 }
             }
 
+            Stage currentStage1 = null;
+            if (Main.Stage.length() > 0){
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Main.Stage));
+                currentStage1 = (Stage) ois.readObject();
+                ois.close();
+            }
+
+
             for (String LCAFileName : LCACommit.HashMapBlobs.keySet()) {
 
                 /* 遍历全部的LCA文件，然后如果最新的版本包含，并且mergeCommit也包含 */
@@ -156,6 +164,7 @@ public class Merge {
                     else {
                         currentStage = new Stage();
                     }
+
                     currentStage.stages.remove(LCAFileName);
                     currentStage.deleteFiles.add(LCAFileName);
                     ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Main.Stage));
@@ -229,7 +238,11 @@ public class Merge {
                 }
             }
 
-            if (!judgeConflict) System.out.println("Encountered a merge conflict.");
+            if (!judgeConflict){
+                ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream(Main.Stage));
+                ois.writeObject(currentStage1);
+                System.out.println("Encountered a merge conflict.");
+            }
             String [] args = new String[2];
             args[0] = "commit";
             args[1] = "Merged " +  mergeBranch + " into " + currentBranch + ".";
