@@ -102,7 +102,7 @@ public class Merge {
                         clearFile(readyWritingFile);
                         byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), mergeBlob.getContent());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
-                    //    Main.add(readyWritingFile.getName());
+                        Main.add(readyWritingFile.getName());
                     }
                 }
 
@@ -126,7 +126,7 @@ public class Merge {
                     File readyDeletingFile = new File(Main.CWD, LCAFileName);
                     if (readyDeletingFile.exists() && mergeCommit.deleteFiles.contains(readyDeletingFile.getName())) {
                         readyDeletingFile.delete();
-                    //    System.out.println("Stage has been deleted." + LCAFileName);
+                        //    System.out.println("Stage has been deleted." + LCAFileName);
                     }
 
                     //System.out.println("Stage has been deleted." + LCAFileName);
@@ -146,7 +146,7 @@ public class Merge {
                         clearFile(readyWritingFile);
                         byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), "".getBytes());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
-                     //   Main.add(readyWritingFile.getName());
+                        Main.add(readyWritingFile.getName());
                     }
 
                 }
@@ -183,7 +183,7 @@ public class Merge {
                         clearFile(readyWritingFile);
                         byte[]ConflictMessage = buildConflictMessage("".getBytes(), mergeBlob.getContent());
                         Utils.writeContents(readyWritingFile, ConflictMessage);
-                    //    Main.add(readyWritingFile.getName());
+                        Main.add(readyWritingFile.getName());
                     }
                 }
 
@@ -232,13 +232,13 @@ public class Merge {
                     clearFile(readyWritingFile);
                     byte[]ConflictMessage = buildConflictMessage(currentBlob.getContent(), mergeBlob.getContent());
                     Utils.writeContents(readyWritingFile, ConflictMessage);
-                //    Main.add(readyWritingFile.getName());
+                    Main.add(readyWritingFile.getName());
                 }
             }
 
             if (!judgeConflict){
-                ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream(Main.Stage));
-                ois.writeObject(currentStage1);
+//                ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream(Main.Stage));
+//                ois.writeObject(currentStage1);
                 System.out.println("Encountered a merge conflict.");
             }
             String [] args = new String[2];
@@ -266,12 +266,14 @@ public class Merge {
                 clearFile(Main.Stage);
                 ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Main.Stage));
                 out.writeObject(currentStage);
-                Commit thisCommit = Main.commit1(args, mergeCommit.ID);
-                for (String files : currentCommit.deleteFiles) {
-                    if (mergeCommit.HashMapBlobs.containsKey(files)) {
-                        if ( new File(Main.CWD, files).exists() && new File(Main.CWD, files).isFile()) {
-                            new File(Main.CWD, files).delete();
-                        }
+                out.close();
+            }
+
+            Commit thisCommit = Main.commit1(args, mergeCommit.ID);
+            for (String files : currentCommit.deleteFiles) {
+                if (mergeCommit.HashMapBlobs.containsKey(files)) {
+                    if ( new File(Main.CWD, files).exists() && new File(Main.CWD, files).isFile()) {
+                        new File(Main.CWD, files).delete();
                     }
                 }
             }
