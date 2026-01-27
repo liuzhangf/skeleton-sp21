@@ -3,6 +3,8 @@ package gitlet;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Log implements Serializable {
 
@@ -49,7 +51,8 @@ public class Log implements Serializable {
 
     private static String formatTimestamp(long timestamp) {
         Date date = new Date(timestamp);
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy Z");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy Z", Locale.US);
+        sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
         return sdf.format(date);
     }
 
