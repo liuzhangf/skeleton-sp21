@@ -30,12 +30,13 @@ public class Log implements Serializable {
                 String date = formatTimestamp(lastCommit.timestamp);
                 System.out.println("Date: " + date);
                 System.out.println(lastCommit.message);
-                System.out.println();
+                //System.out.println();
 
                 lastCommitHashCode = lastCommit.lastCommitID1;
 
                 file = new File(Main.Objects, lastCommitHashCode);
                 if (lastCommitHashCode == null || lastCommitHashCode.isEmpty()) break;
+                System.out.println();
                 if (file.length() == 0) break;
                 else {
                     fis = new ObjectInputStream(new FileInputStream(file));

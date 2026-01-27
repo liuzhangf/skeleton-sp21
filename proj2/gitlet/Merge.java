@@ -67,9 +67,7 @@ public class Merge {
                 ois.close();
             }
 
-
             for (String LCAFileName : LCACommit.HashMapBlobs.keySet()) {
-
                 /* 遍历全部的LCA文件，然后如果最新的版本包含，并且mergeCommit也包含 */
                 if (currentCommit.HashMapBlobs.containsKey(LCAFileName) && mergeCommit.HashMapBlobs.containsKey(LCAFileName)) {
 
